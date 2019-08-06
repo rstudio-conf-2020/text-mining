@@ -33,7 +33,11 @@ At the end of this course, participants will understand how to: -Perform explora
 
 ## Is this course for me?
 
-THREE_QUESTIONS
+This course will be appropriate for you if you answer yes to these questions:
+
+1. Have you ever encountered text data and suspected there was useful insight latent within it but felt frustrated about how to find that insight?
+2. Are you familiar with dplyr and ggplot2, and ready to learn how unstructured text data can be analyzed within the tidyverse ecosystem?
+3. Do you need a flexible framework for handling text data that allows you to engage in tasks from exploratory data analysis to supervised predictive modeling?
 
 ## Prework
 
