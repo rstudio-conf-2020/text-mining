@@ -29,7 +29,7 @@ Have you ever encountered text data and suspected there was useful insight laten
 
 ## Learning objectives
 
-LEARNING_OBJECTIVES
+At the end of this course, participants will understand how to: -Perform exploratory data analyses of text datasets, including summarization and data visualization -Understand and implement both tf-idf and sentiment analysis -Build classification models for text using tidy data principles
 
 ## Is this course for me?
 
