@@ -3,7 +3,7 @@ Text Mining with Tidy Data Principles Workshop
 
 ### rstudio::conf 2020
 
-by INSTRUCTOR_NAME
+by Julia Silge
 
 -----
 
