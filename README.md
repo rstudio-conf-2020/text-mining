@@ -1,4 +1,4 @@
-WORKSHOP_TITLE
+Text Mining with Tidy Data Principles Workshop
 ================
 
 ### rstudio::conf 2020
