@@ -25,7 +25,7 @@ can remove these instructions from the README.
 
 ## Overview
 
-ABSTRACT
+Have you ever encountered text data and suspected there was useful insight latent within it but felt frustrated about how to find that insight? Are you familiar with dplyr and ggplot2, and ready to learn how unstructured text data can be analyzed within the tidyverse ecosystem? Do you need a flexible framework for handling text data that allows you to engage in tasks from exploratory data analysis to supervised predictive modeling? Text data is increasingly important in many domains, and tidy data principles and tidy tools can make text mining easier and more effective. In this workshop, learn how to manipulate, summarize, and visualize the characteristics of text using these methods and R packages from the tidy tool ecosystem. These tools are highly effective for many analytical questions and allow analysts to integrate natural language processing into effective workflows already in wide use. Explore how to implement approaches such as sentiment analysis of texts, measuring tf-idf, network analysis of words, and building both supervised and unsupervised text models.
 
 ## Learning objectives
 
