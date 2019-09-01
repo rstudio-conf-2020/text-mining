@@ -33,9 +33,9 @@ Text data is increasingly important in many domains, and tidy data principles an
 
 At the end of this course, participants will understand how to: 
 
--Perform exploratory data analyses of text datasets, including summarization and data visualization
--Understand and implement both tf-idf and sentiment analysis 
--Build classification models for text using tidy data principles
+- Perform exploratory data analyses of text datasets, including summarization and data visualization
+- Understand and implement both tf-idf and sentiment analysis 
+- Build classification models for text using tidy data principles
 
 ## Is this course for me?
 
