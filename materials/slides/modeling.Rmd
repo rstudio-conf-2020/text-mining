@@ -1,0 +1,667 @@
+---
+title: "Text Modeling"
+subtitle: "<br><br>USING TIDY DATA PRINCIPLES"
+author: "Julia Silge | rstudio::conf | 28 Jan 2020"
+output:
+  xaringan::moon_reader:
+    css: ["default", "css/xaringan-themer.css", "css/footer_plus.css"]
+    lib_dir: libs
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+      ratio: "16:9"
+    seal: false  
+    includes:
+      in_header: header.html
+---
+
+```{r setup, include=FALSE}
+options(htmltools.dir.version = FALSE)
+library(knitr)
+knitr::opts_chunk$set(cache = TRUE, warning = FALSE, message = FALSE, dpi = 180)
+library(ggplot2)
+library(silgelib)
+theme_set(theme_roboto())
+```
+
+layout: true
+
+<div class="my-footer"><span>bit.ly/silge-sdss-2</span></div> 
+
+---
+
+class: inverse, center, middle
+
+background-image: url(figs/p_and_p_cover.png)
+background-size: cover
+
+
+# Text Modeling
+
+<img src="figs/blue_jane.png" width="150px"/>
+
+### USING TIDY PRINCIPLES
+
+.large[Julia Silge | rstudio::conf | 28 Jan 2020]
+
+---
+
+## Let's install some packages
+
+```{r, eval=FALSE}
+install.packages(c("tidyverse", 
+                   "tidytext", 
+                   "gutenbergr",
+                   "stm",
+                   "glmnet",
+                   "yardstick"))
+```
+
+---
+
+class: right, middle
+
+<img src="figs/blue_jane.png" width="150px"/>
+
+# Find me at...
+
+<a href="http://twitter.com/juliasilge"><i class="fa fa-twitter fa-fw"></i>&nbsp; @juliasilge</a><br>
+<a href="http://github.com/juliasilge"><i class="fa fa-github fa-fw"></i>&nbsp; @juliasilge</a><br>
+<a href="https://juliasilge.com"><i class="fa fa-link fa-fw"></i>&nbsp; juliasilge.com</a><br>
+<a href="https://tidytextmining.com"><i class="fa fa-book fa-fw"></i>&nbsp; tidytextmining.com</a><br>
+<a href="mailto:julia.silge@gmail.com"><i class="fa fa-paper-plane fa-fw"></i>&nbsp; julia.silge@gmail.com</a>
+
+---
+
+class: right, inverse, middle
+
+background-image: url(figs/p_and_p_cover.png)
+background-size: cover
+
+# TIDYING AND CASTING 
+
+<h1 class="fa fa-check-circle fa-fw"></h1>
+
+---
+
+background-image: url(figs/tmwr_0601.png)
+background-size: 900px
+
+---
+
+class: inverse
+
+background-image: url(figs/p_and_p_cover.png)
+background-size: cover
+
+# Two powerful NLP techniques
+
+--
+
+- .large[Topic modeling]
+
+--
+
+- .large[Text classification]
+
+---
+
+class: inverse
+
+background-image: url(figs/p_and_p_cover.png)
+background-size: cover
+
+# Topic modeling
+
+- .large[Each DOCUMENT = mixture of topics]
+
+--
+
+- .large[Each TOPIC = mixture of words]
+
+---
+
+class: top
+
+background-image: url(figs/top_tags-1.png)
+background-size: 800px
+
+---
+
+class: center, middle, inverse
+
+background-image: url(figs/p_and_p_cover.png)
+background-size: cover
+
+# GREAT LIBRARY HEIST `r emo::ji("sleuth")`
+
+---
+
+## **Downloading your text data**
+
+```{r}
+library(tidyverse)
+library(gutenbergr)
+
+titles <- c("Twenty Thousand Leagues under the Sea", 
+            "The War of the Worlds",
+            "Pride and Prejudice", 
+            "Great Expectations")
+
+books <- gutenberg_works(title %in% titles) %>%
+  gutenberg_download(meta_fields = "title")
+
+books
+```
+
+---
+
+## **Someone has torn your books apart!** `r emo::ji("sob")`
+
+
+```{r}
+by_chapter <- books %>%
+  group_by(title) %>%
+  mutate(chapter = cumsum(str_detect(text, 
+                                     regex("^chapter ", 
+                                           ignore_case = TRUE)))) %>%
+  ungroup() %>%
+  filter(chapter > 0) %>%
+  unite(document, title, chapter)
+
+by_chapter
+```
+
+---
+
+## **Can we put them back together?**
+
+```{r}
+library(tidytext)
+
+word_counts <- by_chapter %>%
+  unnest_tokens(word, text) %>%               #<<
+  anti_join(get_stopwords(source = "smart")) %>%
+  count(document, word, sort = TRUE)
+
+word_counts
+
+```
+
+---
+
+## **Can we put them back together?**
+
+```{r}
+words_sparse <- word_counts %>%
+  cast_sparse(document, word, n)         #<<
+
+class(words_sparse)
+```
+
+---
+
+## **Train a topic model**
+
+Use a sparse matrix or a `quanteda::dfm` object as input
+
+```{r}
+library(stm)
+
+topic_model <- stm(words_sparse, K = 4, 
+                   verbose = FALSE, init.type = "Spectral")
+
+summary(topic_model)
+```
+
+---
+
+## **Exploring the output of topic modeling**
+
+.large[Time for tidying!]
+
+```{r}
+chapter_topics <- tidy(topic_model, matrix = "beta")
+
+chapter_topics
+```
+
+---
+
+## **Exploring the output of topic modeling**
+
+```{r}
+top_terms <- chapter_topics %>%
+  group_by(topic) %>%
+  top_n(10, beta) %>%
+  ungroup() %>%
+  arrange(topic, -beta)
+
+top_terms
+```
+
+---
+## **Exploring the output of topic modeling**
+
+```{r, eval=FALSE}
+top_terms %>%
+  mutate(term = fct_reorder(term, beta)) %>%
+  ggplot(aes(term, beta, fill = factor(topic))) +
+  geom_col(show.legend = FALSE) +
+  facet_wrap(~ topic, scales = "free") +
+  coord_flip()
+```
+
+---
+
+```{r, echo=FALSE, fig.height=4}
+top_terms %>%
+  ggplot(aes(reorder_within(term, beta, topic), beta, fill = factor(topic))) +
+  geom_col(show.legend = FALSE) +
+  facet_wrap(~ topic, scales = "free") +
+  coord_flip() +
+  scale_x_reordered() +
+  scale_y_continuous(expand = c(0,0)) +
+  labs(y = expression(beta), x = NULL)
+```
+
+---
+
+## **How are documents classified?**
+
+```{r}
+chapters_gamma <- tidy(topic_model, matrix = "gamma",
+                       document_names = rownames(words_sparse))
+
+chapters_gamma
+```
+
+---
+
+## **How are documents classified?**
+
+```{r}
+chapters_parsed <- chapters_gamma %>%
+  separate(document, c("title", "chapter"), 
+           sep = "_", convert = TRUE)
+
+chapters_parsed
+```
+
+---
+
+## **How are documents classified?**
+
+```{r, eval=FALSE}
+chapters_parsed %>%
+  mutate(title = fct_reorder(title, gamma * topic)) %>%
+  ggplot(aes(factor(topic), gamma)) +
+  geom_boxplot() +
+  facet_wrap(~ title)
+```
+
+---
+
+```{r, echo=FALSE, fig.height=4}
+chapters_parsed %>%
+  mutate(title = fct_reorder(title, gamma * topic)) %>%
+  ggplot(aes(factor(topic), gamma, color = factor(topic))) +
+  geom_boxplot(show.legend = FALSE) +
+  facet_wrap(~ title) +
+  labs(x = "Topic", y = expression(gamma))
+```
+
+---
+
+class: center, middle, inverse
+
+background-image: url(figs/p_and_p_cover.png)
+background-size: cover
+
+# GOING FARTHER `r emo::ji("rocket")`
+
+---
+
+## Tidying model output
+
+### Which words in each document are assigned to which topics?
+
+- .large[`augment()`]
+- .large[Add information to each observation in the original data]
+
+---
+
+background-image: url(figs/stm_video.png)
+background-size: 850px
+
+---
+
+## **Using stm**
+
+- .large[Document-level covariates]
+
+```{r, eval=FALSE}
+topic_model <- stm(words_sparse, K = 0, init.type = "Spectral",
+                   prevalence = ~s(Year),
+                   data = covariates,
+                   verbose = FALSE)
+```
+
+- .large[Use functions for `semanticCoherence()`, `checkResiduals()`, `exclusivity()`, and more!]
+
+- .large[Check out http://www.structuraltopicmodel.com/]
+
+- .large[See [my blog post](https://juliasilge.com/blog/evaluating-stm/) for how to choose `K`, the number of topics]
+
+---
+
+
+background-image: url(figs/model_diagnostic-1.png)
+background-position: 50% 50%
+background-size: 950px
+
+---
+
+# Stemming?
+
+.large[Advice from [Schofield & Mimno](https://mimno.infosci.cornell.edu/papers/schofield_tacl_2016.pdf)]
+
+.large["Comparing Apples to Apple: The Effects of Stemmers on Topic Models"]
+
+---
+
+class: right, middle
+
+<h1 class="fa fa-quote-left fa-fw"></h1>
+
+<h2> Despite their frequent use in topic modeling, we find that stemmers produce no meaningful improvement in likelihood and coherence and in fact can degrade topic stability. </h2>
+
+<h1 class="fa fa-quote-right fa-fw"></h1>
+
+---
+
+class: right, middle, inverse
+
+background-image: url(figs/p_and_p_cover.png)
+background-size: cover
+
+
+# TEXT CLASSIFICATION
+<h1 class="fa fa-balance-scale fa-fw"></h1>
+
+---
+
+## **Downloading your text data**
+
+```{r}
+library(tidyverse)
+library(gutenbergr)
+
+titles <- c("The War of the Worlds",
+            "Pride and Prejudice")
+
+books <- gutenberg_works(title %in% titles) %>%
+  gutenberg_download(meta_fields = "title") %>%
+  mutate(document = row_number())
+
+books
+```
+
+---
+
+## **Making a tidy dataset**
+
+.large[Use this kind of data structure for EDA! `r emo::ji("nail")`]
+
+```{r}
+library(tidytext)
+
+tidy_books <- books %>%
+  unnest_tokens(word, text) %>%           #<<
+  group_by(word) %>%
+  filter(n() > 10) %>%
+  ungroup
+
+tidy_books
+```
+
+---
+
+## **Cast to a sparse matrix**
+
+.large[And build a dataframe with a response variable]
+
+```{r}
+sparse_words <- tidy_books %>%
+  count(document, word, sort = TRUE) %>%
+  cast_sparse(document, word, n)               #<<
+
+books_joined <- tibble(document = as.integer(rownames(sparse_words))) %>%
+  left_join(books %>%
+              select(document, title))
+```
+
+---
+
+## **Train a glmnet model**
+
+```{r}
+library(glmnet)
+library(doMC)
+registerDoMC(cores = 8)
+
+is_jane <- books_joined$title == "Pride and Prejudice"
+
+model <- cv.glmnet(sparse_words, is_jane, family = "binomial", 
+                   parallel = TRUE, keep = TRUE)
+
+```
+
+---
+
+## **Tidying our model**
+
+.large[Tidy, then filter to choose some lambda from glmnet output]
+
+```{r}
+library(broom)
+
+coefs <- model$glmnet.fit %>%
+  tidy() %>%
+  filter(lambda == model$lambda.1se)
+
+Intercept <- coefs %>%
+  filter(term == "(Intercept)") %>%
+  pull(estimate)
+```
+
+---
+
+## **Tidying our model**
+
+```{r}
+classifications <- tidy_books %>%
+  inner_join(coefs, by = c("word" = "term")) %>%
+  group_by(document) %>%
+  summarize(score = sum(estimate)) %>%
+  mutate(probability = plogis(Intercept + score))
+
+classifications
+```
+
+---
+
+## **Understanding our model**
+
+```{r, eval=FALSE}
+coefs %>%
+  group_by(estimate > 0) %>%
+  top_n(10, abs(estimate)) %>%
+  ungroup %>%
+  ggplot(aes(fct_reorder(term, estimate), 
+             estimate, 
+             fill = estimate > 0)) +
+  geom_col(show.legend = FALSE) +
+  coord_flip()
+```
+
+---
+
+```{r, echo = FALSE, fig.height=4}
+coefs %>%
+  group_by(estimate > 0) %>%
+  top_n(10, abs(estimate)) %>%
+  ungroup %>%
+  ggplot(aes(fct_reorder(term, estimate), estimate, fill = estimate > 0)) +
+  geom_col(show.legend = FALSE) +
+  coord_flip() +
+  labs(x = NULL,
+       title = "Coefficients that increase/decrease probability",
+       subtitle = "A document mentioning Martians is unlikely to be written by Jane Austen")
+```
+
+---
+
+## **ROC**
+
+```{r}
+library(yardstick)
+
+comment_classes <- classifications %>%
+  left_join(books %>%
+    select(title, document), by = "document") %>%
+  mutate(title = as.factor(title))
+```
+
+---
+
+## **ROC**
+
+```{r eval=FALSE}
+comment_classes %>%
+  roc_curve(title, probability) %>%
+  ggplot(aes(x = 1 - specificity, y = sensitivity)) +
+  geom_line(
+    color = "midnightblue",
+    size = 1.5
+  ) +
+  geom_abline(
+    lty = 2, alpha = 0.5,
+    color = "gray50",
+    size = 1.2
+  )
+```
+
+---
+
+```{r, echo = FALSE, fig.height=4}
+comment_classes %>%
+  roc_curve(title, probability) %>%
+  ggplot(aes(x = 1 - specificity, y = sensitivity)) +
+  geom_line(
+    color = "midnightblue",
+    size = 1.5
+  ) +
+  geom_abline(
+    lty = 2, alpha = 0.5,
+    color = "gray50",
+    size = 1.2
+  ) +
+  labs(
+    title = "ROC curve for text classification"
+  )
+```
+
+---
+
+## **AUC for model**
+
+```{r}
+comment_classes %>%
+  roc_auc(title, probability)
+```
+
+---
+
+## **Confusion matrix**
+
+```{r}
+comment_classes %>%
+  mutate(
+    prediction = case_when(
+      probability > 0.5 ~ "Pride and Prejudice",
+      TRUE ~ "The War of the Worlds"
+    ),
+    prediction = as.factor(prediction)
+  ) %>%
+  conf_mat(title, prediction)
+```
+
+---
+
+## **Misclassifications**
+
+Let's talk about misclassifications. Which documents here were incorrectly predicted to be written by Jane Austen?
+
+```{r}
+comment_classes %>%
+  filter(
+    probability > .8,                       #<<
+    title == "The War of the Worlds"        #<<
+  ) %>%
+  sample_n(10) %>%
+  inner_join(books %>%
+    select(document, text)) %>%
+  select(probability, text)
+```
+
+---
+
+## **Misclassifications**
+
+Let's talk about misclassifications. Which documents here were incorrectly predicted to *not* be written by Jane Austen?
+
+```{r}
+comment_classes %>%
+  filter(
+    probability < .3,                    #<<
+    title == "Pride and Prejudice"       #<<
+  ) %>%
+  sample_n(10) %>%
+  inner_join(books %>%
+    select(document, text)) %>%
+  select(probability, text)
+```
+
+---
+
+background-image: url(figs/tmwr_0601.png)
+background-position: 50% 70%
+background-size: 750px
+
+## **Workflow for text mining/modeling**
+
+---
+
+background-image: url(figs/lizzieskipping.gif)
+background-position: 50% 55%
+background-size: 750px
+
+# **Go explore real-world text!**
+
+---
+
+class: left, middle
+
+<img src="figs/blue_jane.png" width="150px"/>
+
+# Thanks!
+
+<a href="http://twitter.com/juliasilge"><i class="fa fa-twitter fa-fw"></i>&nbsp; @juliasilge</a><br>
+<a href="http://github.com/juliasilge"><i class="fa fa-github fa-fw"></i>&nbsp; @juliasilge</a><br>
+<a href="https://juliasilge.com"><i class="fa fa-link fa-fw"></i>&nbsp; juliasilge.com</a><br>
+<a href="https://tidytextmining.com"><i class="fa fa-book fa-fw"></i>&nbsp; tidytextmining.com</a><br>
+<a href="mailto:julia.silge@gmail.com"><i class="fa fa-paper-plane fa-fw"></i>&nbsp; julia.silge@gmail.com</a>
+
+Slides created with [**remark.js**](http://remarkjs.com/) and the R package [**xaringan**](https://github.com/yihui/xaringan)

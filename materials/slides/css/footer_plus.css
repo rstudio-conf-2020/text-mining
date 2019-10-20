@@ -1,0 +1,30 @@
+.large { font-size: 160% }
+
+.title-slide {
+  background-image: url(../figs/p_and_p_cover.png);
+  background-size: cover;
+}
+
+.title-slide .remark-slide-number {
+  display: none;
+}
+
+.remark-slide-number {
+  display: none;
+}
+
+div.my-footer {
+    background-color: #050045;
+    position: absolute;
+    bottom: 0px;
+    left: 0px;
+    height: 20px;
+    width: 100%;
+}
+div.my-footer span {
+    font-size: 10pt;
+    color: #F7F8FA;
+    position: absolute;
+    left: 15px;
+    bottom: 2px;
+}

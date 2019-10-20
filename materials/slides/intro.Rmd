@@ -1,0 +1,560 @@
+---
+title: "Text Mining"
+subtitle: "<br><br>USING TIDY DATA PRINCIPLES"
+author: "Julia Silge | rstudio::conf | 27 Jan 2020"
+output:
+  xaringan::moon_reader:
+    css: ["default", "css/xaringan-themer.css", "css/footer_plus.css"]
+    lib_dir: libs
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+      ratio: "16:9"
+    seal: false  
+    includes:
+      in_header: header.html
+---
+
+```{r setup, include=FALSE}
+options(htmltools.dir.version = FALSE)
+library(knitr)
+knitr::opts_chunk$set(cache = TRUE, warning = FALSE, message = FALSE, dpi = 180)
+library(ggplot2)
+library(silgelib)
+theme_set(theme_roboto())
+```
+
+layout: true
+
+<div class="my-footer"><span>bit.ly/silge-rstudioconf-1</span></div> 
+
+---
+
+class: inverse, center, middle
+
+background-image: url(figs/p_and_p_cover.png)
+background-size: cover
+
+
+# Text Mining
+
+<img src="figs/blue_jane.png" width="150px"/>
+
+### USING TIDY PRINCIPLES
+
+.large[Julia Silge | rstudio::conf | 27 Jan 2020]
+
+---
+
+## Let's install some packages
+
+```{r, eval=FALSE}
+install.packages(c("tidyverse", 
+                   "tidytext", 
+                   "gutenbergr"))
+```
+
+---
+
+class: right, middle
+
+<img src="figs/blue_jane.png" width="150px"/>
+
+# Find me at...
+
+<a href="http://twitter.com/juliasilge"><i class="fa fa-twitter fa-fw"></i>&nbsp; @juliasilge</a><br>
+<a href="http://github.com/juliasilge"><i class="fa fa-github fa-fw"></i>&nbsp; @juliasilge</a><br>
+<a href="https://juliasilge.com"><i class="fa fa-link fa-fw"></i>&nbsp; juliasilge.com</a><br>
+<a href="https://tidytextmining.com"><i class="fa fa-book fa-fw"></i>&nbsp; tidytextmining.com</a><br>
+<a href="mailto:julia.silge@gmail.com"><i class="fa fa-paper-plane fa-fw"></i>&nbsp; julia.silge@gmail.com</a>
+
+---
+
+class: inverse
+
+## Text in the real world
+
+--
+
+- .large[Text data is increasingly important `r emo::ji("books")`]
+
+--
+
+- .large[NLP training is scarce on the ground `r emo::ji("scream")`]
+
+---
+
+background-image: url(figs/vexing.gif)
+background-position: 50% 50%
+background-size: 650px
+
+---
+
+background-image: url(figs/p_and_p_cover.png)
+background-size: cover
+
+class: inverse, center, middle
+
+# TIDY DATA PRINCIPLES + TEXT MINING = `r emo::ji("tada")`
+
+---
+
+background-image: url(figs/tidytext_repo.png)
+background-size: 800px
+background-position: 50% 20%
+
+class: bottom, right
+
+.large[[https://github.com/juliasilge/tidytext](https://github.com/juliasilge/tidytext)]
+
+.large[[http://tidytextmining.com/](http://tidytextmining.com/)]
+
+---
+
+background-image: url(figs/cover.png)
+background-size: 450px
+background-position: 50% 50%
+
+---
+
+<img src="figs/purple_emily.png" style="position:absolute;top:20px;right:20px;" width="100px"/>
+
+## What do we mean by tidy text?
+
+
+```{r}
+text <- c("Because I could not stop for Death -",
+          "He kindly stopped for me -",
+          "The Carriage held but just Ourselves -",
+          "and Immortality")
+
+text
+```
+
+---
+
+<img src="figs/purple_emily.png" style="position:absolute;top:20px;right:20px;" width="100px"/>
+
+## What do we mean by tidy text?
+
+```{r}
+library(tidyverse)
+text_df <- data_frame(line = 1:4, text = text)
+
+text_df
+```
+
+---
+
+<img src="figs/purple_emily.png" style="position:absolute;top:20px;right:20px;" width="100px"/>
+
+## What do we mean by tidy text?
+
+```{r}
+library(tidytext)
+
+text_df %>%
+  unnest_tokens(word, text)        #<<
+```
+
+---
+
+## Gathering more data
+
+.large[You can access the full text of many public domain works from [Project Gutenberg](https://www.gutenberg.org/) using the [gutenbergr](https://ropensci.org/tutorials/gutenbergr_tutorial.html) package.]
+
+
+```{r}
+library(gutenbergr)
+
+full_text <- gutenberg_download(1342)
+```
+
+.large[What book do *you* want to analyze today? `r emo::ji_glue(":book: :partying: :book:")`]
+
+---
+
+## Time to tidy your text!
+
+```{r}
+tidy_book <- full_text %>%
+  mutate(line = row_number()) %>%
+  unnest_tokens(word, text)                #<<
+
+tidy_book
+```
+
+---
+
+## What are the most common words?
+
+```{r}
+tidy_book %>%
+  count(word, sort = TRUE)
+```
+
+---
+
+background-image: url(figs/stop.gif)
+background-size: 500px
+background-position: 50% 50%
+
+## Stop words
+
+---
+
+## Stop words
+
+```{r}
+get_stopwords()
+```
+
+---
+
+## Stop words
+
+```{r}
+get_stopwords(language = "es")
+```
+
+---
+
+## Stop words
+
+```{r}
+get_stopwords(language = "pt")
+```
+
+---
+
+## Stop words
+
+```{r}
+get_stopwords(source = "smart")
+```
+
+---
+
+## What are the most common words?
+
+```{r, eval = FALSE}
+tidy_book %>%
+  anti_join(get_stopwords(source = "smart")) %>%
+  count(word, sort = TRUE) %>%
+  top_n(20) %>%
+  ggplot(aes(fct_reorder(word, n), n)) +            #<<
+  geom_col() +
+  coord_flip()
+```
+
+---
+
+```{r, echo=FALSE, fig.height=4}
+tidy_book %>%
+  anti_join(get_stopwords(source = "smart")) %>%
+  count(word, sort = TRUE) %>%
+  top_n(20) %>%
+  ggplot(aes(fct_reorder(word, n), n)) +
+  geom_col(fill = "midnightblue", alpha = 0.9) +
+  coord_flip() +
+  scale_y_continuous(expand = c(0,0)) +
+  labs(x = NULL, y = "Number of occurrences")
+```
+
+---
+
+background-image: url(figs/tilecounts-1.png)
+background-size: 700px
+
+---
+
+background-image: url(figs/tilerate-1.png)
+background-size: 700px
+
+---
+
+background-image: url(figs/p_and_p_cover.png)
+background-size: cover
+
+class: inverse, center, middle
+
+## SENTIMENT ANALYSIS `r emo::ji_glue(":smile: :cry: :angry:")`
+
+---
+
+## Sentiment lexicons
+
+```{r}
+get_sentiments("afinn")
+```
+
+---
+
+## Sentiment lexicons
+
+```{r}
+get_sentiments("bing")
+```
+
+---
+
+## Sentiment lexicons
+
+
+```{r}
+get_sentiments("nrc")
+```
+
+---
+
+## Sentiment lexicons
+
+```{r}
+get_sentiments("loughran")
+```
+
+---
+
+## Implementing sentiment analysis
+
+```{r}
+tidy_book %>%
+  inner_join(get_sentiments("bing")) %>%            #<<
+  count(sentiment, sort = TRUE)
+```
+
+---
+
+## Implementing sentiment analysis
+
+```{r}
+tidy_book %>%
+  inner_join(get_sentiments("bing")) %>%            
+  count(sentiment, word, sort = TRUE)             #<<
+```
+
+---
+
+## Implementing sentiment analysis
+
+```{r, eval = FALSE}
+tidy_book %>%
+  inner_join(get_sentiments("bing")) %>%
+  count(sentiment, word, sort = TRUE) %>%
+  group_by(sentiment) %>%
+  top_n(10) %>%
+  ungroup %>%
+  ggplot(aes(fct_reorder(word, n),               #<<
+             n, 
+             fill = sentiment)) +
+  geom_col() +
+  coord_flip() +
+  facet_wrap(~ sentiment, scales = "free") 
+```
+
+---
+
+class: middle
+
+```{r, echo=FALSE, fig.height=4}
+tidy_book %>%
+  inner_join(get_sentiments("bing")) %>%
+  count(sentiment, word, sort = TRUE) %>%
+  group_by(sentiment) %>%
+  top_n(10) %>%
+  ungroup %>%
+  ggplot(aes(fct_reorder(word, n), n, fill = sentiment)) +
+  geom_col(alpha = 0.9, show.legend = FALSE) +
+  coord_flip() +
+  facet_wrap(~ sentiment, scales = "free") +
+  scale_y_continuous(expand = c(0,0)) +
+  labs(x = NULL, y = "Number of occurrences")
+```
+
+---
+
+background-image: url(figs/p_and_p_cover.png)
+background-size: cover
+
+class: inverse, center, middle
+
+## WHAT IS A DOCUMENT ABOUT? `r emo::ji("thinking")`
+
+---
+
+## What is a document about?
+
+- .large[Term frequency]
+- .large[Inverse document frequency]
+
+$$idf(\text{term}) = \ln{\left(\frac{n_{\text{documents}}}{n_{\text{documents containing term}}}\right)}$$
+
+### tf-idf is about comparing **documents** within a **collection**.
+
+---
+
+## Understanding tf-idf
+
+.large[Make a collection (*corpus*) for yourself! `r emo::ji("nail")`]
+
+```{r}
+full_collection <- gutenberg_download(c(1342, 158, 161, 141),
+                                      meta_fields = "title")
+
+full_collection
+```
+
+---
+
+## Counting word frequencies in your collection
+
+```{r}
+book_words <- full_collection %>%
+  unnest_tokens(word, text) %>%                #<<
+  count(title, word, sort = TRUE)
+
+book_words
+```
+
+---
+
+## Calculating tf-idf
+
+.large[That's... super exciting???]
+
+```{r}
+book_tfidf <- book_words %>%
+  bind_tf_idf(word, title, n)            #<<
+
+book_tfidf
+```
+
+---
+
+## Calculating tf-idf
+
+```{r}
+book_tfidf %>%
+  arrange(-tf_idf)
+```
+
+---
+
+## Calculating tf-idf
+
+```{r, eval = FALSE}
+book_tfidf %>%
+  group_by(title) %>%
+  top_n(10) %>%
+  ungroup %>%
+  ggplot(aes(fct_reorder(word, tf_idf),               #<<
+             tf_idf, 
+             fill = title)) +
+  geom_col(show.legend = FALSE) +
+  coord_flip() +
+  facet_wrap(~title, scales = "free")
+```
+
+---
+
+```{r, echo=FALSE, fig.height=4}
+book_tfidf %>%
+  group_by(title) %>%
+  top_n(10) %>%
+  ungroup %>%
+  ggplot(aes(fct_reorder(word, tf_idf), 
+             tf_idf, 
+             fill = title)) +
+  geom_col(alpha = 0.9, show.legend = FALSE) +
+  coord_flip() +
+  facet_wrap(~title, scales = "free") +
+  scale_y_continuous(expand = c(0,0)) +
+  labs(x = NULL, y = "tf-idf")
+```
+
+---
+
+background-image: url(figs/plot_tf_idf-1.png)
+background-size: 800px
+
+---
+
+## N-grams... and beyond! `r emo::ji("rocket")`
+
+```{r}
+tidy_ngram <- full_text %>%
+  unnest_tokens(bigram, text, token = "ngrams", n = 2)        #<<
+
+tidy_ngram
+```
+
+---
+
+## N-grams... and beyond! `r emo::ji("rocket")`
+
+```{r}
+tidy_ngram %>%
+  count(bigram, sort = TRUE)
+```
+
+---
+
+## N-grams... and beyond! `r emo::ji("rocket")`
+
+```{r}
+tidy_ngram %>%
+  separate(bigram, c("word1", "word2"), sep = " ") %>%         #<<
+  filter(!word1 %in% stop_words$word,
+         !word2 %in% stop_words$word) %>%
+  count(word1, word2, sort = TRUE)
+```
+
+---
+
+background-image: url(figs/p_and_p_cover.png)
+background-size: cover
+
+class: inverse
+
+## What can you do with n-grams?
+
+- .large[tf-idf of n-grams]
+
+--
+
+- .large[network analysis]
+
+--
+
+- .large[negation]
+
+---
+
+background-image: url(figs/austen-1.png)
+background-size: 750px
+
+---
+
+background-image: url(figs/slider.gif)
+background-position: 50% 70%
+
+## What can you do with n-grams?
+
+### [She Giggles, He Gallops](https://pudding.cool/2017/08/screen-direction/)
+
+---
+
+class: left, middle
+
+<img src="figs/blue_jane.png" width="150px"/>
+
+# Thanks!
+
+<a href="http://twitter.com/juliasilge"><i class="fa fa-twitter fa-fw"></i>&nbsp; @juliasilge</a><br>
+<a href="http://github.com/juliasilge"><i class="fa fa-github fa-fw"></i>&nbsp; @juliasilge</a><br>
+<a href="https://juliasilge.com"><i class="fa fa-link fa-fw"></i>&nbsp; juliasilge.com</a><br>
+<a href="https://tidytextmining.com"><i class="fa fa-book fa-fw"></i>&nbsp; tidytextmining.com</a><br>
+<a href="mailto:julia.silge@gmail.com"><i class="fa fa-paper-plane fa-fw"></i>&nbsp; julia.silge@gmail.com</a>
+
+Slides created with [**remark.js**](http://remarkjs.com/) and the R package [**xaringan**](https://github.com/yihui/xaringan)
