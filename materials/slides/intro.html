@@ -1,0 +1,1171 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+  <head>
+    <title>Text Mining</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Julia Silge | rstudio::conf | 27 Jan 2020" />
+    <link href="libs/remark-css/default.css" rel="stylesheet" />
+    <script src="https://use.fontawesome.com/5235085b15.js"></script>
+    <link rel="stylesheet" href="css/xaringan-themer.css" type="text/css" />
+    <link rel="stylesheet" href="css/footer_plus.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+
+
+
+
+layout: true
+
+&lt;div class="my-footer"&gt;&lt;span&gt;bit.ly/silge-rstudioconf-1&lt;/span&gt;&lt;/div&gt; 
+
+---
+
+class: inverse, center, middle
+
+background-image: url(figs/p_and_p_cover.png)
+background-size: cover
+
+
+# Text Mining
+
+&lt;img src="figs/blue_jane.png" width="150px"/&gt;
+
+### USING TIDY PRINCIPLES
+
+.large[Julia Silge | rstudio::conf | 27 Jan 2020]
+
+---
+
+## Let's install some packages
+
+
+```r
+install.packages(c("tidyverse", 
+                   "tidytext", 
+                   "gutenbergr"))
+```
+
+---
+
+class: right, middle
+
+&lt;img src="figs/blue_jane.png" width="150px"/&gt;
+
+# Find me at...
+
+&lt;a href="http://twitter.com/juliasilge"&gt;&lt;i class="fa fa-twitter fa-fw"&gt;&lt;/i&gt;&amp;nbsp; @juliasilge&lt;/a&gt;&lt;br&gt;
+&lt;a href="http://github.com/juliasilge"&gt;&lt;i class="fa fa-github fa-fw"&gt;&lt;/i&gt;&amp;nbsp; @juliasilge&lt;/a&gt;&lt;br&gt;
+&lt;a href="https://juliasilge.com"&gt;&lt;i class="fa fa-link fa-fw"&gt;&lt;/i&gt;&amp;nbsp; juliasilge.com&lt;/a&gt;&lt;br&gt;
+&lt;a href="https://tidytextmining.com"&gt;&lt;i class="fa fa-book fa-fw"&gt;&lt;/i&gt;&amp;nbsp; tidytextmining.com&lt;/a&gt;&lt;br&gt;
+&lt;a href="mailto:julia.silge@gmail.com"&gt;&lt;i class="fa fa-paper-plane fa-fw"&gt;&lt;/i&gt;&amp;nbsp; julia.silge@gmail.com&lt;/a&gt;
+
+---
+
+class: inverse
+
+## Text in the real world
+
+--
+
+- .large[Text data is increasingly important 📚]
+
+--
+
+- .large[NLP training is scarce on the ground 😱]
+
+---
+
+background-image: url(figs/vexing.gif)
+background-position: 50% 50%
+background-size: 650px
+
+---
+
+background-image: url(figs/p_and_p_cover.png)
+background-size: cover
+
+class: inverse, center, middle
+
+# TIDY DATA PRINCIPLES + TEXT MINING = 🎉
+
+---
+
+background-image: url(figs/tidytext_repo.png)
+background-size: 800px
+background-position: 50% 20%
+
+class: bottom, right
+
+.large[[https://github.com/juliasilge/tidytext](https://github.com/juliasilge/tidytext)]
+
+.large[[https://tidytextmining.com/](https://tidytextmining.com/)]
+
+---
+
+background-image: url(figs/cover.png)
+background-size: 450px
+background-position: 50% 50%
+
+---
+
+class: inverse
+
+## Plan for this workshop
+
+--
+
+- .large[EDA for text *today*]
+
+--
+
+- .large[Modeling for text *tomorrow*]
+
+--
+
+- .large[Log in to RStudio Cloud 💻]
+
+--
+
+- .large[Introduce yourself to your neighbors 👋]
+
+---
+
+&lt;img src="figs/purple_emily.png" style="position:absolute;top:20px;right:20px;" width="100px"/&gt;
+
+## What do we mean by tidy text?
+
+
+
+```r
+text &lt;- c("Because I could not stop for Death -",
+          "He kindly stopped for me -",
+          "The Carriage held but just Ourselves -",
+          "and Immortality")
+
+text
+```
+
+```
+## [1] "Because I could not stop for Death -"  
+## [2] "He kindly stopped for me -"            
+## [3] "The Carriage held but just Ourselves -"
+## [4] "and Immortality"
+```
+
+---
+
+&lt;img src="figs/purple_emily.png" style="position:absolute;top:20px;right:20px;" width="100px"/&gt;
+
+## What do we mean by tidy text?
+
+
+```r
+library(tidyverse)
+
+text_df &lt;- tibble(line = 1:4, text = text)
+
+text_df
+```
+
+```
+## # A tibble: 4 x 2
+##    line text                                  
+##   &lt;int&gt; &lt;chr&gt;                                 
+## 1     1 Because I could not stop for Death -  
+## 2     2 He kindly stopped for me -            
+## 3     3 The Carriage held but just Ourselves -
+## 4     4 and Immortality
+```
+
+---
+
+&lt;img src="figs/purple_emily.png" style="position:absolute;top:20px;right:20px;" width="100px"/&gt;
+
+## What do we mean by tidy text?
+
+
+```r
+library(tidytext)
+
+text_df %&gt;%
+* unnest_tokens(word, text)
+```
+
+```
+## # A tibble: 20 x 2
+##     line word       
+##    &lt;int&gt; &lt;chr&gt;      
+##  1     1 because    
+##  2     1 i          
+##  3     1 could      
+##  4     1 not        
+##  5     1 stop       
+##  6     1 for        
+##  7     1 death      
+##  8     2 he         
+##  9     2 kindly     
+## 10     2 stopped    
+## 11     2 for        
+## 12     2 me         
+## 13     3 the        
+## 14     3 carriage   
+## 15     3 held       
+## 16     3 but        
+## 17     3 just       
+## 18     3 ourselves  
+## 19     4 and        
+## 20     4 immortality
+```
+
+---
+
+&lt;img src="figs/blue_jane.png" width="150px"/&gt;
+
+## Jane wants to know...
+
+.large[A tidy text dataset typically has]
+
+- .large[more]
+- .large[fewer]
+
+.large[rows than the original, non-tidy text dataset.]
+
+---
+
+## Gathering more data
+
+.large[You can access the full text of many public domain works from [Project Gutenberg](https://www.gutenberg.org/) using the [gutenbergr](https://ropensci.org/tutorials/gutenbergr_tutorial.html) package.]
+
+
+
+```r
+library(gutenbergr)
+
+full_text &lt;- gutenberg_download(1342)
+```
+
+.large[What book do *you* want to analyze today? 📖 👯‍♂️ 📖]
+
+---
+
+## Time to tidy your text!
+
+
+```r
+tidy_book &lt;- full_text %&gt;%
+  mutate(line = row_number()) %&gt;%
+* unnest_tokens(word, text)
+
+tidy_book
+```
+
+```
+## # A tibble: 122,204 x 3
+##    gutenberg_id  line word     
+##           &lt;int&gt; &lt;int&gt; &lt;chr&gt;    
+##  1         1342     1 pride    
+##  2         1342     1 and      
+##  3         1342     1 prejudice
+##  4         1342     3 by       
+##  5         1342     3 jane     
+##  6         1342     3 austen   
+##  7         1342     7 chapter  
+##  8         1342     7 1        
+##  9         1342    10 it       
+## 10         1342    10 is       
+## # … with 122,194 more rows
+```
+
+---
+
+## What are the most common words?
+
+.large[What do you predict will happen if we run the following code? 🤔]
+
+
+```r
+tidy_book %&gt;%
+  count(word, sort = TRUE)
+```
+
+---
+
+## What are the most common words?
+
+.large[What do you predict will happen if we run the following code? 🤔]
+
+
+```r
+tidy_book %&gt;%
+  count(word, sort = TRUE)
+```
+
+```
+## # A tibble: 6,538 x 2
+##    word      n
+##    &lt;chr&gt; &lt;int&gt;
+##  1 the    4331
+##  2 to     4162
+##  3 of     3610
+##  4 and    3585
+##  5 her    2203
+##  6 i      2065
+##  7 a      1954
+##  8 in     1880
+##  9 was    1843
+## 10 she    1695
+## # … with 6,528 more rows
+```
+
+---
+
+background-image: url(figs/stop.gif)
+background-size: 500px
+background-position: 50% 50%
+
+## Stop words
+
+---
+
+## Stop words
+
+
+```r
+get_stopwords()
+```
+
+```
+## # A tibble: 175 x 2
+##    word      lexicon 
+##    &lt;chr&gt;     &lt;chr&gt;   
+##  1 i         snowball
+##  2 me        snowball
+##  3 my        snowball
+##  4 myself    snowball
+##  5 we        snowball
+##  6 our       snowball
+##  7 ours      snowball
+##  8 ourselves snowball
+##  9 you       snowball
+## 10 your      snowball
+## # … with 165 more rows
+```
+
+---
+
+## Stop words
+
+
+```r
+get_stopwords(language = "es")
+```
+
+```
+## # A tibble: 308 x 2
+##    word  lexicon 
+##    &lt;chr&gt; &lt;chr&gt;   
+##  1 de    snowball
+##  2 la    snowball
+##  3 que   snowball
+##  4 el    snowball
+##  5 en    snowball
+##  6 y     snowball
+##  7 a     snowball
+##  8 los   snowball
+##  9 del   snowball
+## 10 se    snowball
+## # … with 298 more rows
+```
+
+---
+
+## Stop words
+
+
+```r
+get_stopwords(language = "pt")
+```
+
+```
+## # A tibble: 203 x 2
+##    word  lexicon 
+##    &lt;chr&gt; &lt;chr&gt;   
+##  1 de    snowball
+##  2 a     snowball
+##  3 o     snowball
+##  4 que   snowball
+##  5 e     snowball
+##  6 do    snowball
+##  7 da    snowball
+##  8 em    snowball
+##  9 um    snowball
+## 10 para  snowball
+## # … with 193 more rows
+```
+
+---
+
+## Stop words
+
+
+```r
+get_stopwords(source = "smart")
+```
+
+```
+## # A tibble: 571 x 2
+##    word        lexicon
+##    &lt;chr&gt;       &lt;chr&gt;  
+##  1 a           smart  
+##  2 a's         smart  
+##  3 able        smart  
+##  4 about       smart  
+##  5 above       smart  
+##  6 according   smart  
+##  7 accordingly smart  
+##  8 across      smart  
+##  9 actually    smart  
+## 10 after       smart  
+## # … with 561 more rows
+```
+
+---
+
+## What are the most common words?
+
+.large[U N S C R A M B L E]
+
+```
+anti_join(get_stopwords(source = "smart")) %&gt;%
+```
+```
+tidy_book %&gt;%
+```
+```
+count(word, sort = TRUE) %&gt;%
+```
+```
+coord_flip()
+```
+```
+geom_col() +
+```
+```
+top_n(20) %&gt;%
+```
+```
+ggplot(aes(fct_reorder(word, n), n)) +  
+```
+
+---
+
+## What are the most common words?
+
+
+```r
+tidy_book %&gt;%
+  anti_join(get_stopwords(source = "smart")) %&gt;%
+  count(word, sort = TRUE) %&gt;%
+  top_n(20) %&gt;%
+* ggplot(aes(fct_reorder(word, n), n)) +
+  geom_col() +
+  coord_flip()
+```
+
+
+---
+
+![](intro_files/figure-html/unnamed-chunk-14-1.png)&lt;!-- --&gt;
+
+---
+
+background-image: url(figs/tilecounts-1.png)
+background-size: 700px
+
+---
+
+background-image: url(figs/tilerate-1.png)
+background-size: 700px
+
+---
+
+background-image: url(figs/p_and_p_cover.png)
+background-size: cover
+
+class: inverse, center, middle
+
+## SENTIMENT ANALYSIS 😄 😢 😠
+
+---
+
+## Sentiment lexicons
+
+
+```r
+get_sentiments("afinn")
+```
+
+```
+## # A tibble: 2,477 x 2
+##    word       value
+##    &lt;chr&gt;      &lt;dbl&gt;
+##  1 abandon       -2
+##  2 abandoned     -2
+##  3 abandons      -2
+##  4 abducted      -2
+##  5 abduction     -2
+##  6 abductions    -2
+##  7 abhor         -3
+##  8 abhorred      -3
+##  9 abhorrent     -3
+## 10 abhors        -3
+## # … with 2,467 more rows
+```
+
+---
+
+## Sentiment lexicons
+
+
+```r
+get_sentiments("bing")
+```
+
+```
+## # A tibble: 6,786 x 2
+##    word        sentiment
+##    &lt;chr&gt;       &lt;chr&gt;    
+##  1 2-faces     negative 
+##  2 abnormal    negative 
+##  3 abolish     negative 
+##  4 abominable  negative 
+##  5 abominably  negative 
+##  6 abominate   negative 
+##  7 abomination negative 
+##  8 abort       negative 
+##  9 aborted     negative 
+## 10 aborts      negative 
+## # … with 6,776 more rows
+```
+
+---
+
+## Sentiment lexicons
+
+
+
+```r
+get_sentiments("nrc")
+```
+
+```
+## # A tibble: 13,901 x 2
+##    word        sentiment
+##    &lt;chr&gt;       &lt;chr&gt;    
+##  1 abacus      trust    
+##  2 abandon     fear     
+##  3 abandon     negative 
+##  4 abandon     sadness  
+##  5 abandoned   anger    
+##  6 abandoned   fear     
+##  7 abandoned   negative 
+##  8 abandoned   sadness  
+##  9 abandonment anger    
+## 10 abandonment fear     
+## # … with 13,891 more rows
+```
+
+---
+
+## Sentiment lexicons
+
+
+```r
+get_sentiments("loughran")
+```
+
+```
+## # A tibble: 4,150 x 2
+##    word         sentiment
+##    &lt;chr&gt;        &lt;chr&gt;    
+##  1 abandon      negative 
+##  2 abandoned    negative 
+##  3 abandoning   negative 
+##  4 abandonment  negative 
+##  5 abandonments negative 
+##  6 abandons     negative 
+##  7 abdicated    negative 
+##  8 abdicates    negative 
+##  9 abdicating   negative 
+## 10 abdication   negative 
+## # … with 4,140 more rows
+```
+
+---
+
+## Implementing sentiment analysis
+
+
+```r
+tidy_book %&gt;%
+* inner_join(get_sentiments("bing")) %&gt;%
+  count(sentiment, sort = TRUE)
+```
+
+```
+## # A tibble: 2 x 2
+##   sentiment     n
+##   &lt;chr&gt;     &lt;int&gt;
+## 1 positive   5052
+## 2 negative   3652
+```
+
+---
+
+&lt;img src="figs/blue_jane.png" width="150px"/&gt;
+
+## Jane wants to know...
+
+.large[What kind of join is appropriate for sentiment analysis?]
+
+- .large[`anti_join()`]
+- .large[`full_join()`]
+- .large[`outer_join()`]
+- .large[`inner_join()`]
+
+---
+
+## Implementing sentiment analysis
+
+.large[What do you predict will happen if we run the following code? 🤔]
+
+
+```r
+tidy_book %&gt;%
+  inner_join(get_sentiments("bing")) %&gt;%            
+* count(sentiment, word, sort = TRUE)
+```
+
+---
+
+## Implementing sentiment analysis
+
+.large[What do you predict will happen if we run the following code? 🤔]
+
+
+```r
+tidy_book %&gt;%
+  inner_join(get_sentiments("bing")) %&gt;%            
+* count(sentiment, word, sort = TRUE)
+```
+
+```
+## # A tibble: 1,430 x 3
+##    sentiment word         n
+##    &lt;chr&gt;     &lt;chr&gt;    &lt;int&gt;
+##  1 negative  miss       283
+##  2 positive  well       224
+##  3 positive  good       200
+##  4 positive  great      142
+##  5 positive  enough     106
+##  6 positive  better      92
+##  7 positive  love        92
+##  8 positive  pleasure    92
+##  9 positive  happy       83
+## 10 positive  like        77
+## # … with 1,420 more rows
+```
+
+---
+
+## Implementing sentiment analysis
+
+
+```r
+tidy_book %&gt;%
+  inner_join(get_sentiments("bing")) %&gt;%
+  count(sentiment, word, sort = TRUE) %&gt;%
+  group_by(sentiment) %&gt;%
+  top_n(10) %&gt;%
+  ungroup %&gt;%
+* ggplot(aes(fct_reorder(word, n),
+             n, 
+             fill = sentiment)) +
+  geom_col() +
+  coord_flip() +
+  facet_wrap(~ sentiment, scales = "free") 
+```
+
+---
+
+class: middle
+
+![](intro_files/figure-html/unnamed-chunk-23-1.png)&lt;!-- --&gt;
+
+---
+
+background-image: url(figs/p_and_p_cover.png)
+background-size: cover
+
+class: inverse, center, middle
+
+## WHAT IS A DOCUMENT ABOUT? 🤔
+
+---
+
+## What is a document about?
+
+- .large[Term frequency]
+- .large[Inverse document frequency]
+
+`$$idf(\text{term}) = \ln{\left(\frac{n_{\text{documents}}}{n_{\text{documents containing term}}}\right)}$$`
+
+### tf-idf is about comparing **documents** within a **collection**.
+
+---
+
+## Understanding tf-idf
+
+.large[Make a collection (*corpus*) for yourself! 💅]
+
+
+```r
+full_collection &lt;- gutenberg_download(c(1342, 158, 161, 141),
+                                      meta_fields = "title")
+
+full_collection
+```
+
+```
+## # A tibble: 57,238 x 3
+##    gutenberg_id text           title         
+##           &lt;int&gt; &lt;chr&gt;          &lt;chr&gt;         
+##  1          141 MANSFIELD PARK Mansfield Park
+##  2          141 ""             Mansfield Park
+##  3          141 (1814)         Mansfield Park
+##  4          141 ""             Mansfield Park
+##  5          141 ""             Mansfield Park
+##  6          141 By Jane Austen Mansfield Park
+##  7          141 ""             Mansfield Park
+##  8          141 ""             Mansfield Park
+##  9          141 ""             Mansfield Park
+## 10          141 ""             Mansfield Park
+## # … with 57,228 more rows
+```
+
+---
+
+## Counting word frequencies in your collection
+
+
+```r
+book_words &lt;- full_collection %&gt;%
+* unnest_tokens(word, text) %&gt;%
+  count(title, word, sort = TRUE)
+
+book_words
+```
+
+```
+## # A tibble: 28,389 x 3
+##    title               word      n
+##    &lt;chr&gt;               &lt;chr&gt; &lt;int&gt;
+##  1 Mansfield Park      the    6206
+##  2 Mansfield Park      to     5475
+##  3 Mansfield Park      and    5438
+##  4 Emma                to     5239
+##  5 Emma                the    5201
+##  6 Emma                and    4896
+##  7 Mansfield Park      of     4778
+##  8 Pride and Prejudice the    4331
+##  9 Emma                of     4291
+## 10 Pride and Prejudice to     4162
+## # … with 28,379 more rows
+```
+
+---
+
+## Calculating tf-idf
+
+.large[That's... super exciting???]
+
+
+```r
+book_tfidf &lt;- book_words %&gt;%
+* bind_tf_idf(word, title, n)
+
+book_tfidf
+```
+
+```
+## # A tibble: 28,389 x 6
+##    title               word      n     tf   idf tf_idf
+##    &lt;chr&gt;               &lt;chr&gt; &lt;int&gt;  &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt;
+##  1 Mansfield Park      the    6206 0.0387     0      0
+##  2 Mansfield Park      to     5475 0.0341     0      0
+##  3 Mansfield Park      and    5438 0.0339     0      0
+##  4 Emma                to     5239 0.0325     0      0
+##  5 Emma                the    5201 0.0323     0      0
+##  6 Emma                and    4896 0.0304     0      0
+##  7 Mansfield Park      of     4778 0.0298     0      0
+##  8 Pride and Prejudice the    4331 0.0354     0      0
+##  9 Emma                of     4291 0.0267     0      0
+## 10 Pride and Prejudice to     4162 0.0341     0      0
+## # … with 28,379 more rows
+```
+
+---
+
+## Calculating tf-idf
+
+.large[What do you predict will happen if we run the following code? 🤔]
+
+
+```r
+book_tfidf %&gt;%
+  arrange(-tf_idf)
+```
+
+---
+
+## Calculating tf-idf
+
+.large[What do you predict will happen if we run the following code? 🤔]
+
+
+```r
+book_tfidf %&gt;%
+  arrange(-tf_idf)
+```
+
+```
+## # A tibble: 28,389 x 6
+##    title                 word          n      tf   idf  tf_idf
+##    &lt;chr&gt;                 &lt;chr&gt;     &lt;int&gt;   &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt;
+##  1 Sense and Sensibility elinor      623 0.00519 1.39  0.00720
+##  2 Emma                  emma        786 0.00488 1.39  0.00677
+##  3 Sense and Sensibility marianne    492 0.00410 1.39  0.00569
+##  4 Mansfield Park        crawford    493 0.00307 1.39  0.00426
+##  5 Pride and Prejudice   darcy       373 0.00305 1.39  0.00423
+##  6 Mansfield Park        fanny       816 0.00509 0.693 0.00352
+##  7 Pride and Prejudice   elizabeth   597 0.00489 0.693 0.00339
+##  8 Emma                  weston      389 0.00242 1.39  0.00335
+##  9 Pride and Prejudice   bennet      294 0.00241 1.39  0.00334
+## 10 Mansfield Park        edmund      364 0.00227 1.39  0.00314
+## # … with 28,379 more rows
+```
+
+---
+
+## Calculating tf-idf
+
+.large[U N S C R A M B L E]
+
+```
+group_by(title) %&gt;%
+```
+```
+book_tfidf %&gt;%
+```
+```
+top_n(10) %&gt;%
+```
+```
+ggplot(aes(fct_reorder(word, tf_idf), 
+           tf_idf, 
+           fill = title)) +
+```
+```
+facet_wrap(~title, scales = "free")
+```
+```
+ungroup %&gt;%
+```
+```
+geom_col(show.legend = FALSE) +
+```
+```
+coord_flip() +
+```
+---
+
+## Calculating tf-idf
+
+
+```r
+book_tfidf %&gt;%
+  group_by(title) %&gt;%
+  top_n(10) %&gt;%
+  ungroup %&gt;%
+* ggplot(aes(fct_reorder(word, tf_idf),
+             tf_idf, 
+             fill = title)) +
+  geom_col(show.legend = FALSE) +
+  coord_flip() +
+  facet_wrap(~title, scales = "free")
+```
+
+---
+
+![](intro_files/figure-html/unnamed-chunk-30-1.png)&lt;!-- --&gt;
+
+---
+
+background-image: url(figs/plot_tf_idf-1.png)
+background-size: 800px
+
+---
+
+## N-grams... and beyond! 🚀
+
+
+```r
+tidy_ngram &lt;- full_text %&gt;%
+* unnest_tokens(bigram, text, token = "ngrams", n = 2)
+
+tidy_ngram
+```
+
+```
+## # A tibble: 122,203 x 2
+##    gutenberg_id bigram        
+##           &lt;int&gt; &lt;chr&gt;         
+##  1         1342 pride and     
+##  2         1342 and prejudice 
+##  3         1342 prejudice by  
+##  4         1342 by jane       
+##  5         1342 jane austen   
+##  6         1342 austen chapter
+##  7         1342 chapter 1     
+##  8         1342 1 it          
+##  9         1342 it is         
+## 10         1342 is a          
+## # … with 122,193 more rows
+```
+
+---
+
+## N-grams... and beyond! 🚀
+
+
+```r
+tidy_ngram %&gt;%
+  count(bigram, sort = TRUE)
+```
+
+```
+## # A tibble: 54,998 x 2
+##    bigram       n
+##    &lt;chr&gt;    &lt;int&gt;
+##  1 of the     464
+##  2 to be      443
+##  3 in the     382
+##  4 i am       302
+##  5 of her     260
+##  6 to the     252
+##  7 it was     251
+##  8 mr darcy   243
+##  9 of his     234
+## 10 she was    209
+## # … with 54,988 more rows
+```
+
+---
+
+&lt;img src="figs/blue_jane.png" width="150px"/&gt;
+
+## Jane wants to know...
+
+.large[Can we use an `anti_join()` right away to remove stop words?]
+
+- .large[Yes! ✅]
+- .large[No 😭]
+
+---
+
+## N-grams... and beyond! 🚀
+
+
+```r
+tidy_ngram %&gt;%
+* separate(bigram, c("word1", "word2"), sep = " ") %&gt;%
+  filter(!word1 %in% stop_words$word,
+         !word2 %in% stop_words$word) %&gt;%
+  count(word1, word2, sort = TRUE)
+```
+
+```
+## # A tibble: 5,922 x 3
+##    word1   word2           n
+##    &lt;chr&gt;   &lt;chr&gt;       &lt;int&gt;
+##  1 lady    catherine     100
+##  2 miss    bingley        72
+##  3 miss    bennet         60
+##  4 sir     william        38
+##  5 de      bourgh         35
+##  6 miss    darcy          34
+##  7 colonel forster        26
+##  8 colonel fitzwilliam    25
+##  9 cried   elizabeth      24
+## 10 miss    lucas          23
+## # … with 5,912 more rows
+```
+
+---
+
+background-image: url(figs/p_and_p_cover.png)
+background-size: cover
+
+class: inverse
+
+## What can you do with n-grams?
+
+- .large[tf-idf of n-grams]
+
+--
+
+- .large[network analysis]
+
+--
+
+- .large[negation]
+
+---
+
+background-image: url(figs/austen-1.png)
+background-size: 750px
+
+---
+
+background-image: url(figs/slider.gif)
+background-position: 50% 70%
+
+## What can you do with n-grams?
+
+### [She Giggles, He Gallops](https://pudding.cool/2017/08/screen-direction/)
+
+---
+
+class: left, middle
+
+&lt;img src="figs/blue_jane.png" width="150px"/&gt;
+
+# Thanks!
+
+&lt;a href="http://twitter.com/juliasilge"&gt;&lt;i class="fa fa-twitter fa-fw"&gt;&lt;/i&gt;&amp;nbsp; @juliasilge&lt;/a&gt;&lt;br&gt;
+&lt;a href="http://github.com/juliasilge"&gt;&lt;i class="fa fa-github fa-fw"&gt;&lt;/i&gt;&amp;nbsp; @juliasilge&lt;/a&gt;&lt;br&gt;
+&lt;a href="https://juliasilge.com"&gt;&lt;i class="fa fa-link fa-fw"&gt;&lt;/i&gt;&amp;nbsp; juliasilge.com&lt;/a&gt;&lt;br&gt;
+&lt;a href="https://tidytextmining.com"&gt;&lt;i class="fa fa-book fa-fw"&gt;&lt;/i&gt;&amp;nbsp; tidytextmining.com&lt;/a&gt;&lt;br&gt;
+&lt;a href="mailto:julia.silge@gmail.com"&gt;&lt;i class="fa fa-paper-plane fa-fw"&gt;&lt;/i&gt;&amp;nbsp; julia.silge@gmail.com&lt;/a&gt;
+
+Slides created with [**remark.js**](http://remarkjs.com/) and the R package [**xaringan**](https://github.com/yihui/xaringan)
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false,
+"ratio": "16:9"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

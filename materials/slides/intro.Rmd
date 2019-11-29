@@ -108,13 +108,35 @@ class: bottom, right
 
 .large[[https://github.com/juliasilge/tidytext](https://github.com/juliasilge/tidytext)]
 
-.large[[http://tidytextmining.com/](http://tidytextmining.com/)]
+.large[[https://tidytextmining.com/](https://tidytextmining.com/)]
 
 ---
 
 background-image: url(figs/cover.png)
 background-size: 450px
 background-position: 50% 50%
+
+---
+
+class: inverse
+
+## Plan for this workshop
+
+--
+
+- .large[EDA for text *today*]
+
+--
+
+- .large[Modeling for text *tomorrow*]
+
+--
+
+- .large[Log in to RStudio Cloud `r emo::ji("computer")`]
+
+--
+
+- .large[Introduce yourself to your neighbors `r emo::ji("wave")`]
 
 ---
 
@@ -140,7 +162,8 @@ text
 
 ```{r}
 library(tidyverse)
-text_df <- data_frame(line = 1:4, text = text)
+
+text_df <- tibble(line = 1:4, text = text)
 
 text_df
 ```
@@ -157,6 +180,19 @@ library(tidytext)
 text_df %>%
   unnest_tokens(word, text)        #<<
 ```
+
+---
+
+<img src="figs/blue_jane.png" width="150px"/>
+
+## Jane wants to know...
+
+.large[A tidy text dataset typically has]
+
+- .large[more]
+- .large[fewer]
+
+.large[rows than the original, non-tidy text dataset.]
 
 ---
 
@@ -188,6 +224,19 @@ tidy_book
 ---
 
 ## What are the most common words?
+
+.large[What do you predict will happen if we run the following code? `r emo::ji("thinking")`]
+
+```{r, eval=FALSE}
+tidy_book %>%
+  count(word, sort = TRUE)
+```
+
+---
+
+## What are the most common words?
+
+.large[What do you predict will happen if we run the following code? `r emo::ji("thinking")`]
 
 ```{r}
 tidy_book %>%
@@ -238,6 +287,34 @@ get_stopwords(source = "smart")
 
 ## What are the most common words?
 
+.large[U N S C R A M B L E]
+
+```
+anti_join(get_stopwords(source = "smart")) %>%
+```
+```
+tidy_book %>%
+```
+```
+count(word, sort = TRUE) %>%
+```
+```
+coord_flip()
+```
+```
+geom_col() +
+```
+```
+top_n(20) %>%
+```
+```
+ggplot(aes(fct_reorder(word, n), n)) +  
+```
+
+---
+
+## What are the most common words?
+
 ```{r, eval = FALSE}
 tidy_book %>%
   anti_join(get_stopwords(source = "smart")) %>%
@@ -247,6 +324,7 @@ tidy_book %>%
   geom_col() +
   coord_flip()
 ```
+
 
 ---
 
@@ -326,7 +404,34 @@ tidy_book %>%
 
 ---
 
+<img src="figs/blue_jane.png" width="150px"/>
+
+## Jane wants to know...
+
+.large[What kind of join is appropriate for sentiment analysis?]
+
+- .large[`anti_join()`]
+- .large[`full_join()`]
+- .large[`outer_join()`]
+- .large[`inner_join()`]
+
+---
+
 ## Implementing sentiment analysis
+
+.large[What do you predict will happen if we run the following code? `r emo::ji("thinking")`]
+
+```{r, eval=FALSE}
+tidy_book %>%
+  inner_join(get_sentiments("bing")) %>%            
+  count(sentiment, word, sort = TRUE)             #<<
+```
+
+---
+
+## Implementing sentiment analysis
+
+.large[What do you predict will happen if we run the following code? `r emo::ji("thinking")`]
 
 ```{r}
 tidy_book %>%
@@ -434,11 +539,56 @@ book_tfidf
 
 ## Calculating tf-idf
 
+.large[What do you predict will happen if we run the following code? `r emo::ji("thinking")`]
+
+```{r, eval=FALSE}
+book_tfidf %>%
+  arrange(-tf_idf)
+```
+
+---
+
+## Calculating tf-idf
+
+.large[What do you predict will happen if we run the following code? `r emo::ji("thinking")`]
+
 ```{r}
 book_tfidf %>%
   arrange(-tf_idf)
 ```
 
+---
+
+## Calculating tf-idf
+
+.large[U N S C R A M B L E]
+
+```
+group_by(title) %>%
+```
+```
+book_tfidf %>%
+```
+```
+top_n(10) %>%
+```
+```
+ggplot(aes(fct_reorder(word, tf_idf), 
+           tf_idf, 
+           fill = title)) +
+```
+```
+facet_wrap(~title, scales = "free")
+```
+```
+ungroup %>%
+```
+```
+geom_col(show.legend = FALSE) +
+```
+```
+coord_flip() +
+```
 ---
 
 ## Calculating tf-idf
@@ -497,6 +647,17 @@ tidy_ngram
 tidy_ngram %>%
   count(bigram, sort = TRUE)
 ```
+
+---
+
+<img src="figs/blue_jane.png" width="150px"/>
+
+## Jane wants to know...
+
+.large[Can we use an `anti_join()` right away to remove stop words?]
+
+- .large[Yes! `r emo::ji("check")`]
+- .large[No `r emo::ji("sad")`]
 
 ---
 
