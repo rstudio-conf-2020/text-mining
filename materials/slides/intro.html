@@ -133,7 +133,7 @@ class: inverse
 
 &lt;img src="figs/purple_emily.png" style="position:absolute;top:20px;right:20px;" width="100px"/&gt;
 
-## What do we mean by tidy text?
+## **What do we mean by tidy text?**
 
 
 
@@ -155,7 +155,7 @@ text
 
 &lt;img src="figs/purple_emily.png" style="position:absolute;top:20px;right:20px;" width="100px"/&gt;
 
-## What do we mean by tidy text?
+## **What do we mean by tidy text?**
 
 
 ```r
@@ -180,7 +180,7 @@ text_df
 
 &lt;img src="figs/purple_emily.png" style="position:absolute;top:20px;right:20px;" width="100px"/&gt;
 
-## What do we mean by tidy text?
+## **What do we mean by tidy text?**
 
 
 ```r
@@ -231,7 +231,7 @@ text_df %&gt;%
 
 ---
 
-## Gathering more data
+## **Gathering more data**
 
 .large[You can access the full text of many public domain works from [Project Gutenberg](https://www.gutenberg.org/) using the [gutenbergr](https://ropensci.org/tutorials/gutenbergr_tutorial.html) package.]
 
@@ -247,7 +247,7 @@ full_text &lt;- gutenberg_download(1342)
 
 ---
 
-## Time to tidy your text!
+## **Time to tidy your text!**
 
 
 ```r
@@ -277,7 +277,7 @@ tidy_book
 
 ---
 
-## What are the most common words?
+## **What are the most common words?**
 
 .large[What do you predict will happen if we run the following code? 🤔]
 
@@ -289,7 +289,7 @@ tidy_book %&gt;%
 
 ---
 
-## What are the most common words?
+## **What are the most common words?**
 
 .large[What do you predict will happen if we run the following code? 🤔]
 
@@ -322,11 +322,11 @@ background-image: url(figs/stop.gif)
 background-size: 500px
 background-position: 50% 50%
 
-## Stop words
+## **Stop words**
 
 ---
 
-## Stop words
+## **Stop words**
 
 
 ```r
@@ -352,7 +352,7 @@ get_stopwords()
 
 ---
 
-## Stop words
+## **Stop words**
 
 
 ```r
@@ -378,7 +378,7 @@ get_stopwords(language = "es")
 
 ---
 
-## Stop words
+## **Stop words**
 
 
 ```r
@@ -404,7 +404,7 @@ get_stopwords(language = "pt")
 
 ---
 
-## Stop words
+## **Stop words**
 
 
 ```r
@@ -430,7 +430,7 @@ get_stopwords(source = "smart")
 
 ---
 
-## What are the most common words?
+## **What are the most common words?**
 
 .large[U N S C R A M B L E]
 
@@ -458,7 +458,7 @@ ggplot(aes(fct_reorder(word, n), n)) +
 
 ---
 
-## What are the most common words?
+## **What are the most common words?**
 
 
 ```r
@@ -497,7 +497,7 @@ class: inverse, center, middle
 
 ---
 
-## Sentiment lexicons
+## **Sentiment lexicons**
 
 
 ```r
@@ -523,7 +523,7 @@ get_sentiments("afinn")
 
 ---
 
-## Sentiment lexicons
+## **Sentiment lexicons**
 
 
 ```r
@@ -549,7 +549,7 @@ get_sentiments("bing")
 
 ---
 
-## Sentiment lexicons
+## **Sentiment lexicons**
 
 
 
@@ -576,7 +576,7 @@ get_sentiments("nrc")
 
 ---
 
-## Sentiment lexicons
+## **Sentiment lexicons**
 
 
 ```r
@@ -602,7 +602,7 @@ get_sentiments("loughran")
 
 ---
 
-## Implementing sentiment analysis
+## **Implementing sentiment analysis**
 
 
 ```r
@@ -634,7 +634,7 @@ tidy_book %&gt;%
 
 ---
 
-## Implementing sentiment analysis
+## **Implementing sentiment analysis**
 
 .large[What do you predict will happen if we run the following code? 🤔]
 
@@ -647,7 +647,7 @@ tidy_book %&gt;%
 
 ---
 
-## Implementing sentiment analysis
+## **Implementing sentiment analysis**
 
 .large[What do you predict will happen if we run the following code? 🤔]
 
@@ -677,7 +677,7 @@ tidy_book %&gt;%
 
 ---
 
-## Implementing sentiment analysis
+## **Implementing sentiment analysis**
 
 
 ```r
@@ -712,7 +712,7 @@ class: inverse, center, middle
 
 ---
 
-## What is a document about?
+## **What is a document about?**
 
 - .large[Term frequency]
 - .large[Inverse document frequency]
@@ -723,7 +723,7 @@ class: inverse, center, middle
 
 ---
 
-## Understanding tf-idf
+## **Understanding tf-idf**
 
 .large[Make a collection (*corpus*) for yourself! 💅]
 
@@ -754,7 +754,7 @@ full_collection
 
 ---
 
-## Counting word frequencies in your collection
+## **Counting word frequencies in your collection**
 
 
 ```r
@@ -784,7 +784,7 @@ book_words
 
 ---
 
-## Calculating tf-idf
+## **Calculating tf-idf**
 
 .large[That's... super exciting???]
 
@@ -815,7 +815,7 @@ book_tfidf
 
 ---
 
-## Calculating tf-idf
+## **Calculating tf-idf**
 
 .large[What do you predict will happen if we run the following code? 🤔]
 
@@ -827,7 +827,7 @@ book_tfidf %&gt;%
 
 ---
 
-## Calculating tf-idf
+## **Calculating tf-idf**
 
 .large[What do you predict will happen if we run the following code? 🤔]
 
@@ -856,7 +856,7 @@ book_tfidf %&gt;%
 
 ---
 
-## Calculating tf-idf
+## **Calculating tf-idf**
 
 .large[U N S C R A M B L E]
 
@@ -888,7 +888,7 @@ coord_flip() +
 ```
 ---
 
-## Calculating tf-idf
+## **Calculating tf-idf**
 
 
 ```r
@@ -915,7 +915,7 @@ background-size: 800px
 
 ---
 
-## N-grams... and beyond! 🚀
+## **N-grams... and beyond!** 🚀
 
 
 ```r
@@ -944,7 +944,7 @@ tidy_ngram
 
 ---
 
-## N-grams... and beyond! 🚀
+## **N-grams... and beyond!** 🚀
 
 
 ```r
@@ -982,7 +982,7 @@ tidy_ngram %&gt;%
 
 ---
 
-## N-grams... and beyond! 🚀
+## **N-grams... and beyond!** 🚀
 
 
 ```r
@@ -1041,18 +1041,19 @@ background-size: 750px
 background-image: url(figs/slider.gif)
 background-position: 50% 70%
 
-## What can you do with n-grams?
+## **What can you do with n-grams?**
 
 ### [She Giggles, He Gallops](https://pudding.cool/2017/08/screen-direction/)
 
 ---
 
+class: middle
 background-image: url(figs/change_overall-1.svg)
-background-position: 50% 70%
+background-position: 50% 50%
 
 ---
 
-## Let's install some packages
+## **Let's install some packages**
 
 
 ```r
@@ -1063,7 +1064,7 @@ install.packages(c("widyr",
 
 ---
 
-## Network analysis
+## **Network analysis**
 
 
 ```r
@@ -1106,6 +1107,7 @@ bigram_graph
 
 ---
 
+## **Network analysis**
 
 
 ```r
@@ -1117,6 +1119,8 @@ bigram_graph %&gt;%
 ```
 
 ---
+
+## **Network analysis**
 
 
 ```r
