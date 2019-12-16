@@ -147,9 +147,7 @@ text
 ```
 
 ```
-## [1] "Because I could not stop for Death -"  
-## [2] "He kindly stopped for me -"            
-## [3] "The Carriage held but just Ourselves -"
+## [1] "Because I could not stop for Death -"   "He kindly stopped for me -"             "The Carriage held but just Ourselves -"
 ## [4] "and Immortality"
 ```
 
@@ -245,7 +243,7 @@ library(gutenbergr)
 full_text &lt;- gutenberg_download(1342)
 ```
 
-.large[What book do *you* want to analyze today? 📖 👯‍♂️ 📖]
+.large[What book do *you* want to analyze today? 📖 👯 📖]
 
 ---
 
@@ -873,8 +871,8 @@ top_n(10) %&gt;%
 ```
 ```
 ggplot(aes(fct_reorder(word, tf_idf), 
-           tf_idf, 
-           fill = title)) +
+tf_idf, 
+fill = title)) +
 ```
 ```
 facet_wrap(~title, scales = "free")
@@ -980,7 +978,7 @@ tidy_ngram %&gt;%
 .large[Can we use an `anti_join()` right away to remove stop words?]
 
 - .large[Yes! ✅]
-- .large[No 😭]
+- .large[No 😢]
 
 ---
 
@@ -988,11 +986,13 @@ tidy_ngram %&gt;%
 
 
 ```r
-tidy_ngram %&gt;%
+bigram_counts &lt;- tidy_ngram %&gt;%
 * separate(bigram, c("word1", "word2"), sep = " ") %&gt;%
   filter(!word1 %in% stop_words$word,
          !word2 %in% stop_words$word) %&gt;%
   count(word1, word2, sort = TRUE)
+
+bigram_counts
 ```
 
 ```
@@ -1044,6 +1044,99 @@ background-position: 50% 70%
 ## What can you do with n-grams?
 
 ### [She Giggles, He Gallops](https://pudding.cool/2017/08/screen-direction/)
+
+---
+
+background-image: url(figs/change_overall-1.svg)
+background-position: 50% 70%
+
+---
+
+## Let's install some packages
+
+
+```r
+install.packages(c("widyr", 
+                   "igraph", 
+                   "ggraph"))
+```
+
+---
+
+## Network analysis
+
+
+```r
+library(widyr)
+library(igraph)
+library(ggraph)
+
+bigram_graph &lt;- bigram_counts %&gt;%
+  filter(n &gt; 5) %&gt;%
+  graph_from_data_frame()
+
+bigram_graph
+```
+
+```
+## IGRAPH 8f98f8f DN-- 48 45 -- 
+## + attr: name (v/c), n (e/n)
+## + edges from 8f98f8f (vertex names):
+##  [1] lady       -&gt;catherine   miss       -&gt;bingley     miss       -&gt;bennet      sir        -&gt;william     de         -&gt;bourgh     
+##  [6] miss       -&gt;darcy       colonel    -&gt;forster     colonel    -&gt;fitzwilliam cried      -&gt;elizabeth   miss       -&gt;lucas      
+## [11] miss       -&gt;de          thousand   -&gt;pounds      lady       -&gt;lucas       replied    -&gt;elizabeth   lady       -&gt;catherine's
+## [16] dear       -&gt;lizzy       miss       -&gt;bingley's   catherine  -&gt;de          miss       -&gt;elizabeth   ten        -&gt;thousand   
+## [21] dear       -&gt;sir         gracechurch-&gt;street      miss       -&gt;eliza       charlotte  -&gt;lucas       dear       -&gt;aunt       
+## [26] dear       -&gt;jane        elizabeth  -&gt;bennet      elizabeth  -&gt;looked      george     -&gt;wickham     miss       -&gt;bennets    
+## [31] replied    -&gt;jane        william    -&gt;lucas       dear       -&gt;dear        dear       -&gt;lydia       dear       -&gt;miss       
+## [36] dear       -&gt;sister      dearest    -&gt;lizzy       elizabeth's-&gt;mind        half       -&gt;hour        longbourn  -&gt;family     
+## + ... omitted several edges
+```
+
+---
+
+&lt;img src="figs/blue_jane.png" width="150px"/&gt;
+
+## Jane wants to know...
+
+.large[Is `bigram_graph` a tidy dataset?]
+
+- .large[Yes ✅]
+- .large[No 🚫]
+
+---
+
+
+
+```r
+bigram_graph %&gt;%
+  ggraph(layout = "nicely") +
+  geom_edge_link(aes(edge_alpha = n)) +
+  geom_node_text(aes(label = name)) +
+  theme_graph()
+```
+
+---
+
+
+```r
+bigram_graph %&gt;%
+  ggraph(layout = "nicely") +
+  geom_edge_link(aes(edge_alpha = n), 
+                 show.legend = FALSE, 
+                 arrow = arrow(length = unit(1.5, 'mm')), 
+                 start_cap = circle(3, 'mm'),
+                 end_cap = circle(3, 'mm')) +
+  geom_node_text(aes(label = name)) +
+  theme_graph()
+```
+
+---
+
+
+![](intro_files/figure-html/unnamed-chunk-38-1.png)&lt;!-- --&gt;
+
+
 
 ---
 
