@@ -736,7 +736,7 @@ dim(sparse_words)
 ```
 
 ```
-## [1] 15941  1652
+## [1] 15917  1652
 ```
 
 ---
@@ -747,7 +747,7 @@ dim(sparse_words)
 
 .large[Which `dim` of the sparse matrix is the number of features?]
 
-- .large[15941]
+- .large[15917]
 - .large[1652]
 
 .large[Feature = term = word]
@@ -769,7 +769,7 @@ books_joined
 ```
 
 ```
-## # A tibble: 15,941 x 2
+## # A tibble: 15,917 x 2
 ##    document title                
 ##       &lt;int&gt; &lt;chr&gt;                
 ##  1     4532 The War of the Worlds
@@ -782,7 +782,7 @@ books_joined
 ##  8     1487 The War of the Worlds
 ##  9     1639 The War of the Worlds
 ## 10     1698 The War of the Worlds
-## # … with 15,931 more rows
+## # … with 15,907 more rows
 ```
 
 
@@ -865,20 +865,20 @@ classifications
 ```
 
 ```
-## # A tibble: 14,459 x 3
+## # A tibble: 14,506 x 3
 ##    document  score probability
 ##       &lt;int&gt;  &lt;dbl&gt;       &lt;dbl&gt;
-##  1        1 -2.34      0.104  
-##  2        6  3.81      0.982  
-##  3        7 -1.02      0.303  
-##  4        8 -1.19      0.269  
-##  5        9 -0.516     0.419  
-##  6       19  0.303     0.620  
-##  7       21 -7.01      0.00109
-##  8       24 -0.476     0.428  
-##  9       25 -1.58      0.199  
-## 10       26 -0.255     0.483  
-## # … with 14,449 more rows
+##  1        1 -2.24      0.117  
+##  2        6  3.68      0.980  
+##  3        7 -0.964     0.321  
+##  4        8 -2.32      0.109  
+##  5        9 -0.998     0.314  
+##  6       13 -0.217     0.500  
+##  7       15 -5.26      0.00640
+##  8       25 -5.91      0.00337
+##  9       26 -0.123     0.523  
+## 10       27 -3.15      0.0504 
+## # … with 14,496 more rows
 ```
 
 ---
@@ -966,20 +966,20 @@ comment_classes
 ```
 
 ```
-## # A tibble: 14,459 x 4
+## # A tibble: 14,506 x 4
 ##    document  score probability title                
 ##       &lt;int&gt;  &lt;dbl&gt;       &lt;dbl&gt; &lt;fct&gt;                
-##  1        1 -2.34      0.104   The War of the Worlds
-##  2        6  3.81      0.982   The War of the Worlds
-##  3        7 -1.02      0.303   The War of the Worlds
-##  4        8 -1.19      0.269   The War of the Worlds
-##  5        9 -0.516     0.419   The War of the Worlds
-##  6       19  0.303     0.620   The War of the Worlds
-##  7       21 -7.01      0.00109 The War of the Worlds
-##  8       24 -0.476     0.428   The War of the Worlds
-##  9       25 -1.58      0.199   The War of the Worlds
-## 10       26 -0.255     0.483   The War of the Worlds
-## # … with 14,449 more rows
+##  1        1 -2.24      0.117   The War of the Worlds
+##  2        6  3.68      0.980   The War of the Worlds
+##  3        7 -0.964     0.321   The War of the Worlds
+##  4        8 -2.32      0.109   The War of the Worlds
+##  5        9 -0.998     0.314   The War of the Worlds
+##  6       13 -0.217     0.500   The War of the Worlds
+##  7       15 -5.26      0.00640 The War of the Worlds
+##  8       25 -5.91      0.00337 The War of the Worlds
+##  9       26 -0.123     0.523   The War of the Worlds
+## 10       27 -3.15      0.0504  The War of the Worlds
+## # … with 14,496 more rows
 ```
 
 ---
@@ -1022,7 +1022,7 @@ comment_classes %&gt;%
 ## # A tibble: 1 x 3
 ##   .metric .estimator .estimate
 ##   &lt;chr&gt;   &lt;chr&gt;          &lt;dbl&gt;
-## 1 roc_auc binary         0.990
+## 1 roc_auc binary         0.989
 ```
 
 ---
@@ -1056,8 +1056,8 @@ comment_classes %&gt;%
 ```
 ##                        Truth
 ## Prediction              Pride and Prejudice The War of the Worlds
-##   Pride and Prejudice                  9422                   330
-##   The War of the Worlds                 242                  4465
+##   Pride and Prejudice                  9457                   349
+##   The War of the Worlds                 255                  4445
 ```
 
 ---
@@ -1081,18 +1081,18 @@ comment_classes %&gt;%
 
 ```
 ## # A tibble: 10 x 2
-##    probability text                                                                 
-##          &lt;dbl&gt; &lt;chr&gt;                                                                
-##  1       0.828 in.  He proposed, he said, to make his way Londonward, and thence    
-##  2       0.982 "     But who shall dwell in these worlds if they be"                
-##  3       0.924 evening at a music hall.                                             
-##  4       1.000 I cannot but regret, now that I am concluding my story, how little   
-##  5       0.838 raise his voice--I prayed him not to.  He perceived a hold on me--he 
-##  6       0.942 "\"Where's your shells?\" said the first speaker.  \"There ain't no" 
-##  7       0.838 to drink; and I took a hatchet, which promised to be useful in our   
-##  8       0.823 Perrotin of Nice, and then by other observers.  English readers heard
-##  9       0.926 it were some relation of Stent or of the three or four cyclists or   
-## 10       0.960 was not bravery, but circumspection.  My only consolation was to
+##    probability text                                                                    
+##          &lt;dbl&gt; &lt;chr&gt;                                                                   
+##  1       0.963 was not bravery, but circumspection.  My only consolation was to        
+##  2       1.000 She put her hand to her throat--swayed.  I made a step forward, and     
+##  3       0.841 "\"Don't, dear!\" said my wife, knitting her brows and putting her"     
+##  4       0.805 all the worthy vicar was very pluckily holding an early celebration,    
+##  5       0.973 forward every now and then when an opportunity showed itself of doing   
+##  6       0.903 "\"No doubt lots who had money have gone away to France,\" he said.  He"
+##  7       1.000 "\"After all, it may not be so much we may have to learn before--Just"  
+##  8       0.956 mightier they are the more sane and wary should we be.  One of them     
+##  9       0.874 had amused himself by making a grotesque scheme of advertisement        
+## 10       0.969 bad.  And in all those places we shall gather.  Our district will be
 ```
 
 ---
@@ -1116,18 +1116,18 @@ comment_classes %&gt;%
 
 ```
 ## # A tibble: 10 x 2
-##    probability text                                                                    
-##          &lt;dbl&gt; &lt;chr&gt;                                                                   
-##  1    0.226    quite through, in a very close hand. The envelope itself was likewise   
-##  2    0.000367 window that he wore a blue coat, and rode a black horse.                
-##  3    0.0142   similarity in the turn of our minds. We are each of an unsocial,        
-##  4    0.0554   spasms in my side and pains in my head, and such beatings at heart, that
-##  5    0.242    dressing a salad and cucumber.                                          
-##  6    0.243    my belief of the inconsistency of all human characters, and of the      
-##  7    0.244    As we went along, Kitty and I drew up the blinds, and pretended there   
-##  8    0.000986 "\"Oh, lord! I don't know. Not these two or three years, perhaps.\""    
-##  9    0.114    the improvements it was receiving, he was happily employed until the    
-## 10    0.000705 blush. He absolutely started, and for a moment seemed immovable from
+##    probability text                                                                      
+##          &lt;dbl&gt; &lt;chr&gt;                                                                     
+##  1     0.177   and Wickham, and Pratt, and two or three more of the men came in, they    
+##  2     0.00478 the brink of the river for the better inspection of some curious          
+##  3     0.136   of its containing any repetition of those sentiments or renewal of those  
+##  4     0.216   therefore, was very odd! Yet it did, and even a third. It seemed like     
+##  5     0.297   "shall keep mine to swell my song.\""                                     
+##  6     0.0519  blush. He absolutely started, and for a moment seemed immovable from      
+##  7     0.0309  to the edge of the water, and one of its narrowest parts. They crossed    
+##  8     0.00501 tempted, by the pleasantness of the morning, to stop at the gates and     
+##  9     0.264   "\"There certainly was some great mismanagement in the education of those"
+## 10     0.0123  is far from objecting to my occasional absence on a Sunday, provided
 ```
 
 ---
