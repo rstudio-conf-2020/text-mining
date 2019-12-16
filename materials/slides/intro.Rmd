@@ -574,8 +574,8 @@ top_n(10) %>%
 ```
 ```
 ggplot(aes(fct_reorder(word, tf_idf), 
-           tf_idf, 
-           fill = title)) +
+tf_idf, 
+fill = title)) +
 ```
 ```
 facet_wrap(~title, scales = "free")
@@ -664,11 +664,13 @@ tidy_ngram %>%
 ## N-grams... and beyond! `r emo::ji("rocket")`
 
 ```{r}
-tidy_ngram %>%
+bigram_counts <- tidy_ngram %>%
   separate(bigram, c("word1", "word2"), sep = " ") %>%         #<<
   filter(!word1 %in% stop_words$word,
          !word2 %in% stop_words$word) %>%
   count(word1, word2, sort = TRUE)
+
+bigram_counts
 ```
 
 ---
@@ -703,6 +705,92 @@ background-position: 50% 70%
 ## What can you do with n-grams?
 
 ### [She Giggles, He Gallops](https://pudding.cool/2017/08/screen-direction/)
+
+---
+
+background-image: url(figs/change_overall-1.svg)
+background-position: 50% 70%
+
+---
+
+## Let's install some packages
+
+```{r, eval=FALSE}
+install.packages(c("widyr", 
+                   "igraph", 
+                   "ggraph"))
+```
+
+---
+
+## Network analysis
+
+```{r}
+library(widyr)
+library(igraph)
+library(ggraph)
+
+bigram_graph <- bigram_counts %>%
+  filter(n > 5) %>%
+  graph_from_data_frame()
+
+bigram_graph
+```
+
+---
+
+<img src="figs/blue_jane.png" width="150px"/>
+
+## Jane wants to know...
+
+.large[Is `bigram_graph` a tidy dataset?]
+
+- .large[Yes `r emo::ji("check")`]
+- .large[No `r emo::ji("no_entry_sign")`]
+
+---
+
+
+```{r eval = FALSE}
+bigram_graph %>%
+  ggraph(layout = "nicely") +
+  geom_edge_link(aes(edge_alpha = n)) +
+  geom_node_text(aes(label = name)) +
+  theme_graph()
+```
+
+---
+
+```{r eval = FALSE}
+bigram_graph %>%
+  ggraph(layout = "nicely") +
+  geom_edge_link(aes(edge_alpha = n), 
+                 show.legend = FALSE, 
+                 arrow = arrow(length = unit(1.5, 'mm')), 
+                 start_cap = circle(3, 'mm'),
+                 end_cap = circle(3, 'mm')) +
+  geom_node_text(aes(label = name)) +
+  theme_graph()
+```
+
+---
+
+
+```{r echo = FALSE, fig.height=4.5}
+bigram_graph %>%
+  ggraph(layout = "nicely") +
+  geom_edge_link(aes(edge_alpha = n), 
+                 show.legend = FALSE, 
+                 arrow = arrow(length = unit(1.5, 'mm')), 
+                 start_cap = circle(3, 'mm'),
+                 end_cap = circle(3, 'mm')) +
+  geom_node_text(aes(label = name),
+                 size = 2,
+                 family = "RobotoCondensed-Regular") +
+  theme_graph()
+```
+
+
 
 ---
 
