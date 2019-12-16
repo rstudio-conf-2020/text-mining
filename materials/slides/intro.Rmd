@@ -19,7 +19,7 @@ output:
 ```{r setup, include=FALSE}
 options(htmltools.dir.version = FALSE)
 library(knitr)
-knitr::opts_chunk$set(cache = TRUE, warning = FALSE, message = FALSE, dpi = 180)
+knitr::opts_chunk$set(cache = TRUE, warning = FALSE, message = FALSE, dpi = 300)
 library(ggplot2)
 library(silgelib)
 theme_set(theme_roboto())
@@ -789,7 +789,7 @@ bigram_graph %>%
                  start_cap = circle(3.5, 'mm'),
                  end_cap = circle(3.5, 'mm')) +
   geom_node_text(aes(label = name),
-                 size = 3,
+                 size = 3.5,
                  family = "RobotoCondensed-Regular") +
   theme_graph()
 ```
