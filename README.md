@@ -58,25 +58,25 @@ RSTUDIO.CLOUD ACCOUNT, ETC.\]
 
 | Time          | Activity         |
 | :------------ | :--------------- |
-| 09:00 - 10:30 | Session 1        |
+| 09:00 - 10:30 | [Tidying text](https://rstudio-conf-2020.github.io/text-mining/materials/slides/intro.html)        |
 | 10:30 - 11:00 | *Coffee break*   |
-| 11:00 - 12:30 | Session 2        |
+| 11:00 - 12:30 | [Sentiment analysis](https://rstudio-conf-2020.github.io/text-mining/materials/slides/intro.html#34)        |
 | 12:30 - 13:30 | *Lunch break*    |
-| 13:30 - 15:00 | Session 3        |
+| 13:30 - 15:00 | [tf-idf](https://rstudio-conf-2020.github.io/text-mining/materials/slides/intro.html#45)        |
 | 15:00 - 15:30 | *Coffee break*   |
-| 15:30 - 17:00 | Session 4        |
+| 15:30 - 17:00 | [N-grams, and wrap-up!](https://rstudio-conf-2020.github.io/text-mining/materials/slides/intro.html#56)      |
 
 ### Day 2
 
 | Time          | Activity         |
 | :------------ | :--------------- |
-| 09:00 - 10:30 | Session 1        |
-| 10:30 - 11:00 | *Coffee break*   |
-| 11:00 - 12:30 | Session 2        |
-| 12:30 - 13:30 | *Lunch break*    |
-| 13:30 - 15:00 | Session 3        |
-| 15:00 - 15:30 | *Coffee break*   |
-| 15:30 - 17:00 | Session 4        |
+| 09:00 - 10:30 | [Topic modeling](https://rstudio-conf-2020.github.io/text-mining/materials/slides/modeling.html)         |
+| 10:30 - 11:00 | *Coffee break*               |
+| 11:00 - 12:30 | Finish up topic modeling        |
+| 12:30 - 13:30 | *Lunch break*                |
+| 13:30 - 15:00 | [Text classification](https://rstudio-conf-2020.github.io/text-mining/materials/slides/modeling.html#40)    |
+| 15:00 - 15:30 | *Coffee break*               |
+| 15:30 - 17:00 | Finish text classification, and wrap-up! ✨   |
 
 
 ## Instructor
