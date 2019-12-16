@@ -1,0 +1,1272 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+  <head>
+    <title>Text Modeling</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Julia Silge | rstudio::conf | 28 Jan 2020" />
+    <link href="libs/remark-css/default.css" rel="stylesheet" />
+    <script src="https://use.fontawesome.com/5235085b15.js"></script>
+    <link rel="stylesheet" href="css/xaringan-themer.css" type="text/css" />
+    <link rel="stylesheet" href="css/footer_plus.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+
+
+
+
+layout: true
+
+&lt;div class="my-footer"&gt;&lt;span&gt;bit.ly/silge-rstudioconf-2&lt;/span&gt;&lt;/div&gt; 
+
+---
+
+class: inverse, center, middle
+
+background-image: url(figs/p_and_p_cover.png)
+background-size: cover
+
+
+# Text Modeling
+
+&lt;img src="figs/blue_jane.png" width="150px"/&gt;
+
+### USING TIDY PRINCIPLES
+
+.large[Julia Silge | rstudio::conf | 28 Jan 2020]
+
+---
+
+## Let's install some packages
+
+
+```r
+install.packages(c("tidyverse", 
+                   "tidytext",
+                   "gutenbergr",                   
+                   "tidymodels",
+                   "stm",
+                   "glmnet"))
+```
+
+---
+
+class: right, middle
+
+&lt;img src="figs/blue_jane.png" width="150px"/&gt;
+
+# Find me at...
+
+&lt;a href="http://twitter.com/juliasilge"&gt;&lt;i class="fa fa-twitter fa-fw"&gt;&lt;/i&gt;&amp;nbsp; @juliasilge&lt;/a&gt;&lt;br&gt;
+&lt;a href="http://github.com/juliasilge"&gt;&lt;i class="fa fa-github fa-fw"&gt;&lt;/i&gt;&amp;nbsp; @juliasilge&lt;/a&gt;&lt;br&gt;
+&lt;a href="https://juliasilge.com"&gt;&lt;i class="fa fa-link fa-fw"&gt;&lt;/i&gt;&amp;nbsp; juliasilge.com&lt;/a&gt;&lt;br&gt;
+&lt;a href="https://tidytextmining.com"&gt;&lt;i class="fa fa-book fa-fw"&gt;&lt;/i&gt;&amp;nbsp; tidytextmining.com&lt;/a&gt;&lt;br&gt;
+&lt;a href="mailto:julia.silge@gmail.com"&gt;&lt;i class="fa fa-paper-plane fa-fw"&gt;&lt;/i&gt;&amp;nbsp; julia.silge@gmail.com&lt;/a&gt;
+
+---
+
+class: right, inverse, middle
+
+background-image: url(figs/p_and_p_cover.png)
+background-size: cover
+
+# TIDYING AND CASTING 
+
+&lt;h1 class="fa fa-check-circle fa-fw"&gt;&lt;/h1&gt;
+
+---
+
+background-image: url(figs/tmwr_0601.png)
+background-size: 900px
+
+---
+
+class: inverse
+
+background-image: url(figs/p_and_p_cover.png)
+background-size: cover
+
+# Two powerful NLP techniques
+
+--
+
+- .large[Topic modeling]
+
+--
+
+- .large[Text classification]
+
+---
+
+class: inverse
+
+background-image: url(figs/p_and_p_cover.png)
+background-size: cover
+
+# Topic modeling
+
+- .large[Each DOCUMENT = mixture of topics]
+
+--
+
+- .large[Each TOPIC = mixture of words]
+
+---
+
+class: top
+
+background-image: url(figs/top_tags-1.png)
+background-size: 800px
+
+---
+
+class: center, middle, inverse
+
+background-image: url(figs/p_and_p_cover.png)
+background-size: cover
+
+# GREAT LIBRARY HEIST 🕵
+
+---
+
+## **Downloading your text data**
+
+
+```r
+library(tidyverse)
+library(gutenbergr)
+
+titles &lt;- c("Twenty Thousand Leagues under the Sea", 
+            "The War of the Worlds",
+            "Pride and Prejudice", 
+            "Great Expectations")
+
+books &lt;- gutenberg_works(title %in% titles) %&gt;%
+  gutenberg_download(meta_fields = "title")
+```
+
+---
+
+## **Someone has torn your books apart!** 😭
+
+.large[What do you predict will happen if we run the following code? 🤔]
+
+
+```r
+by_chapter &lt;- books %&gt;%
+  group_by(title) %&gt;%
+  mutate(chapter = cumsum(str_detect(text, 
+                                     regex("^chapter ", 
+                                           ignore_case = TRUE)))) %&gt;%
+  ungroup() %&gt;%
+  filter(chapter &gt; 0) %&gt;%
+  unite(document, title, chapter)
+
+glimpse(by_chapter)
+```
+
+---
+
+## **Someone has torn your books apart!** 😭
+
+.large[What do you predict will happen if we run the following code? 🤔]
+
+
+```r
+by_chapter &lt;- books %&gt;%
+  group_by(title) %&gt;%
+  mutate(chapter = cumsum(str_detect(text, 
+                                     regex("^chapter ", 
+                                           ignore_case = TRUE)))) %&gt;%
+  ungroup() %&gt;%
+  filter(chapter &gt; 0) %&gt;%
+  unite(document, title, chapter)
+
+glimpse(by_chapter)
+```
+
+```
+## Observations: 51,602
+## Variables: 3
+## $ gutenberg_id &lt;int&gt; 36, 36, 36, 36, 36, 36, 36, 36, 36, 36, 36, 36, 36, 36, 36, 36, 36, 36, 36, 36, 36, 36, 36, 36, 36, 36, 36, 36, 36, 36, 36, …
+## $ text         &lt;chr&gt; "CHAPTER ONE", "", "THE EVE OF THE WAR", "", "", "No one would have believed in the last years of the nineteenth", "century …
+## $ document     &lt;chr&gt; "The War of the Worlds_1", "The War of the Worlds_1", "The War of the Worlds_1", "The War of the Worlds_1", "The War of the …
+```
+
+---
+
+## **Can we put them back together?**
+
+
+```r
+library(tidytext)
+
+word_counts &lt;- by_chapter %&gt;%
+* unnest_tokens(word, text) %&gt;%
+  anti_join(get_stopwords(source = "smart")) %&gt;%
+  count(document, word, sort = TRUE)
+
+word_counts
+```
+
+```
+## # A tibble: 111,650 x 3
+##    document               word        n
+##    &lt;chr&gt;                  &lt;chr&gt;   &lt;int&gt;
+##  1 Great Expectations_57  joe        88
+##  2 Great Expectations_7   joe        70
+##  3 Pride and Prejudice_18 mr         66
+##  4 Great Expectations_17  biddy      63
+##  5 Great Expectations_27  joe        58
+##  6 Great Expectations_38  estella    58
+##  7 Great Expectations_2   joe        56
+##  8 Great Expectations_23  pocket     53
+##  9 Great Expectations_15  joe        50
+## 10 Great Expectations_18  joe        50
+## # … with 111,640 more rows
+```
+
+---
+
+&lt;img src="figs/blue_jane.png" width="150px"/&gt;
+
+## Jane wants to know...
+
+.large[The dataset `word_counts` contains]
+
+- .large[the counts of words per book]
+- .large[the counts of words per chapter]
+- .large[the counts of words per line]
+
+---
+
+## **Can we put them back together?**
+
+
+```r
+words_sparse &lt;- word_counts %&gt;%
+* cast_sparse(document, word, n)
+
+class(words_sparse)
+```
+
+```
+## [1] "dgCMatrix"
+## attr(,"package")
+## [1] "Matrix"
+```
+
+```r
+dim(words_sparse)
+```
+
+```
+## [1]   193 18360
+```
+
+---
+
+&lt;img src="figs/blue_jane.png" width="150px"/&gt;
+
+## Jane wants to know...
+
+.large[Is `words_sparse` a tidy dataset?]
+
+- .large[Yes ✅]
+- .large[No 🚫]
+
+---
+
+## **Train a topic model**
+
+Use a sparse matrix or a `quanteda::dfm` object as input
+
+
+```r
+library(stm)
+
+topic_model &lt;- stm(words_sparse, K = 4, 
+                   verbose = FALSE, 
+                   init.type = "Spectral")
+
+summary(topic_model)
+```
+
+```
+## A topic model with 4 topics, 193 documents and a 18360 word dictionary.
+```
+
+```
+## Topic 1 Top Words:
+##  	 Highest Prob: mr, elizabeth, mrs, darcy, bennet, miss, jane 
+##  	 FREX: elizabeth, darcy, bennet, bingley, wickham, collins, lydia 
+##  	 Lift: wickham, nephew, phillips, brighton, meryton, bourgh, mend 
+##  	 Score: elizabeth, darcy, bennet, bingley, wickham, jane, lydia 
+## Topic 2 Top Words:
+##  	 Highest Prob: captain, nautilus, sea, nemo, ned, conseil, land 
+##  	 FREX: nautilus, nemo, ned, conseil, canadian, ocean, seas 
+##  	 Lift: vanikoro, indian, d'urville, reefs, scotia, shark's, solidification 
+##  	 Score: nautilus, nemo, ned, conseil, canadian, ocean, captain 
+## Topic 3 Top Words:
+##  	 Highest Prob: mr, joe, miss, time, pip, looked, herbert 
+##  	 FREX: joe, pip, herbert, wemmick, havisham, estella, biddy 
+##  	 Lift: towel, giv, whimple, meantersay, jew, rot, barnard's 
+##  	 Score: joe, wemmick, pip, jaggers, havisham, estella, herbert 
+## Topic 4 Top Words:
+##  	 Highest Prob: people, martians, man, time, black, men, night 
+##  	 FREX: martians, martian, woking, mars, curate, pine, ulla 
+##  	 Lift: martians, mars, curate, shepperton, henderson, hood, ripley 
+##  	 Score: martians, martian, woking, cylinder, curate, ulla, pine
+```
+
+---
+
+## **Exploring the output of topic modeling**
+
+.large[Time for tidying!]
+
+
+```r
+chapter_topics &lt;- tidy(topic_model, matrix = "beta")
+
+chapter_topics
+```
+
+```
+## # A tibble: 73,440 x 3
+##    topic term       beta
+##    &lt;int&gt; &lt;chr&gt;     &lt;dbl&gt;
+##  1     1 joe   8.69e-104
+##  2     2 joe   3.03e-139
+##  3     3 joe   1.21e-  2
+##  4     4 joe   3.28e- 19
+##  5     1 mr    1.90e-  2
+##  6     2 mr    1.91e-  4
+##  7     3 mr    1.22e-  2
+##  8     4 mr    1.15e- 45
+##  9     1 biddy 3.21e- 80
+## 10     2 biddy 3.84e-149
+## # … with 73,430 more rows
+```
+
+---
+
+## **Exploring the output of topic modeling**
+
+.large[U N S C R A M B L E]
+
+```
+top_terms &lt;- chapter_topics %&gt;%
+```
+```
+ungroup() %&gt;%
+```
+```
+group_by(topic) %&gt;%
+```
+```
+arrange(topic, -beta)
+```
+```
+top_n(10, beta) %&gt;%
+```
+
+
+---
+
+## **Exploring the output of topic modeling**
+
+
+```r
+top_terms &lt;- chapter_topics %&gt;%
+  group_by(topic) %&gt;%
+  top_n(10, beta) %&gt;%
+  ungroup() %&gt;%
+  arrange(topic, -beta)
+
+top_terms
+```
+
+```
+## # A tibble: 40 x 3
+##    topic term         beta
+##    &lt;int&gt; &lt;chr&gt;       &lt;dbl&gt;
+##  1     1 mr        0.0190 
+##  2     1 elizabeth 0.0141 
+##  3     1 mrs       0.00886
+##  4     1 darcy     0.00881
+##  5     1 bennet    0.00694
+##  6     1 miss      0.00674
+##  7     1 jane      0.00652
+##  8     1 bingley   0.00607
+##  9     1 time      0.00493
+## 10     1 good      0.00480
+## # … with 30 more rows
+```
+
+---
+## **Exploring the output of topic modeling**
+
+
+```r
+top_terms %&gt;%
+  mutate(term = fct_reorder(term, beta)) %&gt;%
+  ggplot(aes(term, beta, fill = factor(topic))) +
+  geom_col(show.legend = FALSE) +
+  facet_wrap(~ topic, scales = "free") +
+  coord_flip()
+```
+
+---
+
+![](modeling_files/figure-html/unnamed-chunk-11-1.png)&lt;!-- --&gt;
+
+---
+
+## **How are documents classified?**
+
+
+```r
+chapters_gamma &lt;- tidy(topic_model, matrix = "gamma",
+                       document_names = rownames(words_sparse))
+
+chapters_gamma
+```
+
+```
+## # A tibble: 772 x 3
+##    document               topic    gamma
+##    &lt;chr&gt;                  &lt;int&gt;    &lt;dbl&gt;
+##  1 Great Expectations_57      1 0.000792
+##  2 Great Expectations_7       1 0.00340 
+##  3 Pride and Prejudice_18     1 1.000   
+##  4 Great Expectations_17      1 0.0480  
+##  5 Great Expectations_27      1 0.000367
+##  6 Great Expectations_38      1 0.00110 
+##  7 Great Expectations_2       1 0.000531
+##  8 Great Expectations_23      1 0.432   
+##  9 Great Expectations_15      1 0.000565
+## 10 Great Expectations_18      1 0.000277
+## # … with 762 more rows
+```
+
+---
+
+## **How are documents classified?**
+
+.large[What do you predict will happen if we run the following code? 🤔]
+
+
+```r
+chapters_parsed &lt;- chapters_gamma %&gt;%
+  separate(document, c("title", "chapter"), 
+           sep = "_", convert = TRUE)
+
+chapters_parsed
+```
+
+---
+
+## **How are documents classified?**
+
+.large[What do you predict will happen if we run the following code? 🤔]
+
+
+```r
+chapters_parsed &lt;- chapters_gamma %&gt;%
+  separate(document, c("title", "chapter"), 
+           sep = "_", convert = TRUE)
+
+chapters_parsed
+```
+
+```
+## # A tibble: 772 x 4
+##    title               chapter topic    gamma
+##    &lt;chr&gt;                 &lt;int&gt; &lt;int&gt;    &lt;dbl&gt;
+##  1 Great Expectations       57     1 0.000792
+##  2 Great Expectations        7     1 0.00340 
+##  3 Pride and Prejudice      18     1 1.000   
+##  4 Great Expectations       17     1 0.0480  
+##  5 Great Expectations       27     1 0.000367
+##  6 Great Expectations       38     1 0.00110 
+##  7 Great Expectations        2     1 0.000531
+##  8 Great Expectations       23     1 0.432   
+##  9 Great Expectations       15     1 0.000565
+## 10 Great Expectations       18     1 0.000277
+## # … with 762 more rows
+```
+
+---
+
+## **How are documents classified?**
+
+.large[U N S C R A M B L E]
+
+```
+chapters_parsed %&gt;%
+```
+```
+ggplot(aes(factor(topic), gamma)) +
+```
+```
+facet_wrap(~ title)
+```
+```
+mutate(title = fct_reorder(title, gamma * topic)) %&gt;%
+```
+```
+geom_boxplot() +
+```
+
+---
+
+## **How are documents classified?**
+
+
+```r
+chapters_parsed %&gt;%
+  mutate(title = fct_reorder(title, gamma * topic)) %&gt;%
+  ggplot(aes(factor(topic), gamma)) +
+  geom_boxplot() +
+  facet_wrap(~ title)
+```
+
+---
+
+![](modeling_files/figure-html/unnamed-chunk-16-1.png)&lt;!-- --&gt;
+
+---
+
+class: center, middle, inverse
+
+background-image: url(figs/p_and_p_cover.png)
+background-size: cover
+
+# GOING FARTHER 🚀
+
+---
+
+## Tidying model output
+
+### Which words in each document are assigned to which topics?
+
+- .large[`augment()`]
+- .large[Add information to each observation in the original data]
+
+---
+
+background-image: url(figs/stm_video.png)
+background-size: 850px
+
+---
+
+## **Using stm**
+
+- .large[Document-level covariates]
+
+
+```r
+topic_model &lt;- stm(words_sparse, 
+                   K = 0, init.type = "Spectral",
+                   prevalence = ~s(Year),
+                   data = covariates,
+                   verbose = FALSE)
+```
+
+- .large[Use functions for `semanticCoherence()`, `checkResiduals()`, `exclusivity()`, and more!]
+
+- .large[Check out http://www.structuraltopicmodel.com/]
+
+- .large[See [my blog post](https://juliasilge.com/blog/evaluating-stm/) for how to choose `K`, the number of topics]
+
+---
+
+
+background-image: url(figs/model_diagnostic-1.png)
+background-position: 50% 50%
+background-size: 950px
+
+---
+
+# Stemming?
+
+.large[Advice from [Schofield &amp; Mimno](https://mimno.infosci.cornell.edu/papers/schofield_tacl_2016.pdf)]
+
+.large["Comparing Apples to Apple: The Effects of Stemmers on Topic Models"]
+
+---
+
+class: right, middle
+
+&lt;h1 class="fa fa-quote-left fa-fw"&gt;&lt;/h1&gt;
+
+&lt;h2&gt; Despite their frequent use in topic modeling, we find that stemmers produce no meaningful improvement in likelihood and coherence and in fact can degrade topic stability. &lt;/h2&gt;
+
+&lt;h1 class="fa fa-quote-right fa-fw"&gt;&lt;/h1&gt;
+
+---
+
+&lt;img src="figs/blue_jane.png" width="150px"/&gt;
+
+## Jane wants to know...
+
+.large[Topic modeling is an example of...]
+
+- .large[supervised machine learning]
+- .large[unsupervised machine learning]
+
+
+---
+
+class: right, middle, inverse
+
+background-image: url(figs/p_and_p_cover.png)
+background-size: cover
+
+
+# TEXT CLASSIFICATION
+&lt;h1 class="fa fa-balance-scale fa-fw"&gt;&lt;/h1&gt;
+
+---
+
+## **Downloading your text data**
+
+
+```r
+library(tidyverse)
+library(gutenbergr)
+
+titles &lt;- c("The War of the Worlds",
+            "Pride and Prejudice")
+
+books &lt;- gutenberg_works(title %in% titles) %&gt;%
+  gutenberg_download(meta_fields = "title") %&gt;%
+  mutate(document = row_number())
+
+glimpse(books)
+```
+
+```
+## Observations: 19,504
+## Variables: 4
+## $ gutenberg_id &lt;int&gt; 36, 36, 36, 36, 36, 36, 36, 36, 36, 36, 36, 36, 36, 36, 36, 36, 36, 36, 36, 36, 36, 36, 36, 36, 36, 36, 36, 36, 36, 36, 36, …
+## $ text         &lt;chr&gt; "The War of the Worlds", "", "by H. G. Wells [1898]", "", "", "     But who shall dwell in these worlds if they be", "     i…
+## $ title        &lt;chr&gt; "The War of the Worlds", "The War of the Worlds", "The War of the Worlds", "The War of the Worlds", "The War of the Worlds",…
+## $ document     &lt;int&gt; 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 3…
+```
+
+---
+
+## **Making a tidy dataset**
+
+.large[Use this kind of data structure for EDA! 💅]
+
+
+```r
+library(tidytext)
+
+tidy_books &lt;- books %&gt;%
+* unnest_tokens(word, text) %&gt;%
+  group_by(word) %&gt;%
+  filter(n() &gt; 10) %&gt;%
+  ungroup
+
+tidy_books
+```
+
+```
+## # A tibble: 159,707 x 4
+##    gutenberg_id title                 document word 
+##           &lt;int&gt; &lt;chr&gt;                    &lt;int&gt; &lt;chr&gt;
+##  1           36 The War of the Worlds        1 the  
+##  2           36 The War of the Worlds        1 war  
+##  3           36 The War of the Worlds        1 of   
+##  4           36 The War of the Worlds        1 the  
+##  5           36 The War of the Worlds        3 by   
+##  6           36 The War of the Worlds        6 but  
+##  7           36 The War of the Worlds        6 who  
+##  8           36 The War of the Worlds        6 shall
+##  9           36 The War of the Worlds        6 in   
+## 10           36 The War of the Worlds        6 these
+## # … with 159,697 more rows
+```
+
+---
+
+## **Create training and testing sets**
+
+.large[What do you predict will happen if we run the following code? 🤔]
+
+
+```r
+library(rsample)
+
+books_split &lt;- tidy_books %&gt;%
+  select(document) %&gt;%
+  initial_split()
+
+train_data &lt;- training(books_split)
+test_data &lt;- testing(books_split)
+```
+
+
+---
+
+## **Cast to a sparse matrix**
+
+
+```r
+sparse_words &lt;- tidy_books %&gt;%
+  count(document, word, sort = TRUE) %&gt;%
+  inner_join(train_data) %&gt;%
+* cast_sparse(document, word, n)
+
+class(sparse_words)
+```
+
+```
+## [1] "dgCMatrix"
+## attr(,"package")
+## [1] "Matrix"
+```
+
+```r
+dim(sparse_words)
+```
+
+```
+## [1] 15941  1652
+```
+
+---
+
+&lt;img src="figs/blue_jane.png" width="150px"/&gt;
+
+## Jane wants to know...
+
+.large[Which `dim` of the sparse matrix is the number of features?]
+
+- .large[15941]
+- .large[1652]
+
+.large[Feature = term = word]
+
+---
+
+## **Build a dataframe with the response variable**
+
+
+
+```r
+word_rownames &lt;- as.integer(rownames(sparse_words))
+
+books_joined &lt;- tibble(document = word_rownames) %&gt;%
+  left_join(books %&gt;%
+              select(document, title))
+
+books_joined
+```
+
+```
+## # A tibble: 15,941 x 2
+##    document title                
+##       &lt;int&gt; &lt;chr&gt;                
+##  1     4532 The War of the Worlds
+##  2     6450 The War of the Worlds
+##  3    14686 Pride and Prejudice  
+##  4    15669 Pride and Prejudice  
+##  5      308 The War of the Worlds
+##  6     1264 The War of the Worlds
+##  7     1287 The War of the Worlds
+##  8     1487 The War of the Worlds
+##  9     1639 The War of the Worlds
+## 10     1698 The War of the Worlds
+## # … with 15,931 more rows
+```
+
+
+---
+
+## **Train a glmnet model**
+
+
+```r
+library(glmnet)
+library(doMC)
+registerDoMC(cores = 8)
+
+is_jane &lt;- books_joined$title == "Pride and Prejudice"
+
+model &lt;- cv.glmnet(sparse_words, is_jane, 
+                   family = "binomial", 
+                   parallel = TRUE, 
+                   keep = TRUE)
+```
+
+---
+
+## **Tidying our model**
+
+.large[Tidy, then filter to choose some lambda from glmnet output]
+
+
+```r
+library(broom)
+
+coefs &lt;- model$glmnet.fit %&gt;%
+  tidy() %&gt;%
+  filter(lambda == model$lambda.1se)
+
+Intercept &lt;- coefs %&gt;%
+  filter(term == "(Intercept)") %&gt;%
+  pull(estimate)
+```
+
+---
+
+## **Tidying our model**
+
+.large[U N S C R A M B L E]
+
+```
+classifications &lt;- tidy_books %&gt;%
+```
+```
+mutate(probability = plogis(Intercept + score))
+```
+```
+inner_join(test_data) %&gt;%
+```
+```
+group_by(document) %&gt;%
+```
+```
+inner_join(coefs, by = c("word" = "term")) %&gt;%
+```
+```
+summarize(score = sum(estimate)) %&gt;%
+```
+
+---
+
+## **Tidying our model**
+
+
+```r
+classifications &lt;- tidy_books %&gt;%
+  inner_join(test_data) %&gt;%
+  inner_join(coefs, by = c("word" = "term")) %&gt;%
+  group_by(document) %&gt;%
+  summarize(score = sum(estimate)) %&gt;%
+  mutate(probability = plogis(Intercept + score))
+
+classifications
+```
+
+```
+## # A tibble: 14,459 x 3
+##    document  score probability
+##       &lt;int&gt;  &lt;dbl&gt;       &lt;dbl&gt;
+##  1        1 -2.34      0.104  
+##  2        6  3.81      0.982  
+##  3        7 -1.02      0.303  
+##  4        8 -1.19      0.269  
+##  5        9 -0.516     0.419  
+##  6       19  0.303     0.620  
+##  7       21 -7.01      0.00109
+##  8       24 -0.476     0.428  
+##  9       25 -1.58      0.199  
+## 10       26 -0.255     0.483  
+## # … with 14,449 more rows
+```
+
+---
+
+## **Understanding our model**
+
+.large[U N S C R A M B L E]
+
+```
+coefs %&gt;%
+```
+```
+group_by(estimate &gt; 0) %&gt;%
+```
+```
+coord_flip()
+```
+```
+geom_col(show.legend = FALSE) +
+```
+```
+ungroup %&gt;%
+```
+```
+top_n(10, abs(estimate)) %&gt;%
+```
+```
+ggplot(aes(fct_reorder(term, estimate), 
+           estimate, 
+           fill = estimate &gt; 0)) +
+```
+
+---
+
+## **Understanding our model**
+
+
+```r
+coefs %&gt;%
+  group_by(estimate &gt; 0) %&gt;%
+  top_n(10, abs(estimate)) %&gt;%
+  ungroup %&gt;%
+  ggplot(aes(fct_reorder(term, estimate), 
+             estimate, 
+             fill = estimate &gt; 0)) +
+  geom_col(show.legend = FALSE) +
+  coord_flip()
+```
+
+
+---
+
+![](modeling_files/figure-html/unnamed-chunk-27-1.png)&lt;!-- --&gt;
+
+---
+
+## **ROC**
+
+.large[What do you predict will happen if we run the following code? 🤔]
+
+
+```r
+comment_classes &lt;- classifications %&gt;%
+  left_join(books %&gt;%
+              select(title, document), by = "document") %&gt;%
+  mutate(title = as.factor(title))
+
+comment_classes
+```
+
+---
+
+## **ROC**
+
+.large[What do you predict will happen if we run the following code? 🤔]
+
+
+```r
+comment_classes &lt;- classifications %&gt;%
+  left_join(books %&gt;%
+              select(title, document), by = "document") %&gt;%
+  mutate(title = as.factor(title))
+
+comment_classes
+```
+
+```
+## # A tibble: 14,459 x 4
+##    document  score probability title                
+##       &lt;int&gt;  &lt;dbl&gt;       &lt;dbl&gt; &lt;fct&gt;                
+##  1        1 -2.34      0.104   The War of the Worlds
+##  2        6  3.81      0.982   The War of the Worlds
+##  3        7 -1.02      0.303   The War of the Worlds
+##  4        8 -1.19      0.269   The War of the Worlds
+##  5        9 -0.516     0.419   The War of the Worlds
+##  6       19  0.303     0.620   The War of the Worlds
+##  7       21 -7.01      0.00109 The War of the Worlds
+##  8       24 -0.476     0.428   The War of the Worlds
+##  9       25 -1.58      0.199   The War of the Worlds
+## 10       26 -0.255     0.483   The War of the Worlds
+## # … with 14,449 more rows
+```
+
+---
+
+## **ROC**
+
+
+```r
+library(yardstick)
+
+comment_classes %&gt;%
+  roc_curve(title, probability) %&gt;%
+  ggplot(aes(x = 1 - specificity, y = sensitivity)) +
+  geom_line(
+    color = "midnightblue",
+    size = 1.5
+  ) +
+  geom_abline(
+    lty = 2, alpha = 0.5,
+    color = "gray50",
+    size = 1.2
+  )
+```
+
+---
+
+![](modeling_files/figure-html/unnamed-chunk-31-1.png)&lt;!-- --&gt;
+
+---
+
+## **AUC for model**
+
+
+```r
+comment_classes %&gt;%
+  roc_auc(title, probability)
+```
+
+```
+## # A tibble: 1 x 3
+##   .metric .estimator .estimate
+##   &lt;chr&gt;   &lt;chr&gt;          &lt;dbl&gt;
+## 1 roc_auc binary         0.990
+```
+
+---
+
+&lt;img src="figs/blue_jane.png" width="150px"/&gt;
+
+## Jane wants to know...
+
+.large[Is this the AUC for the training or testing data?]
+
+- .large[Training]
+- .large[Testing]
+
+---
+
+## **Confusion matrix**
+
+
+```r
+comment_classes %&gt;%
+  mutate(
+    prediction = case_when(
+      probability &gt; 0.5 ~ "Pride and Prejudice",
+      TRUE ~ "The War of the Worlds"
+    ),
+    prediction = as.factor(prediction)
+  ) %&gt;%
+  conf_mat(title, prediction)
+```
+
+```
+##                        Truth
+## Prediction              Pride and Prejudice The War of the Worlds
+##   Pride and Prejudice                  9422                   330
+##   The War of the Worlds                 242                  4465
+```
+
+---
+
+## **Misclassifications**
+
+Let's talk about misclassifications. Which documents here were incorrectly predicted to be written by Jane Austen?
+
+
+```r
+comment_classes %&gt;%
+  filter(
+*   probability &gt; .8,
+*   title == "The War of the Worlds"
+  ) %&gt;%
+  sample_n(10) %&gt;%
+  inner_join(books %&gt;%
+               select(document, text)) %&gt;%
+  select(probability, text)
+```
+
+```
+## # A tibble: 10 x 2
+##    probability text                                                                 
+##          &lt;dbl&gt; &lt;chr&gt;                                                                
+##  1       0.828 in.  He proposed, he said, to make his way Londonward, and thence    
+##  2       0.982 "     But who shall dwell in these worlds if they be"                
+##  3       0.924 evening at a music hall.                                             
+##  4       1.000 I cannot but regret, now that I am concluding my story, how little   
+##  5       0.838 raise his voice--I prayed him not to.  He perceived a hold on me--he 
+##  6       0.942 "\"Where's your shells?\" said the first speaker.  \"There ain't no" 
+##  7       0.838 to drink; and I took a hatchet, which promised to be useful in our   
+##  8       0.823 Perrotin of Nice, and then by other observers.  English readers heard
+##  9       0.926 it were some relation of Stent or of the three or four cyclists or   
+## 10       0.960 was not bravery, but circumspection.  My only consolation was to
+```
+
+---
+
+## **Misclassifications**
+
+Let's talk about misclassifications. Which documents here were incorrectly predicted to *not* be written by Jane Austen?
+
+
+```r
+comment_classes %&gt;%
+  filter(
+*   probability &lt; .3,
+*   title == "Pride and Prejudice"
+  ) %&gt;%
+  sample_n(10) %&gt;%
+  inner_join(books %&gt;%
+               select(document, text)) %&gt;%
+  select(probability, text)
+```
+
+```
+## # A tibble: 10 x 2
+##    probability text                                                                    
+##          &lt;dbl&gt; &lt;chr&gt;                                                                   
+##  1    0.226    quite through, in a very close hand. The envelope itself was likewise   
+##  2    0.000367 window that he wore a blue coat, and rode a black horse.                
+##  3    0.0142   similarity in the turn of our minds. We are each of an unsocial,        
+##  4    0.0554   spasms in my side and pains in my head, and such beatings at heart, that
+##  5    0.242    dressing a salad and cucumber.                                          
+##  6    0.243    my belief of the inconsistency of all human characters, and of the      
+##  7    0.244    As we went along, Kitty and I drew up the blinds, and pretended there   
+##  8    0.000986 "\"Oh, lord! I don't know. Not these two or three years, perhaps.\""    
+##  9    0.114    the improvements it was receiving, he was happily employed until the    
+## 10    0.000705 blush. He absolutely started, and for a moment seemed immovable from
+```
+
+---
+
+background-image: url(figs/tmwr_0601.png)
+background-position: 50% 70%
+background-size: 750px
+
+## **Workflow for text mining/modeling**
+
+---
+
+background-image: url(figs/lizzieskipping.gif)
+background-position: 50% 55%
+background-size: 750px
+
+# **Go explore real-world text!**
+
+---
+
+class: left, middle
+
+&lt;img src="figs/blue_jane.png" width="150px"/&gt;
+
+# Thanks!
+
+&lt;a href="http://twitter.com/juliasilge"&gt;&lt;i class="fa fa-twitter fa-fw"&gt;&lt;/i&gt;&amp;nbsp; @juliasilge&lt;/a&gt;&lt;br&gt;
+&lt;a href="http://github.com/juliasilge"&gt;&lt;i class="fa fa-github fa-fw"&gt;&lt;/i&gt;&amp;nbsp; @juliasilge&lt;/a&gt;&lt;br&gt;
+&lt;a href="https://juliasilge.com"&gt;&lt;i class="fa fa-link fa-fw"&gt;&lt;/i&gt;&amp;nbsp; juliasilge.com&lt;/a&gt;&lt;br&gt;
+&lt;a href="https://tidytextmining.com"&gt;&lt;i class="fa fa-book fa-fw"&gt;&lt;/i&gt;&amp;nbsp; tidytextmining.com&lt;/a&gt;&lt;br&gt;
+&lt;a href="mailto:julia.silge@gmail.com"&gt;&lt;i class="fa fa-paper-plane fa-fw"&gt;&lt;/i&gt;&amp;nbsp; julia.silge@gmail.com&lt;/a&gt;
+
+Slides created with [**remark.js**](http://remarkjs.com/) and the R package [**xaringan**](https://github.com/yihui/xaringan)
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false,
+"ratio": "16:9"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

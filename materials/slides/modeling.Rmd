@@ -27,7 +27,7 @@ theme_set(theme_roboto())
 
 layout: true
 
-<div class="my-footer"><span>bit.ly/silge-sdss-2</span></div> 
+<div class="my-footer"><span>bit.ly/silge-rstudioconf-2</span></div> 
 
 ---
 
@@ -51,11 +51,11 @@ background-size: cover
 
 ```{r, eval=FALSE}
 install.packages(c("tidyverse", 
-                   "tidytext", 
-                   "gutenbergr",
+                   "tidytext",
+                   "gutenbergr",                   
+                   "tidymodels",
                    "stm",
-                   "glmnet",
-                   "yardstick"))
+                   "glmnet"))
 ```
 
 ---
@@ -151,14 +151,32 @@ titles <- c("Twenty Thousand Leagues under the Sea",
 
 books <- gutenberg_works(title %in% titles) %>%
   gutenberg_download(meta_fields = "title")
-
-books
 ```
 
 ---
 
 ## **Someone has torn your books apart!** `r emo::ji("sob")`
 
+.large[What do you predict will happen if we run the following code? `r emo::ji("thinking")`]
+
+```{r eval = FALSE}
+by_chapter <- books %>%
+  group_by(title) %>%
+  mutate(chapter = cumsum(str_detect(text, 
+                                     regex("^chapter ", 
+                                           ignore_case = TRUE)))) %>%
+  ungroup() %>%
+  filter(chapter > 0) %>%
+  unite(document, title, chapter)
+
+glimpse(by_chapter)
+```
+
+---
+
+## **Someone has torn your books apart!** `r emo::ji("sob")`
+
+.large[What do you predict will happen if we run the following code? `r emo::ji("thinking")`]
 
 ```{r}
 by_chapter <- books %>%
@@ -170,7 +188,7 @@ by_chapter <- books %>%
   filter(chapter > 0) %>%
   unite(document, title, chapter)
 
-by_chapter
+glimpse(by_chapter)
 ```
 
 ---
@@ -191,6 +209,18 @@ word_counts
 
 ---
 
+<img src="figs/blue_jane.png" width="150px"/>
+
+## Jane wants to know...
+
+.large[The dataset `word_counts` contains]
+
+- .large[the counts of words per book]
+- .large[the counts of words per chapter]
+- .large[the counts of words per line]
+
+---
+
 ## **Can we put them back together?**
 
 ```{r}
@@ -198,7 +228,20 @@ words_sparse <- word_counts %>%
   cast_sparse(document, word, n)         #<<
 
 class(words_sparse)
+
+dim(words_sparse)
 ```
+
+---
+
+<img src="figs/blue_jane.png" width="150px"/>
+
+## Jane wants to know...
+
+.large[Is `words_sparse` a tidy dataset?]
+
+- .large[Yes `r emo::ji("check")`]
+- .large[No `r emo::ji("no_entry_sign")`]
 
 ---
 
@@ -210,7 +253,8 @@ Use a sparse matrix or a `quanteda::dfm` object as input
 library(stm)
 
 topic_model <- stm(words_sparse, K = 4, 
-                   verbose = FALSE, init.type = "Spectral")
+                   verbose = FALSE, 
+                   init.type = "Spectral")
 
 summary(topic_model)
 ```
@@ -226,6 +270,29 @@ chapter_topics <- tidy(topic_model, matrix = "beta")
 
 chapter_topics
 ```
+
+---
+
+## **Exploring the output of topic modeling**
+
+.large[U N S C R A M B L E]
+
+```
+top_terms <- chapter_topics %>%
+```
+```
+ungroup() %>%
+```
+```
+group_by(topic) %>%
+```
+```
+arrange(topic, -beta)
+```
+```
+top_n(10, beta) %>%
+```
+
 
 ---
 
@@ -281,12 +348,50 @@ chapters_gamma
 
 ## **How are documents classified?**
 
+.large[What do you predict will happen if we run the following code? `r emo::ji("thinking")`]
+
+```{r eval=FALSE}
+chapters_parsed <- chapters_gamma %>%
+  separate(document, c("title", "chapter"), 
+           sep = "_", convert = TRUE)
+
+chapters_parsed
+```
+
+---
+
+## **How are documents classified?**
+
+.large[What do you predict will happen if we run the following code? `r emo::ji("thinking")`]
+
 ```{r}
 chapters_parsed <- chapters_gamma %>%
   separate(document, c("title", "chapter"), 
            sep = "_", convert = TRUE)
 
 chapters_parsed
+```
+
+---
+
+## **How are documents classified?**
+
+.large[U N S C R A M B L E]
+
+```
+chapters_parsed %>%
+```
+```
+ggplot(aes(factor(topic), gamma)) +
+```
+```
+facet_wrap(~ title)
+```
+```
+mutate(title = fct_reorder(title, gamma * topic)) %>%
+```
+```
+geom_boxplot() +
 ```
 
 ---
@@ -342,7 +447,8 @@ background-size: 850px
 - .large[Document-level covariates]
 
 ```{r, eval=FALSE}
-topic_model <- stm(words_sparse, K = 0, init.type = "Spectral",
+topic_model <- stm(words_sparse, 
+                   K = 0, init.type = "Spectral",
                    prevalence = ~s(Year),
                    data = covariates,
                    verbose = FALSE)
@@ -381,6 +487,18 @@ class: right, middle
 
 ---
 
+<img src="figs/blue_jane.png" width="150px"/>
+
+## Jane wants to know...
+
+.large[Topic modeling is an example of...]
+
+- .large[supervised machine learning]
+- .large[unsupervised machine learning]
+
+
+---
+
 class: right, middle, inverse
 
 background-image: url(figs/p_and_p_cover.png)
@@ -405,7 +523,7 @@ books <- gutenberg_works(title %in% titles) %>%
   gutenberg_download(meta_fields = "title") %>%
   mutate(document = row_number())
 
-books
+glimpse(books)
 ```
 
 ---
@@ -428,19 +546,65 @@ tidy_books
 
 ---
 
-## **Cast to a sparse matrix**
+## **Create training and testing sets**
 
-.large[And build a dataframe with a response variable]
+.large[What do you predict will happen if we run the following code? `r emo::ji("thinking")`]
+
+```{r}
+library(rsample)
+
+books_split <- tidy_books %>%
+  select(document) %>%
+  initial_split()
+
+train_data <- training(books_split)
+test_data <- testing(books_split)
+```
+
+
+---
+
+## **Cast to a sparse matrix**
 
 ```{r}
 sparse_words <- tidy_books %>%
   count(document, word, sort = TRUE) %>%
+  inner_join(train_data) %>%
   cast_sparse(document, word, n)               #<<
 
-books_joined <- tibble(document = as.integer(rownames(sparse_words))) %>%
+class(sparse_words)
+
+dim(sparse_words)
+```
+
+---
+
+<img src="figs/blue_jane.png" width="150px"/>
+
+## Jane wants to know...
+
+.large[Which `dim` of the sparse matrix is the number of features?]
+
+- .large[`r dim(sparse_words)[1]`]
+- .large[`r dim(sparse_words)[2]`]
+
+.large[Feature = term = word]
+
+---
+
+## **Build a dataframe with the response variable**
+
+
+```{r}
+word_rownames <- as.integer(rownames(sparse_words))
+
+books_joined <- tibble(document = word_rownames) %>%
   left_join(books %>%
               select(document, title))
+
+books_joined
 ```
+
 
 ---
 
@@ -453,8 +617,10 @@ registerDoMC(cores = 8)
 
 is_jane <- books_joined$title == "Pride and Prejudice"
 
-model <- cv.glmnet(sparse_words, is_jane, family = "binomial", 
-                   parallel = TRUE, keep = TRUE)
+model <- cv.glmnet(sparse_words, is_jane, 
+                   family = "binomial", 
+                   parallel = TRUE, 
+                   keep = TRUE)
 
 ```
 
@@ -480,14 +646,70 @@ Intercept <- coefs %>%
 
 ## **Tidying our model**
 
+.large[U N S C R A M B L E]
+
+```
+classifications <- tidy_books %>%
+```
+```
+mutate(probability = plogis(Intercept + score))
+```
+```
+inner_join(test_data) %>%
+```
+```
+group_by(document) %>%
+```
+```
+inner_join(coefs, by = c("word" = "term")) %>%
+```
+```
+summarize(score = sum(estimate)) %>%
+```
+
+---
+
+## **Tidying our model**
+
 ```{r}
 classifications <- tidy_books %>%
+  inner_join(test_data) %>%
   inner_join(coefs, by = c("word" = "term")) %>%
   group_by(document) %>%
   summarize(score = sum(estimate)) %>%
   mutate(probability = plogis(Intercept + score))
 
 classifications
+```
+
+---
+
+## **Understanding our model**
+
+.large[U N S C R A M B L E]
+
+```
+coefs %>%
+```
+```
+group_by(estimate > 0) %>%
+```
+```
+coord_flip()
+```
+```
+geom_col(show.legend = FALSE) +
+```
+```
+ungroup %>%
+```
+```
+top_n(10, abs(estimate)) %>%
+```
+```
+ggplot(aes(fct_reorder(term, estimate), 
+           estimate, 
+           fill = estimate > 0)) +
 ```
 
 ---
@@ -505,6 +727,7 @@ coefs %>%
   geom_col(show.legend = FALSE) +
   coord_flip()
 ```
+
 
 ---
 
@@ -525,13 +748,30 @@ coefs %>%
 
 ## **ROC**
 
-```{r}
-library(yardstick)
+.large[What do you predict will happen if we run the following code? `r emo::ji("thinking")`]
 
+```{r eval=FALSE}
 comment_classes <- classifications %>%
   left_join(books %>%
-    select(title, document), by = "document") %>%
+              select(title, document), by = "document") %>%
   mutate(title = as.factor(title))
+
+comment_classes
+```
+
+---
+
+## **ROC**
+
+.large[What do you predict will happen if we run the following code? `r emo::ji("thinking")`]
+
+```{r}
+comment_classes <- classifications %>%
+  left_join(books %>%
+              select(title, document), by = "document") %>%
+  mutate(title = as.factor(title))
+
+comment_classes
 ```
 
 ---
@@ -539,6 +779,8 @@ comment_classes <- classifications %>%
 ## **ROC**
 
 ```{r eval=FALSE}
+library(yardstick)
+
 comment_classes %>%
   roc_curve(title, probability) %>%
   ggplot(aes(x = 1 - specificity, y = sensitivity)) +
@@ -556,6 +798,8 @@ comment_classes %>%
 ---
 
 ```{r, echo = FALSE, fig.height=4}
+library(yardstick)
+
 comment_classes %>%
   roc_curve(title, probability) %>%
   ggplot(aes(x = 1 - specificity, y = sensitivity)) +
@@ -581,6 +825,17 @@ comment_classes %>%
 comment_classes %>%
   roc_auc(title, probability)
 ```
+
+---
+
+<img src="figs/blue_jane.png" width="150px"/>
+
+## Jane wants to know...
+
+.large[Is this the AUC for the training or testing data?]
+
+- .large[Training]
+- .large[Testing]
 
 ---
 
@@ -612,7 +867,7 @@ comment_classes %>%
   ) %>%
   sample_n(10) %>%
   inner_join(books %>%
-    select(document, text)) %>%
+               select(document, text)) %>%
   select(probability, text)
 ```
 
@@ -630,7 +885,7 @@ comment_classes %>%
   ) %>%
   sample_n(10) %>%
   inner_join(books %>%
-    select(document, text)) %>%
+               select(document, text)) %>%
   select(probability, text)
 ```
 
