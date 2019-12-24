@@ -118,7 +118,7 @@ background-size: cover
 
 --
 
-- .large[Each TOPIC = mixture of words]
+- .large[Each TOPIC = mixture of tokens]
 
 ---
 
@@ -275,7 +275,7 @@ chapter_topics
 
 ## **Exploring the output of topic modeling**
 
-.large[U N S C R A M B L E]
+.unscramble[U N S C R A M B L E]
 
 ```
 top_terms <- chapter_topics %>%
@@ -376,7 +376,7 @@ chapters_parsed
 
 ## **How are documents classified?**
 
-.large[U N S C R A M B L E]
+.unscramble[U N S C R A M B L E]
 
 ```
 chapters_parsed %>%
@@ -646,7 +646,7 @@ Intercept <- coefs %>%
 
 ## **Tidying our model**
 
-.large[U N S C R A M B L E]
+.unscramble[U N S C R A M B L E]
 
 ```
 classifications <- tidy_books %>%
@@ -686,7 +686,7 @@ classifications
 
 ## **Understanding our model**
 
-.large[U N S C R A M B L E]
+.unscramble[U N S C R A M B L E]
 
 ```
 coefs %>%
