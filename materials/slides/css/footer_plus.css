@@ -1,5 +1,11 @@
 .large { font-size: 160% }
 
+.unscramble { 
+  font-size: 180%;
+  font-weight: bold;
+  color: #09017F80;
+}
+
 .title-slide {
   background-image: url(../figs/p_and_p_cover.png);
   background-size: cover;

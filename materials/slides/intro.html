@@ -143,12 +143,11 @@ text &lt;- c("Because I could not stop for Death -",
           "The Carriage held but just Ourselves -",
           "and Immortality")
 
-text
+glimpse(text)
 ```
 
 ```
-## [1] "Because I could not stop for Death -"   "He kindly stopped for me -"             "The Carriage held but just Ourselves -"
-## [4] "and Immortality"
+##  chr [1:4] "Because I could not stop for Death -" "He kindly stopped for me -" "The Carriage held but just Ourselves -" "and Immortality"
 ```
 
 ---
@@ -224,8 +223,8 @@ text_df %&gt;%
 
 .large[A tidy text dataset typically has]
 
-- .large[more]
-- .large[fewer]
+- .unscramble[more]
+- .unscramble[fewer]
 
 .large[rows than the original, non-tidy text dataset.]
 
@@ -432,7 +431,7 @@ get_stopwords(source = "smart")
 
 ## **What are the most common words?**
 
-.large[U N S C R A M B L E]
+.unscramble[U N S C R A M B L E]
 
 ```
 anti_join(get_stopwords(source = "smart")) %&gt;%
@@ -858,7 +857,7 @@ book_tfidf %&gt;%
 
 ## **Calculating tf-idf**
 
-.large[U N S C R A M B L E]
+.unscramble[U N S C R A M B L E]
 
 ```
 group_by(title) %&gt;%
