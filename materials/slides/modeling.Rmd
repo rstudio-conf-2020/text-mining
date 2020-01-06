@@ -17,7 +17,8 @@ output:
 ---
 
 ```{r setup, include=FALSE}
-options(htmltools.dir.version = FALSE)
+options(htmltools.dir.version = FALSE,
+        width = 80)
 library(knitr)
 knitr::opts_chunk$set(cache = TRUE, warning = FALSE, message = FALSE, dpi = 300)
 library(ggplot2)
@@ -493,8 +494,8 @@ class: right, middle
 
 .large[Topic modeling is an example of...]
 
-- .large[supervised machine learning]
-- .large[unsupervised machine learning]
+- .unscramble[supervised machine learning]
+- .unscramble[unsupervised machine learning]
 
 
 ---

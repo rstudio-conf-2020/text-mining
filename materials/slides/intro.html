@@ -143,11 +143,14 @@ text &lt;- c("Because I could not stop for Death -",
           "The Carriage held but just Ourselves -",
           "and Immortality")
 
-glimpse(text)
+text
 ```
 
 ```
-##  chr [1:4] "Because I could not stop for Death -" "He kindly stopped for me -" "The Carriage held but just Ourselves -" "and Immortality"
+## [1] "Because I could not stop for Death -"  
+## [2] "He kindly stopped for me -"            
+## [3] "The Carriage held but just Ourselves -"
+## [4] "and Immortality"
 ```
 
 ---
@@ -242,7 +245,7 @@ library(gutenbergr)
 full_text &lt;- gutenberg_download(1342)
 ```
 
-.large[What book do *you* want to analyze today? 📖 👯‍♀️ 📖]
+.large[What book do *you* want to analyze today? 📖 👯 📖]
 
 ---
 
@@ -977,7 +980,7 @@ tidy_ngram %&gt;%
 .large[Can we use an `anti_join()` right away to remove stop words?]
 
 - .large[Yes! ✅]
-- .large[No 🙍]
+- .large[No 😿]
 
 ---
 
@@ -1079,17 +1082,17 @@ bigram_graph
 ```
 
 ```
-## IGRAPH f82f914 DN-- 48 45 -- 
+## IGRAPH 72e7171 DN-- 48 45 -- 
 ## + attr: name (v/c), n (e/n)
-## + edges from f82f914 (vertex names):
-##  [1] lady       -&gt;catherine   miss       -&gt;bingley     miss       -&gt;bennet      sir        -&gt;william     de         -&gt;bourgh     
-##  [6] miss       -&gt;darcy       colonel    -&gt;forster     colonel    -&gt;fitzwilliam cried      -&gt;elizabeth   miss       -&gt;lucas      
-## [11] miss       -&gt;de          thousand   -&gt;pounds      lady       -&gt;lucas       replied    -&gt;elizabeth   lady       -&gt;catherine's
-## [16] dear       -&gt;lizzy       miss       -&gt;bingley's   catherine  -&gt;de          miss       -&gt;elizabeth   ten        -&gt;thousand   
-## [21] dear       -&gt;sir         gracechurch-&gt;street      miss       -&gt;eliza       charlotte  -&gt;lucas       dear       -&gt;aunt       
-## [26] dear       -&gt;jane        elizabeth  -&gt;bennet      elizabeth  -&gt;looked      george     -&gt;wickham     miss       -&gt;bennets    
-## [31] replied    -&gt;jane        william    -&gt;lucas       dear       -&gt;dear        dear       -&gt;lydia       dear       -&gt;miss       
-## [36] dear       -&gt;sister      dearest    -&gt;lizzy       elizabeth's-&gt;mind        half       -&gt;hour        longbourn  -&gt;family     
+## + edges from 72e7171 (vertex names):
+##  [1] lady       -&gt;catherine   miss       -&gt;bingley     miss       -&gt;bennet     
+##  [4] sir        -&gt;william     de         -&gt;bourgh      miss       -&gt;darcy      
+##  [7] colonel    -&gt;forster     colonel    -&gt;fitzwilliam cried      -&gt;elizabeth  
+## [10] miss       -&gt;lucas       miss       -&gt;de          thousand   -&gt;pounds     
+## [13] lady       -&gt;lucas       replied    -&gt;elizabeth   lady       -&gt;catherine's
+## [16] dear       -&gt;lizzy       miss       -&gt;bingley's   catherine  -&gt;de         
+## [19] miss       -&gt;elizabeth   ten        -&gt;thousand    dear       -&gt;sir        
+## [22] gracechurch-&gt;street      miss       -&gt;eliza       charlotte  -&gt;lucas      
 ## + ... omitted several edges
 ```
 
