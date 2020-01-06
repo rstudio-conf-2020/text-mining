@@ -125,7 +125,7 @@ class: center, middle, inverse
 background-image: url(figs/p_and_p_cover.png)
 background-size: cover
 
-# GREAT LIBRARY HEIST 🕵️‍♀️
+# GREAT LIBRARY HEIST 🕵️‍♂️
 
 ---
 
@@ -188,9 +188,9 @@ glimpse(by_chapter)
 ```
 ## Observations: 51,602
 ## Variables: 3
-## $ gutenberg_id &lt;int&gt; 36, 36, 36, 36, 36, 36, 36, 36, 36, 36, 36, 36, 36, 36, 36, 36, 36, 36, 36, 36, 36, 36, 36, 36, 36, 36, 36, 36, 36, 36, 36, …
-## $ text         &lt;chr&gt; "CHAPTER ONE", "", "THE EVE OF THE WAR", "", "", "No one would have believed in the last years of the nineteenth", "century …
-## $ document     &lt;chr&gt; "The War of the Worlds_1", "The War of the Worlds_1", "The War of the Worlds_1", "The War of the Worlds_1", "The War of the …
+## $ gutenberg_id &lt;int&gt; 36, 36, 36, 36, 36, 36, 36, 36, 36, 36, 36, 36, 36, 36, …
+## $ text         &lt;chr&gt; "CHAPTER ONE", "", "THE EVE OF THE WAR", "", "", "No one…
+## $ document     &lt;chr&gt; "The War of the Worlds_1", "The War of the Worlds_1", "T…
 ```
 
 ---
@@ -613,8 +613,8 @@ class: right, middle
 
 .large[Topic modeling is an example of...]
 
-- .large[supervised machine learning]
-- .large[unsupervised machine learning]
+- .unscramble[supervised machine learning]
+- .unscramble[unsupervised machine learning]
 
 
 ---
@@ -650,10 +650,10 @@ glimpse(books)
 ```
 ## Observations: 19,504
 ## Variables: 4
-## $ gutenberg_id &lt;int&gt; 36, 36, 36, 36, 36, 36, 36, 36, 36, 36, 36, 36, 36, 36, 36, 36, 36, 36, 36, 36, 36, 36, 36, 36, 36, 36, 36, 36, 36, 36, 36, …
-## $ text         &lt;chr&gt; "The War of the Worlds", "", "by H. G. Wells [1898]", "", "", "     But who shall dwell in these worlds if they be", "     i…
-## $ title        &lt;chr&gt; "The War of the Worlds", "The War of the Worlds", "The War of the Worlds", "The War of the Worlds", "The War of the Worlds",…
-## $ document     &lt;int&gt; 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 3…
+## $ gutenberg_id &lt;int&gt; 36, 36, 36, 36, 36, 36, 36, 36, 36, 36, 36, 36, 36, 36, …
+## $ text         &lt;chr&gt; "The War of the Worlds", "", "by H. G. Wells [1898]", ""…
+## $ title        &lt;chr&gt; "The War of the Worlds", "The War of the Worlds", "The W…
+## $ document     &lt;int&gt; 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 1…
 ```
 
 ---
@@ -736,7 +736,7 @@ dim(sparse_words)
 ```
 
 ```
-## [1] 15913  1652
+## [1] 15928  1652
 ```
 
 ---
@@ -747,7 +747,7 @@ dim(sparse_words)
 
 .large[Which `dim` of the sparse matrix is the number of features?]
 
-- .large[15913]
+- .large[15928]
 - .large[1652]
 
 .large[Feature = term = word]
@@ -769,7 +769,7 @@ books_joined
 ```
 
 ```
-## # A tibble: 15,913 x 2
+## # A tibble: 15,928 x 2
 ##    document title                
 ##       &lt;int&gt; &lt;chr&gt;                
 ##  1     4532 The War of the Worlds
@@ -782,7 +782,7 @@ books_joined
 ##  8     1487 The War of the Worlds
 ##  9     1639 The War of the Worlds
 ## 10     1698 The War of the Worlds
-## # … with 15,903 more rows
+## # … with 15,918 more rows
 ```
 
 
@@ -865,20 +865,20 @@ classifications
 ```
 
 ```
-## # A tibble: 14,440 x 3
+## # A tibble: 14,483 x 3
 ##    document  score probability
 ##       &lt;int&gt;  &lt;dbl&gt;       &lt;dbl&gt;
-##  1        6  5.72      0.997  
-##  2        7 -1.95      0.152  
-##  3        8 -1.14      0.287  
-##  4        9 -0.510     0.430  
-##  5       15 -5.28      0.00635
-##  6       19  0.371     0.645  
-##  7       21 -2.24      0.117  
-##  8       24 -0.533     0.424  
-##  9       25 -4.37      0.0156 
-## 10       26 -0.483     0.437  
-## # … with 14,430 more rows
+##  1        1 -4.56      0.0121 
+##  2        6  1.87      0.884  
+##  3        7 -0.953     0.311  
+##  4        8 -2.31      0.104  
+##  5        9 -0.492     0.416  
+##  6       13 -0.223     0.483  
+##  7       15 -5.42      0.00512
+##  8       21 -4.56      0.0121 
+##  9       24 -0.639     0.381  
+## 10       25 -4.39      0.0142 
+## # … with 14,473 more rows
 ```
 
 ---
@@ -966,20 +966,20 @@ comment_classes
 ```
 
 ```
-## # A tibble: 14,440 x 4
+## # A tibble: 14,483 x 4
 ##    document  score probability title                
 ##       &lt;int&gt;  &lt;dbl&gt;       &lt;dbl&gt; &lt;fct&gt;                
-##  1        6  5.72      0.997   The War of the Worlds
-##  2        7 -1.95      0.152   The War of the Worlds
-##  3        8 -1.14      0.287   The War of the Worlds
-##  4        9 -0.510     0.430   The War of the Worlds
-##  5       15 -5.28      0.00635 The War of the Worlds
-##  6       19  0.371     0.645   The War of the Worlds
-##  7       21 -2.24      0.117   The War of the Worlds
-##  8       24 -0.533     0.424   The War of the Worlds
-##  9       25 -4.37      0.0156  The War of the Worlds
-## 10       26 -0.483     0.437   The War of the Worlds
-## # … with 14,430 more rows
+##  1        1 -4.56      0.0121  The War of the Worlds
+##  2        6  1.87      0.884   The War of the Worlds
+##  3        7 -0.953     0.311   The War of the Worlds
+##  4        8 -2.31      0.104   The War of the Worlds
+##  5        9 -0.492     0.416   The War of the Worlds
+##  6       13 -0.223     0.483   The War of the Worlds
+##  7       15 -5.42      0.00512 The War of the Worlds
+##  8       21 -4.56      0.0121  The War of the Worlds
+##  9       24 -0.639     0.381   The War of the Worlds
+## 10       25 -4.39      0.0142  The War of the Worlds
+## # … with 14,473 more rows
 ```
 
 ---
@@ -1022,7 +1022,7 @@ comment_classes %&gt;%
 ## # A tibble: 1 x 3
 ##   .metric .estimator .estimate
 ##   &lt;chr&gt;   &lt;chr&gt;          &lt;dbl&gt;
-## 1 roc_auc binary         0.989
+## 1 roc_auc binary         0.990
 ```
 
 ---
@@ -1056,8 +1056,8 @@ comment_classes %&gt;%
 ```
 ##                        Truth
 ## Prediction              Pride and Prejudice The War of the Worlds
-##   Pride and Prejudice                  9368                   358
-##   The War of the Worlds                 259                  4455
+##   Pride and Prejudice                  9430                   335
+##   The War of the Worlds                 249                  4469
 ```
 
 ---
@@ -1081,18 +1081,18 @@ comment_classes %&gt;%
 
 ```
 ## # A tibble: 10 x 2
-##    probability text                                                                    
-##          &lt;dbl&gt; &lt;chr&gt;                                                                   
-##  1       0.884 "gunners, unseasoned artillery volunteers who ought never to have been" 
-##  2       0.863 "about two.  He was now very anxious on my account, and disturbed at"   
-##  3       0.824 "\"Take this!\" said the slender lady, and she gave my brother her"     
-##  4       0.998 "\"Be a man!\" said I.  \"You are scared out of your wits!  What good"  
-##  5       1.00  "to Brigadier-General Marvin, and tell him all you know.  He's at"      
-##  6       0.867 "Huns, the hugest armies Asia has ever seen, would have been but a drop"
-##  7       1.00  "from her, of all that might happen to her in my absence.  My cousin I" 
-##  8       0.997 "He relapsed into silence, with his chin now sunken almost to his"      
-##  9       0.863 "There were times when I beat and kicked him madly, times when I"       
-## 10       1.00  "am convinced--as firmly as I am convinced of anything--that the"
+##    probability text                                                             
+##          &lt;dbl&gt; &lt;chr&gt;                                                            
+##  1       0.815 "He relapsed into silence, with his chin now sunken almost to hi…
+##  2       1.00  "settlement.  Be that as it may, for many years yet there will"  
+##  3       0.991 "been out of England before, she would rather die than trust her…
+##  4       0.984 "Perhaps I am a man of exceptional moods.  I do not know how far…
+##  5       0.991 "\"Take this!\" said the slender lady, and she gave my brother h…
+##  6       0.909 "entire battalion of the Cardigan Regiment.  No details are know…
+##  7       0.902 "so; there won't be any Royal Academy of Arts, and no nice littl…
+##  8       0.879 "they were destroying Berlin or Paris, or it might be they had g…
+##  9       0.849 "horizon--\"they're starving in heaps, bolting, treading on each…
+## 10       1.00  "\"Be a man!\" said I.  \"You are scared out of your wits!  What…
 ```
 
 ---
@@ -1116,18 +1116,18 @@ comment_classes %&gt;%
 
 ```
 ## # A tibble: 10 x 2
-##    probability text                                                                  
-##          &lt;dbl&gt; &lt;chr&gt;                                                                 
-##  1   0.194     enter the paddock and ride towards the house.                         
-##  2   0.0508    of fancy, the streets of that gay bathing-place covered with officers.
-##  3   0.192     glancing over it, said, in a colder voice:                            
-##  4   0.231     walking slowly towards the house.                                     
-##  5   0.144     The wisest and the best of men--nay, the wisest and best of their     
-##  6   0.256     Sally to mend a great slit in my worked muslin gown before they are   
-##  7   0.0000741 road, the house standing in it, the green pales, and the laurel hedge,
-##  8   0.261     into the house and take some refreshment; but this was declined, and  
-##  9   0.269     are instituted by the Church of England. As a clergyman, moreover, I  
-## 10   0.278     presently answered the question in a tolerably detached tone. While
+##    probability text                                                             
+##          &lt;dbl&gt; &lt;chr&gt;                                                            
+##  1    0.0140   "foxhounds, and drink a bottle of wine a day.\""                 
+##  2    0.0652   "As we went along, Kitty and I drew up the blinds, and pretended…
+##  3    0.00281  "blush. He absolutely started, and for a moment seemed immovable…
+##  4    0.0313   "wrong; he had liberality, and he had the means of exercising it…
+##  5    0.000432 "me, I did not once put my foot out of doors, though I was there…
+##  6    0.0380   "I was never more annoyed! The insipidity, and yet the noise--th…
+##  7    0.224    "suddenly came forward from the road, which led behind it to the…
+##  8    0.0196   "\"Oh, lord! I don't know. Not these two or three years, perhaps…
+##  9    0.110    "the improvements it was receiving, he was happily employed unti…
+## 10    0.171    "of fancy, the streets of that gay bathing-place covered with of…
 ```
 
 ---

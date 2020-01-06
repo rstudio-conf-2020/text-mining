@@ -17,7 +17,8 @@ output:
 ---
 
 ```{r setup, include=FALSE}
-options(htmltools.dir.version = FALSE)
+options(htmltools.dir.version = FALSE,
+        width = 80)
 library(knitr)
 knitr::opts_chunk$set(cache = TRUE, warning = FALSE, message = FALSE, dpi = 300)
 library(tidyverse)
@@ -151,7 +152,7 @@ text <- c("Because I could not stop for Death -",
           "The Carriage held but just Ourselves -",
           "and Immortality")
 
-glimpse(text)
+text
 ```
 
 ---
