@@ -242,7 +242,7 @@ library(gutenbergr)
 full_text &lt;- gutenberg_download(1342)
 ```
 
-.large[What book do *you* want to analyze today? 📖 👯‍♂️ 📖]
+.large[What book do *you* want to analyze today? 📖 👯‍♀️ 📖]
 
 ---
 
@@ -736,18 +736,18 @@ full_collection
 
 ```
 ## # A tibble: 57,238 x 3
-##    gutenberg_id text           title         
-##           &lt;int&gt; &lt;chr&gt;          &lt;chr&gt;         
-##  1          141 MANSFIELD PARK Mansfield Park
-##  2          141 ""             Mansfield Park
-##  3          141 (1814)         Mansfield Park
-##  4          141 ""             Mansfield Park
-##  5          141 ""             Mansfield Park
-##  6          141 By Jane Austen Mansfield Park
-##  7          141 ""             Mansfield Park
-##  8          141 ""             Mansfield Park
-##  9          141 ""             Mansfield Park
-## 10          141 ""             Mansfield Park
+##    gutenberg_id text             title         
+##           &lt;int&gt; &lt;chr&gt;            &lt;chr&gt;         
+##  1          141 "MANSFIELD PARK" Mansfield Park
+##  2          141 ""               Mansfield Park
+##  3          141 "(1814)"         Mansfield Park
+##  4          141 ""               Mansfield Park
+##  5          141 ""               Mansfield Park
+##  6          141 "By Jane Austen" Mansfield Park
+##  7          141 ""               Mansfield Park
+##  8          141 ""               Mansfield Park
+##  9          141 ""               Mansfield Park
+## 10          141 ""               Mansfield Park
 ## # … with 57,228 more rows
 ```
 
@@ -1046,9 +1046,9 @@ background-position: 50% 70%
 
 ---
 
-class: middle
 background-image: url(figs/change_overall-1.svg)
-background-position: 50% 50%
+background-size: contain
+background-position: center
 
 ---
 
@@ -1079,9 +1079,9 @@ bigram_graph
 ```
 
 ```
-## IGRAPH 049b0ee DN-- 48 45 -- 
+## IGRAPH f82f914 DN-- 48 45 -- 
 ## + attr: name (v/c), n (e/n)
-## + edges from 049b0ee (vertex names):
+## + edges from f82f914 (vertex names):
 ##  [1] lady       -&gt;catherine   miss       -&gt;bingley     miss       -&gt;bennet      sir        -&gt;william     de         -&gt;bourgh     
 ##  [6] miss       -&gt;darcy       colonel    -&gt;forster     colonel    -&gt;fitzwilliam cried      -&gt;elizabeth   miss       -&gt;lucas      
 ## [11] miss       -&gt;de          thousand   -&gt;pounds      lady       -&gt;lucas       replied    -&gt;elizabeth   lady       -&gt;catherine's
@@ -1162,7 +1162,7 @@ Slides created with [**remark.js**](http://remarkjs.com/) and the R package [**x
 <script>var slideshow = remark.create({
 "highlightStyle": "github",
 "highlightLines": true,
-"countIncrementalSlides": false,
+"slideNumberFormat": "%current%",
 "ratio": "16:9"
 });
 if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {

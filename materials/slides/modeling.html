@@ -125,7 +125,7 @@ class: center, middle, inverse
 background-image: url(figs/p_and_p_cover.png)
 background-size: cover
 
-# GREAT LIBRARY HEIST 🕵
+# GREAT LIBRARY HEIST 🕵️‍♀️
 
 ---
 
@@ -439,7 +439,7 @@ chapters_gamma
 ##    &lt;chr&gt;                  &lt;int&gt;    &lt;dbl&gt;
 ##  1 Great Expectations_57      1 0.000792
 ##  2 Great Expectations_7       1 0.00340 
-##  3 Pride and Prejudice_18     1 1.000   
+##  3 Pride and Prejudice_18     1 1.00    
 ##  4 Great Expectations_17      1 0.0480  
 ##  5 Great Expectations_27      1 0.000367
 ##  6 Great Expectations_38      1 0.00110 
@@ -486,7 +486,7 @@ chapters_parsed
 ##    &lt;chr&gt;                 &lt;int&gt; &lt;int&gt;    &lt;dbl&gt;
 ##  1 Great Expectations       57     1 0.000792
 ##  2 Great Expectations        7     1 0.00340 
-##  3 Pride and Prejudice      18     1 1.000   
+##  3 Pride and Prejudice      18     1 1.00    
 ##  4 Great Expectations       17     1 0.0480  
 ##  5 Great Expectations       27     1 0.000367
 ##  6 Great Expectations       38     1 0.00110 
@@ -736,7 +736,7 @@ dim(sparse_words)
 ```
 
 ```
-## [1] 15917  1652
+## [1] 15913  1652
 ```
 
 ---
@@ -747,7 +747,7 @@ dim(sparse_words)
 
 .large[Which `dim` of the sparse matrix is the number of features?]
 
-- .large[15917]
+- .large[15913]
 - .large[1652]
 
 .large[Feature = term = word]
@@ -769,7 +769,7 @@ books_joined
 ```
 
 ```
-## # A tibble: 15,917 x 2
+## # A tibble: 15,913 x 2
 ##    document title                
 ##       &lt;int&gt; &lt;chr&gt;                
 ##  1     4532 The War of the Worlds
@@ -782,7 +782,7 @@ books_joined
 ##  8     1487 The War of the Worlds
 ##  9     1639 The War of the Worlds
 ## 10     1698 The War of the Worlds
-## # … with 15,907 more rows
+## # … with 15,903 more rows
 ```
 
 
@@ -865,20 +865,20 @@ classifications
 ```
 
 ```
-## # A tibble: 14,506 x 3
+## # A tibble: 14,440 x 3
 ##    document  score probability
 ##       &lt;int&gt;  &lt;dbl&gt;       &lt;dbl&gt;
-##  1        1 -2.24      0.117  
-##  2        6  3.68      0.980  
-##  3        7 -0.964     0.321  
-##  4        8 -2.32      0.109  
-##  5        9 -0.998     0.314  
-##  6       13 -0.217     0.500  
-##  7       15 -5.26      0.00640
-##  8       25 -5.91      0.00337
-##  9       26 -0.123     0.523  
-## 10       27 -3.15      0.0504 
-## # … with 14,496 more rows
+##  1        6  5.72      0.997  
+##  2        7 -1.95      0.152  
+##  3        8 -1.14      0.287  
+##  4        9 -0.510     0.430  
+##  5       15 -5.28      0.00635
+##  6       19  0.371     0.645  
+##  7       21 -2.24      0.117  
+##  8       24 -0.533     0.424  
+##  9       25 -4.37      0.0156 
+## 10       26 -0.483     0.437  
+## # … with 14,430 more rows
 ```
 
 ---
@@ -966,20 +966,20 @@ comment_classes
 ```
 
 ```
-## # A tibble: 14,506 x 4
+## # A tibble: 14,440 x 4
 ##    document  score probability title                
 ##       &lt;int&gt;  &lt;dbl&gt;       &lt;dbl&gt; &lt;fct&gt;                
-##  1        1 -2.24      0.117   The War of the Worlds
-##  2        6  3.68      0.980   The War of the Worlds
-##  3        7 -0.964     0.321   The War of the Worlds
-##  4        8 -2.32      0.109   The War of the Worlds
-##  5        9 -0.998     0.314   The War of the Worlds
-##  6       13 -0.217     0.500   The War of the Worlds
-##  7       15 -5.26      0.00640 The War of the Worlds
-##  8       25 -5.91      0.00337 The War of the Worlds
-##  9       26 -0.123     0.523   The War of the Worlds
-## 10       27 -3.15      0.0504  The War of the Worlds
-## # … with 14,496 more rows
+##  1        6  5.72      0.997   The War of the Worlds
+##  2        7 -1.95      0.152   The War of the Worlds
+##  3        8 -1.14      0.287   The War of the Worlds
+##  4        9 -0.510     0.430   The War of the Worlds
+##  5       15 -5.28      0.00635 The War of the Worlds
+##  6       19  0.371     0.645   The War of the Worlds
+##  7       21 -2.24      0.117   The War of the Worlds
+##  8       24 -0.533     0.424   The War of the Worlds
+##  9       25 -4.37      0.0156  The War of the Worlds
+## 10       26 -0.483     0.437   The War of the Worlds
+## # … with 14,430 more rows
 ```
 
 ---
@@ -1056,8 +1056,8 @@ comment_classes %&gt;%
 ```
 ##                        Truth
 ## Prediction              Pride and Prejudice The War of the Worlds
-##   Pride and Prejudice                  9457                   349
-##   The War of the Worlds                 255                  4445
+##   Pride and Prejudice                  9368                   358
+##   The War of the Worlds                 259                  4455
 ```
 
 ---
@@ -1083,16 +1083,16 @@ comment_classes %&gt;%
 ## # A tibble: 10 x 2
 ##    probability text                                                                    
 ##          &lt;dbl&gt; &lt;chr&gt;                                                                   
-##  1       0.963 was not bravery, but circumspection.  My only consolation was to        
-##  2       1.000 She put her hand to her throat--swayed.  I made a step forward, and     
-##  3       0.841 "\"Don't, dear!\" said my wife, knitting her brows and putting her"     
-##  4       0.805 all the worthy vicar was very pluckily holding an early celebration,    
-##  5       0.973 forward every now and then when an opportunity showed itself of doing   
-##  6       0.903 "\"No doubt lots who had money have gone away to France,\" he said.  He"
-##  7       1.000 "\"After all, it may not be so much we may have to learn before--Just"  
-##  8       0.956 mightier they are the more sane and wary should we be.  One of them     
-##  9       0.874 had amused himself by making a grotesque scheme of advertisement        
-## 10       0.969 bad.  And in all those places we shall gather.  Our district will be
+##  1       0.884 "gunners, unseasoned artillery volunteers who ought never to have been" 
+##  2       0.863 "about two.  He was now very anxious on my account, and disturbed at"   
+##  3       0.824 "\"Take this!\" said the slender lady, and she gave my brother her"     
+##  4       0.998 "\"Be a man!\" said I.  \"You are scared out of your wits!  What good"  
+##  5       1.00  "to Brigadier-General Marvin, and tell him all you know.  He's at"      
+##  6       0.867 "Huns, the hugest armies Asia has ever seen, would have been but a drop"
+##  7       1.00  "from her, of all that might happen to her in my absence.  My cousin I" 
+##  8       0.997 "He relapsed into silence, with his chin now sunken almost to his"      
+##  9       0.863 "There were times when I beat and kicked him madly, times when I"       
+## 10       1.00  "am convinced--as firmly as I am convinced of anything--that the"
 ```
 
 ---
@@ -1116,18 +1116,18 @@ comment_classes %&gt;%
 
 ```
 ## # A tibble: 10 x 2
-##    probability text                                                                      
-##          &lt;dbl&gt; &lt;chr&gt;                                                                     
-##  1     0.177   and Wickham, and Pratt, and two or three more of the men came in, they    
-##  2     0.00478 the brink of the river for the better inspection of some curious          
-##  3     0.136   of its containing any repetition of those sentiments or renewal of those  
-##  4     0.216   therefore, was very odd! Yet it did, and even a third. It seemed like     
-##  5     0.297   "shall keep mine to swell my song.\""                                     
-##  6     0.0519  blush. He absolutely started, and for a moment seemed immovable from      
-##  7     0.0309  to the edge of the water, and one of its narrowest parts. They crossed    
-##  8     0.00501 tempted, by the pleasantness of the morning, to stop at the gates and     
-##  9     0.264   "\"There certainly was some great mismanagement in the education of those"
-## 10     0.0123  is far from objecting to my occasional absence on a Sunday, provided
+##    probability text                                                                  
+##          &lt;dbl&gt; &lt;chr&gt;                                                                 
+##  1   0.194     enter the paddock and ride towards the house.                         
+##  2   0.0508    of fancy, the streets of that gay bathing-place covered with officers.
+##  3   0.192     glancing over it, said, in a colder voice:                            
+##  4   0.231     walking slowly towards the house.                                     
+##  5   0.144     The wisest and the best of men--nay, the wisest and best of their     
+##  6   0.256     Sally to mend a great slit in my worked muslin gown before they are   
+##  7   0.0000741 road, the house standing in it, the green pales, and the laurel hedge,
+##  8   0.261     into the house and take some refreshment; but this was declined, and  
+##  9   0.269     are instituted by the Church of England. As a clergyman, moreover, I  
+## 10   0.278     presently answered the question in a tolerably detached tone. While
 ```
 
 ---
