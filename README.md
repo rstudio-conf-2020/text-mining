@@ -81,7 +81,7 @@ RSTUDIO.CLOUD ACCOUNT, ETC.\]
 
 ## Instructor
 
-[Julia Silge](https://juliasilge.com/) is a data scientist at [Stack Overflow](https://stackoverflow.com/users/5468471/julia-silge). She is both an international keynote speaker and a real-world practitioner focusing on data analysis and machine learning practice. She is an author of [*Text Mining with R*](https://www.tidytextmining.com/) with her coauthor David Robinson and has a PhD in astrophysics. She loves making beautiful charts and communicating about technical topics with diverse audiences.
+[Julia Silge](https://juliasilge.com/) is a data scientist and software engineer. She is both an international keynote speaker and a real-world practitioner focusing on data analysis and machine learning practice. She is an author of [*Text Mining with R*](https://www.tidytextmining.com/) with her coauthor David Robinson and has a PhD in astrophysics. She loves making beautiful charts and communicating about technical topics with diverse audiences.
 
 -----
 

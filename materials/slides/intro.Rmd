@@ -9,7 +9,7 @@ output:
     nature:
       highlightStyle: github
       highlightLines: true
-      countIncrementalSlides: false
+      slideNumberFormat: "%current%"
       ratio: "16:9"
     seal: false  
     includes:
@@ -20,7 +20,7 @@ output:
 options(htmltools.dir.version = FALSE)
 library(knitr)
 knitr::opts_chunk$set(cache = TRUE, warning = FALSE, message = FALSE, dpi = 300)
-library(ggplot2)
+library(tidyverse)
 library(silgelib)
 theme_set(theme_roboto())
 ```
@@ -708,9 +708,9 @@ background-position: 50% 70%
 
 ---
 
-class: middle
 background-image: url(figs/change_overall-1.svg)
-background-position: 50% 50%
+background-size: contain
+background-position: center
 
 ---
 
