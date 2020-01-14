@@ -10,7 +10,7 @@ by Julia Silge
 :spiral_calendar: January 27 and 28, 2020  
 :alarm_clock:     09:00 - 17:00  
 :hotel:           \[ADD ROOM\]  
-:writing_hand:    [rstd.io/conf](http://rstd.io/conf)
+:writing_hand:    [bit.ly/silge-rstudioconf-1](http://bit.ly/silge-rstudioconf-1) and [bit.ly/silge-rstudioconf-2](http://bit.ly/silge-rstudioconf-2)
 
 -----
 
