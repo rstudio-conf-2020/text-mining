@@ -38,7 +38,7 @@ This course will be appropriate for you if you answer yes to these questions:
 
 ## Prework
 
-During this short course, we'll share code and slides via a GitHub repo and code interactively together using an RStudio Cloud project. You can log in to RStudio Cloud via Google credentials, GitHub credentials, or email. Go ahead and [log in](http://rstudio.cloud/) with your choice of method before we meet in person so you see what the platform looks like. Bring your laptop to the course and we'll explore text mining together!
+During this workshop, we'll share code and slides via a GitHub repo and code interactively together using an RStudio Cloud project. You can log in to RStudio Cloud via Google credentials, GitHub credentials, or email. Go ahead and [log in](http://rstudio.cloud/) with your choice of method before we meet in person so you see what the platform looks like. Bring your laptop to the course and we'll explore text mining together!
 
 ## Schedule
 
