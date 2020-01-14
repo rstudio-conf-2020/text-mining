@@ -7,15 +7,6 @@ by Julia Silge
 
 -----
 
-INSTRUCTIONS FOR INSTRUCTORS: Please insert information about your
-workshop below. Then, add workshop content in the materials folder and
-link to each session’s materials from the schedule below. You are
-welcomed to add more rows to the schedule. We just ask that you take
-breaks at the specified times. Once you are done adding information, you
-can remove these instructions from the README.
-
------
-
 :spiral_calendar: January 27 and 28, 2020  
 :alarm_clock:     09:00 - 17:00  
 :hotel:           \[ADD ROOM\]  
@@ -47,10 +38,7 @@ This course will be appropriate for you if you answer yes to these questions:
 
 ## Prework
 
-\[ADD INFORMATION YOU WANT LEARNERS TO HAVE / STEPS THEY WANT THEM TO
-COMPLETE PRIOR TO THE WORKSHOP. THIS COULD BE A LINK TO A THREAD ON
-RSTUDIO COMMUNITY, PACKAGE INSTALL INSTRUCTIONS, HOW TO GET AN
-RSTUDIO.CLOUD ACCOUNT, ETC.\]
+During this short course, we'll share code and slides via a GitHub repo and code interactively together using an RStudio Cloud project. You can log in to RStudio Cloud via Google credentials, GitHub credentials, or email. Go ahead and [log in](http://rstudio.cloud/) with your choice of method before we meet in person so you see what the platform looks like. Bring your laptop to the course and we'll explore text mining together!
 
 ## Schedule
 
