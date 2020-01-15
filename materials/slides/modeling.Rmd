@@ -14,6 +14,10 @@ output:
     seal: false  
     includes:
       in_header: header.html
+params:
+  wifi_network: "TBD"
+  wifi_password: "TBD"
+  site_link: "bit.ly/silge-rstudioconf-2"
 ---
 
 ```{r setup, include=FALSE}
@@ -32,6 +36,18 @@ layout: true
 
 ---
 
+class: inverse, center, bottom
+
+background-image: url(figs/robert-bye-R-WtV-QyVnY-unsplash.jpg)
+background-size: cover
+
+
+# WELCOME!
+
+### Text Mining Using Tidy Data Principles
+
+---
+
 class: inverse, center, middle
 
 background-image: url(figs/p_and_p_cover.png)
@@ -46,6 +62,27 @@ background-size: cover
 
 .large[Julia Silge | rstudio::conf | 28 Jan 2020]
 
+---
+
+class: middle, center
+
+.pull-left[
+# <i class="fa fa-wifi"></i>
+
+Wifi network name  
+
+.large[`r params$wifi_network`]
+
+]
+
+.pull-left[
+# <i class="fa fa-key"></i>
+
+Wifi password
+
+.large[`r params$wifi_password`]
+
+]
 ---
 
 ## Let's install some packages
