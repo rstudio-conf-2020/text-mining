@@ -239,24 +239,15 @@ word_counts &lt;- by_chapter %&gt;%
   anti_join(get_stopwords(source = "smart")) %&gt;%
   count(document, word, sort = TRUE)
 
-word_counts
+glimpse(word_counts)
 ```
 
 ```
-## # A tibble: 111,650 x 3
-##    document               word        n
-##    &lt;chr&gt;                  &lt;chr&gt;   &lt;int&gt;
-##  1 Great Expectations_57  joe        88
-##  2 Great Expectations_7   joe        70
-##  3 Pride and Prejudice_18 mr         66
-##  4 Great Expectations_17  biddy      63
-##  5 Great Expectations_27  joe        58
-##  6 Great Expectations_38  estella    58
-##  7 Great Expectations_2   joe        56
-##  8 Great Expectations_23  pocket     53
-##  9 Great Expectations_15  joe        50
-## 10 Great Expectations_18  joe        50
-## # … with 111,640 more rows
+## Observations: 111,650
+## Variables: 3
+## $ document &lt;chr&gt; "Great Expectations_57", "Great Expectations_7", "Pride and …
+## $ word     &lt;chr&gt; "joe", "joe", "mr", "biddy", "joe", "estella", "joe", "pocke…
+## $ n        &lt;int&gt; 88, 70, 66, 63, 58, 58, 56, 53, 50, 50, 50, 47, 46, 44, 44, …
 ```
 
 ---
@@ -444,7 +435,7 @@ top_terms
 ```r
 top_terms %&gt;%
   mutate(term = fct_reorder(term, beta)) %&gt;%
-  ggplot(aes(term, beta, fill = factor(topic))) +
+* ggplot(aes(term, beta, fill = factor(topic))) +
   geom_col(show.legend = FALSE) +
   facet_wrap(~ topic, scales = "free") +
   coord_flip()
@@ -737,7 +728,7 @@ library(rsample)
 
 books_split &lt;- tidy_books %&gt;%
   select(document) %&gt;%
-  initial_split()
+* initial_split()
 
 train_data &lt;- training(books_split)
 test_data &lt;- testing(books_split)
@@ -780,7 +771,7 @@ dim(sparse_words)
 
 .large[Which `dim` of the sparse matrix is the number of features?]
 
-- .large[]
+- .large[15928]
 - .large[1652]
 
 .large[Feature = term = word]
@@ -1024,12 +1015,9 @@ comment_classes
 library(yardstick)
 
 comment_classes %&gt;%
-  roc_curve(title, probability) %&gt;%
+* roc_curve(title, probability) %&gt;%
   ggplot(aes(x = 1 - specificity, y = sensitivity)) +
-  geom_line(
-    color = "midnightblue",
-    size = 1.5
-  ) +
+  geom_line(size = 1.5) +
   geom_abline(
     lty = 2, alpha = 0.5,
     color = "gray50",
@@ -1083,7 +1071,7 @@ comment_classes %&gt;%
     ),
     prediction = as.factor(prediction)
   ) %&gt;%
-  conf_mat(title, prediction)
+* conf_mat(title, prediction)
 ```
 
 ```

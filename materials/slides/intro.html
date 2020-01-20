@@ -181,19 +181,27 @@ class: middle, center
 
 
 ```r
-text &lt;- c("Because I could not stop for Death -",
-          "He kindly stopped for me -",
-          "The Carriage held but just Ourselves -",
-          "and Immortality")
+text &lt;- c("Tell all the truth but tell it slant —",
+          "Success in Circuit lies",
+          "Too bright for our infirm Delight",
+          "The Truth's superb surprise",
+          "As Lightning to the Children eased",
+          "With explanation kind",
+          "The Truth must dazzle gradually",
+          "Or every man be blind —")
 
 text
 ```
 
 ```
-## [1] "Because I could not stop for Death -"  
-## [2] "He kindly stopped for me -"            
-## [3] "The Carriage held but just Ourselves -"
-## [4] "and Immortality"
+## [1] "Tell all the truth but tell it slant —"
+## [2] "Success in Circuit lies"               
+## [3] "Too bright for our infirm Delight"     
+## [4] "The Truth's superb surprise"           
+## [5] "As Lightning to the Children eased"    
+## [6] "With explanation kind"                 
+## [7] "The Truth must dazzle gradually"       
+## [8] "Or every man be blind —"
 ```
 
 ---
@@ -206,19 +214,23 @@ text
 ```r
 library(tidyverse)
 
-text_df &lt;- tibble(line = 1:4, text = text)
+text_df &lt;- tibble(line = 1:8, text = text)
 
 text_df
 ```
 
 ```
-## # A tibble: 4 x 2
+## # A tibble: 8 x 2
 ##    line text                                  
 ##   &lt;int&gt; &lt;chr&gt;                                 
-## 1     1 Because I could not stop for Death -  
-## 2     2 He kindly stopped for me -            
-## 3     3 The Carriage held but just Ourselves -
-## 4     4 and Immortality
+## 1     1 Tell all the truth but tell it slant —
+## 2     2 Success in Circuit lies               
+## 3     3 Too bright for our infirm Delight     
+## 4     4 The Truth's superb surprise           
+## 5     5 As Lightning to the Children eased    
+## 6     6 With explanation kind                 
+## 7     7 The Truth must dazzle gradually       
+## 8     8 Or every man be blind —
 ```
 
 ---
@@ -236,29 +248,20 @@ text_df %&gt;%
 ```
 
 ```
-## # A tibble: 20 x 2
-##     line word       
-##    &lt;int&gt; &lt;chr&gt;      
-##  1     1 because    
-##  2     1 i          
-##  3     1 could      
-##  4     1 not        
-##  5     1 stop       
-##  6     1 for        
-##  7     1 death      
-##  8     2 he         
-##  9     2 kindly     
-## 10     2 stopped    
-## 11     2 for        
-## 12     2 me         
-## 13     3 the        
-## 14     3 carriage   
-## 15     3 held       
-## 16     3 but        
-## 17     3 just       
-## 18     3 ourselves  
-## 19     4 and        
-## 20     4 immortality
+## # A tibble: 41 x 2
+##     line word   
+##    &lt;int&gt; &lt;chr&gt;  
+##  1     1 tell   
+##  2     1 all    
+##  3     1 the    
+##  4     1 truth  
+##  5     1 but    
+##  6     1 tell   
+##  7     1 it     
+##  8     1 slant  
+##  9     2 success
+## 10     2 in     
+## # … with 31 more rows
 ```
 
 ---
@@ -288,7 +291,7 @@ library(gutenbergr)
 full_text &lt;- gutenberg_download(1342)
 ```
 
-.large[What book do *you* want to analyze today? 📖 👯 📖]
+.large[What book do *you* want to analyze today? 📖 👯‍♂️ 📖]
 
 ---
 
@@ -300,24 +303,15 @@ tidy_book &lt;- full_text %&gt;%
   mutate(line = row_number()) %&gt;%
 * unnest_tokens(word, text)
 
-tidy_book
+glimpse(tidy_book)
 ```
 
 ```
-## # A tibble: 122,204 x 3
-##    gutenberg_id  line word     
-##           &lt;int&gt; &lt;int&gt; &lt;chr&gt;    
-##  1         1342     1 pride    
-##  2         1342     1 and      
-##  3         1342     1 prejudice
-##  4         1342     3 by       
-##  5         1342     3 jane     
-##  6         1342     3 austen   
-##  7         1342     7 chapter  
-##  8         1342     7 1        
-##  9         1342    10 it       
-## 10         1342    10 is       
-## # … with 122,194 more rows
+## Observations: 122,204
+## Variables: 3
+## $ gutenberg_id &lt;int&gt; 1342, 1342, 1342, 1342, 1342, 1342, 1342, 1342, 1342, 13…
+## $ line         &lt;int&gt; 1, 1, 1, 3, 3, 3, 7, 7, 10, 10, 10, 10, 10, 10, 10, 10, …
+## $ word         &lt;chr&gt; "pride", "and", "prejudice", "by", "jane", "austen", "ch…
 ```
 
 ---
@@ -776,7 +770,15 @@ class: inverse, center, middle
 ```r
 full_collection &lt;- gutenberg_download(c(1342, 158, 161, 141),
                                       meta_fields = "title")
+```
+---
 
+## **Understanding tf-idf**
+
+.large[Make a collection (*corpus*) for yourself! 💅]
+
+
+```r
 full_collection
 ```
 
@@ -806,25 +808,18 @@ full_collection
 book_words &lt;- full_collection %&gt;%
 * unnest_tokens(word, text) %&gt;%
   count(title, word, sort = TRUE)
-
-book_words
 ```
 
-```
-## # A tibble: 28,389 x 3
-##    title               word      n
-##    &lt;chr&gt;               &lt;chr&gt; &lt;int&gt;
-##  1 Mansfield Park      the    6206
-##  2 Mansfield Park      to     5475
-##  3 Mansfield Park      and    5438
-##  4 Emma                to     5239
-##  5 Emma                the    5201
-##  6 Emma                and    4896
-##  7 Mansfield Park      of     4778
-##  8 Pride and Prejudice the    4331
-##  9 Emma                of     4291
-## 10 Pride and Prejudice to     4162
-## # … with 28,379 more rows
+What do the columns of `book_words` tell us?
+
+---
+
+## **Calculating tf-idf**
+
+
+```r
+book_tfidf &lt;- book_words %&gt;%
+* bind_tf_idf(word, title, n)
 ```
 
 ---
@@ -835,9 +830,6 @@ book_words
 
 
 ```r
-book_tfidf &lt;- book_words %&gt;%
-* bind_tf_idf(word, title, n)
-
 book_tfidf
 ```
 
@@ -857,6 +849,7 @@ book_tfidf
 ## 10 Pride and Prejudice to     4162 0.0341     0      0
 ## # … with 28,379 more rows
 ```
+
 
 ---
 
@@ -915,9 +908,7 @@ book_tfidf %&gt;%
 top_n(10) %&gt;%
 ```
 ```
-ggplot(aes(fct_reorder(word, tf_idf), 
-tf_idf, 
-fill = title)) +
+ggplot(aes(fct_reorder(word, tf_idf), tf_idf, fill = title)) +
 ```
 ```
 facet_wrap(~title, scales = "free")
@@ -951,7 +942,7 @@ book_tfidf %&gt;%
 
 ---
 
-![](intro_files/figure-html/unnamed-chunk-30-1.png)&lt;!-- --&gt;
+![](intro_files/figure-html/unnamed-chunk-32-1.png)&lt;!-- --&gt;
 
 ---
 
@@ -1023,7 +1014,7 @@ tidy_ngram %&gt;%
 .large[Can we use an `anti_join()` right away to remove stop words?]
 
 - .large[Yes! ✅]
-- .large[No 😿]
+- .large[No 🙍]
 
 ---
 
@@ -1036,7 +1027,14 @@ bigram_counts &lt;- tidy_ngram %&gt;%
   filter(!word1 %in% stop_words$word,
          !word2 %in% stop_words$word) %&gt;%
   count(word1, word2, sort = TRUE)
+```
 
+---
+
+## **N-grams... and beyond!** 🚀
+
+
+```r
 bigram_counts
 ```
 
@@ -1107,27 +1105,31 @@ install.packages(c("widyr",
                    "ggraph"))
 ```
 
+
+```r
+library(widyr)
+library(igraph)
+library(ggraph)
+```
+
+
 ---
 
 ## **Network analysis**
 
 
 ```r
-library(widyr)
-library(igraph)
-library(ggraph)
-
 bigram_graph &lt;- bigram_counts %&gt;%
   filter(n &gt; 5) %&gt;%
-  graph_from_data_frame()
+* graph_from_data_frame()
 
 bigram_graph
 ```
 
 ```
-## IGRAPH 72e7171 DN-- 48 45 -- 
+## IGRAPH 63e9370 DN-- 48 45 -- 
 ## + attr: name (v/c), n (e/n)
-## + edges from 72e7171 (vertex names):
+## + edges from 63e9370 (vertex names):
 ##  [1] lady       -&gt;catherine   miss       -&gt;bingley     miss       -&gt;bennet     
 ##  [4] sir        -&gt;william     de         -&gt;bourgh      miss       -&gt;darcy      
 ##  [7] colonel    -&gt;forster     colonel    -&gt;fitzwilliam cried      -&gt;elizabeth  
@@ -1158,9 +1160,9 @@ bigram_graph
 ```r
 bigram_graph %&gt;%
   ggraph(layout = "nicely") +
-  geom_edge_link(aes(edge_alpha = n)) +
-  geom_node_text(aes(label = name)) +
-  theme_graph()
+* geom_edge_link(aes(edge_alpha = n)) +
+* geom_node_text(aes(label = name)) +
+  theme_graph() 
 ```
 
 ---
@@ -1171,19 +1173,19 @@ bigram_graph %&gt;%
 ```r
 bigram_graph %&gt;%
   ggraph(layout = "nicely") +
-  geom_edge_link(aes(edge_alpha = n), 
+* geom_edge_link(aes(edge_alpha = n),
                  show.legend = FALSE, 
                  arrow = arrow(length = unit(1.5, 'mm')), 
                  start_cap = circle(3, 'mm'),
                  end_cap = circle(3, 'mm')) +
-  geom_node_text(aes(label = name)) +
+* geom_node_text(aes(label = name)) +
   theme_graph()
 ```
 
 ---
 
 
-![](intro_files/figure-html/unnamed-chunk-38-1.png)&lt;!-- --&gt;
+![](intro_files/figure-html/unnamed-chunk-42-1.png)&lt;!-- --&gt;
 
 
 

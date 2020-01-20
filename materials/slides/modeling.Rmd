@@ -241,7 +241,7 @@ word_counts <- by_chapter %>%
   anti_join(get_stopwords(source = "smart")) %>%
   count(document, word, sort = TRUE)
 
-word_counts
+glimpse(word_counts)
 
 ```
 
@@ -352,7 +352,7 @@ top_terms
 ```{r, eval=FALSE}
 top_terms %>%
   mutate(term = fct_reorder(term, beta)) %>%
-  ggplot(aes(term, beta, fill = factor(topic))) +
+  ggplot(aes(term, beta, fill = factor(topic))) +         #<<
   geom_col(show.legend = FALSE) +
   facet_wrap(~ topic, scales = "free") +
   coord_flip()
@@ -593,7 +593,7 @@ library(rsample)
 
 books_split <- tidy_books %>%
   select(document) %>%
-  initial_split()
+  initial_split()           #<<
 
 train_data <- training(books_split)
 test_data <- testing(books_split)
@@ -820,12 +820,9 @@ comment_classes
 library(yardstick)
 
 comment_classes %>%
-  roc_curve(title, probability) %>%
+  roc_curve(title, probability) %>%              #<<
   ggplot(aes(x = 1 - specificity, y = sensitivity)) +
-  geom_line(
-    color = "midnightblue",
-    size = 1.5
-  ) +
+  geom_line(size = 1.5) +
   geom_abline(
     lty = 2, alpha = 0.5,
     color = "gray50",
@@ -888,7 +885,7 @@ comment_classes %>%
     ),
     prediction = as.factor(prediction)
   ) %>%
-  conf_mat(title, prediction)
+  conf_mat(title, prediction)             #<<
 ```
 
 ---
