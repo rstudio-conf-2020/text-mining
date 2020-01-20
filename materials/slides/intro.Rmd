@@ -196,10 +196,14 @@ class: middle, center
 
 
 ```{r}
-text <- c("Because I could not stop for Death -",
-          "He kindly stopped for me -",
-          "The Carriage held but just Ourselves -",
-          "and Immortality")
+text <- c("Tell all the truth but tell it slant —",
+          "Success in Circuit lies",
+          "Too bright for our infirm Delight",
+          "The Truth's superb surprise",
+          "As Lightning to the Children eased",
+          "With explanation kind",
+          "The Truth must dazzle gradually",
+          "Or every man be blind —")
 
 text
 ```
@@ -213,7 +217,7 @@ text
 ```{r}
 library(tidyverse)
 
-text_df <- tibble(line = 1:4, text = text)
+text_df <- tibble(line = 1:8, text = text)
 
 text_df
 ```
@@ -268,7 +272,7 @@ tidy_book <- full_text %>%
   mutate(line = row_number()) %>%
   unnest_tokens(word, text)                #<<
 
-tidy_book
+glimpse(tidy_book)
 ```
 
 ---
@@ -378,7 +382,7 @@ tidy_book %>%
 
 ---
 
-```{r, echo=FALSE, fig.height=4}
+```{r, echo=FALSE, fig.height=3.9}
 tidy_book %>%
   anti_join(get_stopwords(source = "smart")) %>%
   count(word, sort = TRUE) %>%
@@ -483,7 +487,7 @@ tidy_book %>%
 
 .large[What do you predict will happen if we run the following code? `r emo::ji("thinking")`]
 
-```{r}
+```{r }
 tidy_book %>%
   inner_join(get_sentiments("bing")) %>%            
   count(sentiment, word, sort = TRUE)             #<<
@@ -512,7 +516,7 @@ tidy_book %>%
 
 class: middle
 
-```{r, echo=FALSE, fig.height=4}
+```{r, echo=FALSE, fig.height=3.9}
 tidy_book %>%
   inner_join(get_sentiments("bing")) %>%
   count(sentiment, word, sort = TRUE) %>%
@@ -557,6 +561,14 @@ $$idf(\text{term}) = \ln{\left(\frac{n_{\text{documents}}}{n_{\text{documents co
 full_collection <- gutenberg_download(c(1342, 158, 161, 141),
                                       meta_fields = "title")
 
+```
+---
+
+## **Understanding tf-idf**
+
+.large[Make a collection (*corpus*) for yourself! `r emo::ji("nail")`]
+
+```{r}
 full_collection
 ```
 
@@ -568,8 +580,17 @@ full_collection
 book_words <- full_collection %>%
   unnest_tokens(word, text) %>%                #<<
   count(title, word, sort = TRUE)
+```
 
-book_words
+What do the columns of `book_words` tell us?
+
+---
+
+## **Calculating tf-idf**
+
+```{r}
+book_tfidf <- book_words %>%
+  bind_tf_idf(word, title, n)            #<<
 ```
 
 ---
@@ -579,11 +600,9 @@ book_words
 .large[That's... super exciting???]
 
 ```{r}
-book_tfidf <- book_words %>%
-  bind_tf_idf(word, title, n)            #<<
-
 book_tfidf
 ```
+
 
 ---
 
@@ -656,7 +675,7 @@ book_tfidf %>%
 
 ---
 
-```{r, echo=FALSE, fig.height=4}
+```{r, echo=FALSE, fig.height=3.9}
 book_tfidf %>%
   group_by(title) %>%
   top_n(10) %>%
@@ -717,7 +736,13 @@ bigram_counts <- tidy_ngram %>%
   filter(!word1 %in% stop_words$word,
          !word2 %in% stop_words$word) %>%
   count(word1, word2, sort = TRUE)
+```
 
+---
+
+## **N-grams... and beyond!** `r emo::ji("rocket")`
+
+```{r}
 bigram_counts
 ```
 
@@ -770,15 +795,18 @@ install.packages(c("widyr",
                    "ggraph"))
 ```
 
+```{r}
+library(widyr)
+library(igraph)
+library(ggraph)
+```
+
+
 ---
 
 ## **Network analysis**
 
 ```{r}
-library(widyr)
-library(igraph)
-library(ggraph)
-
 bigram_graph <- bigram_counts %>%
   filter(n > 5) %>%
   graph_from_data_frame()                  #<<
@@ -816,28 +844,28 @@ bigram_graph %>%
 ```{r eval = FALSE}
 bigram_graph %>%
   ggraph(layout = "nicely") +
-  geom_edge_link(aes(edge_alpha = n), 
+  geom_edge_link(aes(edge_alpha = n),             #<<
                  show.legend = FALSE, 
                  arrow = arrow(length = unit(1.5, 'mm')), 
                  start_cap = circle(3, 'mm'),
                  end_cap = circle(3, 'mm')) +
-  geom_node_text(aes(label = name)) +
+  geom_node_text(aes(label = name)) +             #<<
   theme_graph()
 ```
 
 ---
 
 
-```{r echo = FALSE, fig.height=4.5}
+```{r echo = FALSE, fig.height=3.9}
 bigram_graph %>%
   ggraph(layout = "nicely") +
   geom_edge_link(aes(edge_alpha = n), 
                  show.legend = FALSE, 
                  arrow = arrow(length = unit(1.5, 'mm')), 
-                 start_cap = circle(3.5, 'mm'),
-                 end_cap = circle(3.5, 'mm')) +
+                 start_cap = circle(3.4, 'mm'),
+                 end_cap = circle(3.3, 'mm')) +
   geom_node_text(aes(label = name),
-                 size = 3.5,
+                 size = 3,
                  family = "RobotoCondensed-Regular") +
   theme_graph()
 ```

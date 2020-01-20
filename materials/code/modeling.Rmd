@@ -1,0 +1,377 @@
+---
+title: "Text modeling -- rstudio::conf 2020"
+date: "2020/01/28"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Welcome to day #2!
+
+## Topic modeling
+
+First download data to use in modeling:
+
+https://www.gutenberg.org/browse/scores/top
+
+Replace one to four of the books below with your own choice(s).
+
+```{r}
+library(tidyverse)
+library(gutenbergr)
+
+titles <- c("Twenty Thousand Leagues under the Sea", 
+            "The War of the Worlds",
+            "Pride and Prejudice", 
+            "Great Expectations")
+
+books <- gutenberg_works(title %in% titles) %>%
+  gutenberg_download(meta_fields = "title")
+```
+
+What do you predict will happen if we run the following code?
+
+**PREDICT WITH YOUR NEIGHBOR BEFORE YOU RUN**
+
+```{r}
+by_chapter <- books %>%
+  group_by(title) %>%
+  mutate(chapter = cumsum(str_detect(text, 
+                                     regex("^chapter ", 
+                                           ignore_case = TRUE)))) %>%
+  ungroup() %>%
+  filter(chapter > 0) %>%
+  unite(document, title, chapter)
+
+by_chapter
+```
+
+Someone has TORN YOUR BOOKS APART!!!
+
+## Let's use topic modeling to put your books back together
+
+As a first step, let's tokenize and tidy these chapters.
+
+```{r}
+library(tidytext)
+
+word_counts <- by_chapter %>%
+  ___ %>%
+  anti_join(___) %>%
+  count(document, word, sort = TRUE)
+
+word_counts
+```
+
+Next, let's **cast** to a sparse matrix. 
+
+How many features and observations do you have?
+
+```{r}
+words_sparse <- word_counts %>%
+  ___(document, word, n)
+
+___(words_sparse)
+___(words_sparse)
+```
+
+Train a topic model.
+
+```{r}
+library(stm)
+
+topic_model <- stm(___, K = 4, 
+                   init.type = "Spectral")
+
+summary(topic_model)
+```
+
+## Explore the output of topic modeling
+
+The word-topic probabilities are called the "beta" matrix.
+
+```{r}
+chapter_topics <- tidy(topic_model, ___)
+
+chapter_topics
+```
+
+What are the highest probability words in each topic?
+
+**U N S C R A M B L E**
+
+```{r}
+top_terms <- chapter_topics %>%
+
+ungroup() %>%
+
+group_by(topic) %>%
+
+arrange(topic, -beta)
+
+top_n(10, beta) %>%
+```
+
+Let's build a visualization.
+
+```{r}
+top_terms %>%
+  mutate(term = fct_reorder(term, beta)) %>%
+  ggplot(___) +
+  geom_col(show.legend = FALSE) +
+  facet_wrap(~ topic, scales = "free") +
+  coord_flip()
+```
+
+The document-topic probabilities are called "gamma".
+
+```{r}
+chapters_gamma <- tidy(topic_model, ___,
+                       document_names = rownames(words_sparse))
+
+chapters_gamma
+```
+
+How well did we do in putting our books back together into the 4 topics?
+
+What do you predict will happen if we run the following code?
+
+**PREDICT WITH YOUR NEIGHBOR BEFORE YOU RUN**
+
+```{r}
+chapters_parsed <- chapters_gamma %>%
+  ___(document, c("title", "chapter"), 
+           sep = "_", convert = TRUE)
+
+chapters_parsed
+```
+
+Let's visualize the results.
+
+**U N S C R A M B L E**
+
+```{r}
+chapters_parsed %>%
+
+ggplot(aes(factor(topic), gamma)) +
+
+facet_wrap(~ title)
+
+mutate(title = fct_reorder(title, gamma * topic)) %>%
+
+geom_boxplot() +
+```
+
+
+## Text classification
+
+Let's get two texts and build a model to distinguish between them.
+
+Replace one or two of the books below with your own choice(s).
+
+```{r}
+titles <- c("The War of the Worlds",
+            "Pride and Prejudice")
+
+books <- gutenberg_works(title %in% titles) %>%
+  gutenberg_download(meta_fields = "title") %>%
+  mutate(document = row_number())
+
+books
+```
+
+By making the `document` column and using that as our modeling unit, we are splitting each book up until its individual lines, as given to us by Project Gutenberg.
+
+Next, let's make a tidy, tokenized dataset.
+
+```{r}
+tidy_books <- books %>%
+  unnest_tokens(word, text) %>%
+  group_by(word) %>%
+  filter(n() > 10) %>%
+  ungroup
+
+tidy_books
+```
+
+What do you predict will happen if we run the following code?
+
+**PREDICT WITH YOUR NEIGHBOR BEFORE YOU RUN**
+
+```{r}
+library(rsample)
+
+books_split <- tidy_books %>%
+  select(document) %>%
+  ___
+
+train_data <- training(books_split)
+test_data <- testing(books_split)
+```
+
+Next build:
+
+- a sparse matrix with the features to use in modeling
+- a dataframe with the **response** variable (i.e. title)
+
+```{r}
+sparse_words <- tidy_books %>%
+  count(document, word, sort = TRUE) %>%
+  inner_join(___) %>%
+  ___
+
+class(sparse_words)
+dim(sparse_words)
+```
+
+## Build a dataframe with the response variable
+
+```{r}
+word_rownames <- as.integer(___)
+
+books_joined <- tibble(document = word_rownames) %>%
+  left_join(books %>%
+              select(document, title))
+
+books_joined
+```
+
+
+## Train a regularized regression model
+
+```{r}
+library(glmnet)
+
+is_jane <- books_joined$title == "Pride and Prejudice"
+model <- cv.glmnet(___, ___, 
+                   family = "binomial", 
+                   keep = TRUE)
+```
+
+You can also check out the built-in `plot(model)` results from glmnet.
+
+## Understand and evaluate the model
+
+How does the glmnet model classify each document?
+
+```{r}
+library(broom)
+
+coefs <- model$glmnet.fit %>%
+  ___ %>%
+  filter(lambda == model$lambda.1se)
+
+Intercept <- coefs %>%
+  filter(term == "(Intercept)") %>%
+  ___
+```
+
+**U N S C R A M B L E**
+
+```{r}
+classifications <- tidy_books %>%
+
+mutate(probability = plogis(Intercept + score))
+
+inner_join(test_data) %>%
+
+group_by(document) %>%
+
+inner_join(coefs, by = c("word" = "term")) %>%
+
+summarize(score = sum(estimate)) %>%
+```
+
+What are the coefficients? Which ones contribute the most?
+
+**U N S C R A M B L E**
+
+```{r}
+coefs %>%
+
+group_by(estimate > 0) %>%
+
+coord_flip()
+
+geom_col(show.legend = FALSE) +
+
+ungroup %>%
+
+top_n(10, abs(estimate)) %>%
+
+ggplot(aes(fct_reorder(term, estimate), 
+           estimate, 
+           fill = estimate > 0)) +
+```
+
+What do you predict will happen if we run the following code?
+
+**PREDICT WITH YOUR NEIGHBOR BEFORE YOU RUN**
+
+```{r}
+comment_classes <- classifications %>%
+  ___(books %>%
+              select(title, document), by = "document") %>%
+  mutate(title = as.factor(title))
+
+comment_classes
+```
+
+Let's build an ROC ([receiver operating characteristic](https://en.wikipedia.org/wiki/Receiver_operating_characteristic)) curve.
+
+```{r}
+library(yardstick)
+
+comment_classes %>%
+  ___ %>%
+  ggplot(aes(x = 1 - specificity, y = sensitivity)) +
+  geom_line(size = 1.5) +
+  geom_abline(
+    lty = 2, alpha = 0.5,
+    color = "gray50",
+    size = 1.2
+  )
+```
+
+What is the AUC?
+
+```{r}
+comment_classes %>%
+  ___
+```
+
+What about a confusion matrix?
+
+```{r}
+comment_classes %>%
+  mutate(
+    prediction = case_when(
+      probability > 0.5 ~ "Pride and Prejudice",
+      TRUE ~ "The War of the Worlds"
+    ),
+    prediction = as.factor(prediction)
+  ) %>%
+  ___
+```
+
+Now let's talk about misclassifications.
+
+```{r}
+comment_classes %>%
+  filter(
+    ___,
+    ___
+  ) %>%
+  sample_n(10) %>%
+  inner_join(books %>%
+               select(document, text)) %>%
+  select(probability, text)
+```
+
+How should you change this code to see the **other** kind of misclassification?
+
+**GO EXPLORE REAL-WORLD TEXT!**
+
+Thanks for coming! <3

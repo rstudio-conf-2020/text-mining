@@ -1,6 +1,5 @@
 ---
-title: "Text Mining -- rstudio::conf 2020"
-author: "Julia Silge"
+title: "Text mining -- rstudio::conf 2020"
 date: "2020/01/27"
 output: html_document
 ---
@@ -9,11 +8,12 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## Getting started
-
-You can access the full text of many public domain works from [Project Gutenberg](https://www.gutenberg.org/) using the [gutenbergr](https://ropensci.org/tutorials/gutenbergr_tutorial.html) package.
+## Access the full text of one book
 
 What book do *you* want to analyze today?
+
+Replace `1342` below with your own choice:
+https://www.gutenberg.org/browse/scores/top
 
 ```{r}
 library(tidyverse)
@@ -23,7 +23,7 @@ library(gutenbergr)
 full_text <- gutenberg_download(1342)
 ```
 
-Time to tidy your text!
+Now it's time to tokenize and tidy this text data.
 
 ```{r}
 tidy_book <- full_text %>%
@@ -51,8 +51,8 @@ get_stopwords()
 
 Try out some
 
-- different languages
-- different sources
+- different languages (`language`)
+- different sources (`source`)
 
 ## What are the most common words?
 
@@ -77,6 +77,8 @@ ggplot(aes(fct_reorder(word, n), n)) +
 
 ## Sentiment lexicons
 
+Explore some sentiment lexicons.
+
 ```{r}
 get_sentiments("bing")
 ```
@@ -100,6 +102,7 @@ tidy_book %>%
   ___
 ```
 
+What words contribute the most to sentiment scores for **your** book?
 
 ```{r}
 tidy_book %>%
@@ -128,7 +131,7 @@ full_collection <- gutenberg_download(c(1342, 158, 161, 141),
 full_collection
 ```
 
-Count word frequencies in your collection
+Count word frequencies in your collection.
 
 ```{r}
 book_words <- full_collection %>%
@@ -138,7 +141,7 @@ book_words <- full_collection %>%
 book_words
 ```
 
-Calculate tf-idf
+Calculate tf-idf.
 
 ```{r}
 book_tfidf <- book_words %>%
@@ -186,13 +189,14 @@ tidy_ngram <- full_text %>%
 tidy_ngram
 ```
 
+What are the most common bigrams?
 
 ```{r}
 tidy_ngram %>%
   ___
 ```
 
-Separate bigrams into word, then count
+Let's use `separate()` from tidyr to remove stop words.
 
 ```{r}
 bigram_counts <- tidy_ngram %>%
@@ -220,6 +224,7 @@ bigram_graph <- bigram_counts %>%
 bigram_graph
 ```
 
+Visualize the network.
 
 ```{r}
 bigram_graph %>%
@@ -230,7 +235,7 @@ bigram_graph %>%
 ```
 
 
-Lots of ways to make the graph nicer
+Lots of ways to make the graph nicer!
 
 ```{r}
 bigram_graph %>%
