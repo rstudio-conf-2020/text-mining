@@ -623,9 +623,7 @@ book_tfidf %>%
 top_n(10) %>%
 ```
 ```
-ggplot(aes(fct_reorder(word, tf_idf), 
-tf_idf, 
-fill = title)) +
+ggplot(aes(fct_reorder(word, tf_idf), tf_idf, fill = title)) +
 ```
 ```
 facet_wrap(~title, scales = "free")
@@ -783,7 +781,7 @@ library(ggraph)
 
 bigram_graph <- bigram_counts %>%
   filter(n > 5) %>%
-  graph_from_data_frame()
+  graph_from_data_frame()                  #<<
 
 bigram_graph
 ```
@@ -806,9 +804,9 @@ bigram_graph
 ```{r eval = FALSE}
 bigram_graph %>%
   ggraph(layout = "nicely") +
-  geom_edge_link(aes(edge_alpha = n)) +
-  geom_node_text(aes(label = name)) +
-  theme_graph()
+  geom_edge_link(aes(edge_alpha = n)) +              #<<
+  geom_node_text(aes(label = name)) +                #<<
+  theme_graph() 
 ```
 
 ---

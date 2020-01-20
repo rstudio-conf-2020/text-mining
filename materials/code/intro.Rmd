@@ -1,0 +1,247 @@
+---
+title: "Text Mining -- rstudio::conf 2020"
+author: "Julia Silge"
+date: "2020/01/27"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Getting started
+
+You can access the full text of many public domain works from [Project Gutenberg](https://www.gutenberg.org/) using the [gutenbergr](https://ropensci.org/tutorials/gutenbergr_tutorial.html) package.
+
+What book do *you* want to analyze today?
+
+```{r}
+library(tidyverse)
+library(tidytext)
+library(gutenbergr)
+
+full_text <- gutenberg_download(1342)
+```
+
+Time to tidy your text!
+
+```{r}
+tidy_book <- full_text %>%
+  mutate(line = row_number()) %>%
+  _____
+
+tidy_book
+```
+
+What do you predict will happen if we run the following code?
+
+**PREDICT WITH YOUR NEIGHBOR BEFORE YOU RUN**
+
+```{r}
+tidy_book %>%
+  count(___)
+```
+
+## Stop words
+
+
+```{r}
+get_stopwords()
+```
+
+Try out some
+
+- different languages
+- different sources
+
+## What are the most common words?
+
+**U N S C R A M B L E**
+
+```{r}
+anti_join(get_stopwords(source = "smart")) %>%
+
+tidy_book %>%
+
+count(word, sort = TRUE) %>%
+
+coord_flip()
+
+geom_col() +
+
+top_n(20) %>%
+
+ggplot(aes(fct_reorder(word, n), n)) +  
+```
+
+
+## Sentiment lexicons
+
+```{r}
+get_sentiments("bing")
+```
+
+Implement sentiment analysis with an `inner_join()`
+
+```{r}
+tidy_book %>%
+  ___(get_sentiments("bing")) %>%
+  count(sentiment, sort = TRUE)
+```
+
+
+What do you predict will happen if we run the following code?
+
+**PREDICT WITH YOUR NEIGHBOR BEFORE YOU RUN**
+
+```{r}
+tidy_book %>%
+  inner_join(get_sentiments("bing")) %>%            
+  ___
+```
+
+
+```{r}
+tidy_book %>%
+  inner_join(get_sentiments("bing")) %>%
+  count(sentiment, word, sort = TRUE) %>%
+  group_by(sentiment) %>%
+  top_n(10) %>%
+  ungroup %>%
+  ___
+             n, 
+             fill = sentiment)) +
+  geom_col() +
+  coord_flip() +
+  facet_wrap(~ sentiment, scales = "free") 
+```
+
+
+## Term frequency and inverse document frequency
+
+Go back to Project Gutenberg and make a collection (*corpus*) for yourself!
+
+```{r}
+full_collection <- gutenberg_download(c(1342, 158, 161, 141),
+                                      meta_fields = "title")
+
+full_collection
+```
+
+Count word frequencies in your collection
+
+```{r}
+book_words <- full_collection %>%
+  ___
+  count(title, word, sort = TRUE)
+
+book_words
+```
+
+Calculate tf-idf
+
+```{r}
+book_tfidf <- book_words %>%
+  ___
+
+book_tfidf
+```
+
+What do you predict will happen if we run the following code?
+
+**PREDICT WITH YOUR NEIGHBOR BEFORE YOU RUN**
+
+
+```{r}
+book_tfidf %>%
+  ___
+```
+
+**U N S C R A M B L E**
+
+```{r}
+group_by(title) %>%
+
+book_tfidf %>%
+
+top_n(10) %>%
+
+ggplot(aes(fct_reorder(word, tf_idf), tf_idf, fill = title)) +
+
+facet_wrap(~title, scales = "free")
+
+ungroup %>%
+
+geom_col(show.legend = FALSE) +
+
+coord_flip() +
+```
+
+## N-grams... and BEYOND
+
+```{r}
+tidy_ngram <- full_text %>%
+  unnest_tokens(___)
+
+tidy_ngram
+```
+
+
+```{r}
+tidy_ngram %>%
+  ___
+```
+
+Separate bigrams into word, then count
+
+```{r}
+bigram_counts <- tidy_ngram %>%
+  ___
+  filter(!word1 %in% stop_words$word,
+         !word2 %in% stop_words$word) %>%
+  count(word1, word2, sort = TRUE)
+
+bigram_counts
+```
+
+## Network analysis
+
+Create a word network from bigrams!
+
+```{r}
+library(widyr)
+library(igraph)
+library(ggraph)
+
+bigram_graph <- bigram_counts %>%
+  filter(n > 5) %>%
+  ___
+
+bigram_graph
+```
+
+
+```{r}
+bigram_graph %>%
+  ggraph(layout = "nicely") +
+  geom_edge_link(___) + 
+  geom_node_text(___) +    
+  theme_graph() 
+```
+
+
+Lots of ways to make the graph nicer
+
+```{r}
+bigram_graph %>%
+  ggraph(layout = "nicely") +
+  geom_edge_link(___,
+                 show.legend = FALSE, 
+                 arrow = arrow(length = unit(1.5, 'mm')), 
+                 start_cap = circle(3, 'mm'),
+                 end_cap = circle(3, 'mm')) + 
+  geom_node_text(___) +    
+  theme_graph() 
+```
+
+See you tomorrow! <3

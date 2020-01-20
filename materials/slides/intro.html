@@ -915,9 +915,7 @@ book_tfidf %&gt;%
 top_n(10) %&gt;%
 ```
 ```
-ggplot(aes(fct_reorder(word, tf_idf), 
-tf_idf, 
-fill = title)) +
+ggplot(aes(fct_reorder(word, tf_idf), tf_idf, fill = title)) +
 ```
 ```
 facet_wrap(~title, scales = "free")
@@ -1119,15 +1117,15 @@ library(ggraph)
 
 bigram_graph &lt;- bigram_counts %&gt;%
   filter(n &gt; 5) %&gt;%
-  graph_from_data_frame()
+* graph_from_data_frame()
 
 bigram_graph
 ```
 
 ```
-## IGRAPH 72e7171 DN-- 48 45 -- 
+## IGRAPH a192cd2 DN-- 48 45 -- 
 ## + attr: name (v/c), n (e/n)
-## + edges from 72e7171 (vertex names):
+## + edges from a192cd2 (vertex names):
 ##  [1] lady       -&gt;catherine   miss       -&gt;bingley     miss       -&gt;bennet     
 ##  [4] sir        -&gt;william     de         -&gt;bourgh      miss       -&gt;darcy      
 ##  [7] colonel    -&gt;forster     colonel    -&gt;fitzwilliam cried      -&gt;elizabeth  
@@ -1158,9 +1156,9 @@ bigram_graph
 ```r
 bigram_graph %&gt;%
   ggraph(layout = "nicely") +
-  geom_edge_link(aes(edge_alpha = n)) +
-  geom_node_text(aes(label = name)) +
-  theme_graph()
+* geom_edge_link(aes(edge_alpha = n)) +
+* geom_node_text(aes(label = name)) +
+  theme_graph() 
 ```
 
 ---
