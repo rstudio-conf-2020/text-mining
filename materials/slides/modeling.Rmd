@@ -83,18 +83,64 @@ Wifi password
 .large[`r params$wifi_password`]
 
 ]
+
 ---
 
-## Let's install some packages
+<img src="figs/blue_jane.png" style="position:absolute;top:30px;right:30px;" width="100px"/>
 
-```{r, eval=FALSE}
-install.packages(c("tidyverse", 
-                   "tidytext",
-                   "gutenbergr",                   
-                   "tidymodels",
-                   "stm",
-                   "glmnet"))
-```
+## **Workshop policies**
+
+--
+
+- .large[Identify the exits closest to you in case of emergency] 
+
+--
+
+- .large[Please review the rstudio::conf code of conduct that applies to all workshops]
+
+--
+
+- .large[CoC issues can be addressed three ways:]
+
+  - In person: contact any rstudio::conf staff member or the conference registration desk
+  - By email: send a message to `conf@rstudio.com`
+  - By phone: call 844-448-1212
+
+--
+
+- .large[Please do not photograph people wearing red lanyards]
+
+--
+
+- .large[A chill-out room is available for neurologically diverse attendees on the 4th floor of tower 1]
+
+---
+
+class: right, middle
+
+<img src="figs/blue_jane.png" width="150px"/>
+
+# Find me at...
+
+<a href="http://twitter.com/juliasilge"><i class="fa fa-twitter fa-fw"></i>&nbsp; @juliasilge</a><br>
+<a href="http://github.com/juliasilge"><i class="fa fa-github fa-fw"></i>&nbsp; @juliasilge</a><br>
+<a href="https://juliasilge.com"><i class="fa fa-link fa-fw"></i>&nbsp; juliasilge.com</a><br>
+<a href="https://tidytextmining.com"><i class="fa fa-book fa-fw"></i>&nbsp; tidytextmining.com</a><br>
+<a href="mailto:julia.silge@gmail.com"><i class="fa fa-paper-plane fa-fw"></i>&nbsp; julia.silge@gmail.com</a>
+
+---
+
+class: left, middle
+
+<img src="figs/blue_jane.png" width="150px"/>
+
+# Meet your TAs
+
+.large[`r emo::ji("dizzy")` Emil Hvitfelt (coordinator)]
+
+.large[`r emo::ji("boom")` Jeroen Claes]
+
+.large[`r emo::ji("sparkles")` Kasia Kulma]
 
 ---
 
@@ -142,6 +188,20 @@ background-size: cover
 --
 
 - .large[Text classification]
+
+---
+
+## Let's install some packages
+
+```{r, eval=FALSE}
+install.packages(c("tidyverse", 
+                   "tidytext",
+                   "gutenbergr",                   
+                   "tidymodels",
+                   "stm",
+                   "glmnet"))
+```
+
 
 ---
 
@@ -294,14 +354,22 @@ topic_model <- stm(words_sparse, K = 4,
                    verbose = FALSE, 
                    init.type = "Spectral")
 
+```
+---
+
+## **Train a topic model**
+
+Use a sparse matrix or a `quanteda::dfm` object as input
+
+```{r}
 summary(topic_model)
 ```
+
 
 ---
 
 ## **Exploring the output of topic modeling**
 
-.large[Time for tidying!]
 
 ```{r}
 chapter_topics <- tidy(topic_model, matrix = "beta")
@@ -342,7 +410,13 @@ top_terms <- chapter_topics %>%
   top_n(10, beta) %>%
   ungroup() %>%
   arrange(topic, -beta)
+```
 
+---
+
+## **Exploring the output of topic modeling**
+
+```{r}
 top_terms
 ```
 
@@ -360,7 +434,7 @@ top_terms %>%
 
 ---
 
-```{r, echo=FALSE, fig.height=4}
+```{r, echo=FALSE, fig.height=3.9}
 top_terms %>%
   ggplot(aes(reorder_within(term, beta, topic), beta, fill = factor(topic))) +
   geom_col(show.legend = FALSE) +
@@ -407,7 +481,7 @@ chapters_parsed <- chapters_gamma %>%
   separate(document, c("title", "chapter"), 
            sep = "_", convert = TRUE)
 
-chapters_parsed
+glimpse(chapters_parsed)
 ```
 
 ---
@@ -446,7 +520,7 @@ chapters_parsed %>%
 
 ---
 
-```{r, echo=FALSE, fig.height=4}
+```{r, echo=FALSE, fig.height=3.9}
 chapters_parsed %>%
   mutate(title = fct_reorder(title, gamma * topic)) %>%
   ggplot(aes(factor(topic), gamma, color = factor(topic))) +
@@ -579,7 +653,7 @@ tidy_books <- books %>%
   filter(n() > 10) %>%
   ungroup
 
-tidy_books
+glimpse(tidy_books)
 ```
 
 ---
@@ -640,7 +714,7 @@ books_joined <- tibble(document = word_rownames) %>%
   left_join(books %>%
               select(document, title))
 
-books_joined
+glimpse(books_joined)
 ```
 
 
@@ -717,7 +791,7 @@ classifications <- tidy_books %>%
   summarize(score = sum(estimate)) %>%
   mutate(probability = plogis(Intercept + score))
 
-classifications
+glimpse(classifications)
 ```
 
 ---
@@ -769,7 +843,7 @@ coefs %>%
 
 ---
 
-```{r, echo = FALSE, fig.height=4}
+```{r, echo = FALSE, fig.height=3.9}
 coefs %>%
   group_by(estimate > 0) %>%
   top_n(10, abs(estimate)) %>%
@@ -809,7 +883,7 @@ comment_classes <- classifications %>%
               select(title, document), by = "document") %>%
   mutate(title = as.factor(title))
 
-comment_classes
+glimpse(comment_classes)
 ```
 
 ---
@@ -832,7 +906,7 @@ comment_classes %>%
 
 ---
 
-```{r, echo = FALSE, fig.height=4}
+```{r, echo = FALSE, fig.height=3.9}
 library(yardstick)
 
 comment_classes %>%
@@ -896,11 +970,8 @@ Let's talk about misclassifications. Which documents here were incorrectly predi
 
 ```{r}
 comment_classes %>%
-  filter(
-    probability > .8,                       #<<
-    title == "The War of the Worlds"        #<<
-  ) %>%
-  sample_n(10) %>%
+  filter(probability > .8, title == "The War of the Worlds") %>%       #<<
+  sample_n(5) %>%
   inner_join(books %>%
                select(document, text)) %>%
   select(probability, text)
@@ -914,11 +985,8 @@ Let's talk about misclassifications. Which documents here were incorrectly predi
 
 ```{r}
 comment_classes %>%
-  filter(
-    probability < .3,                    #<<
-    title == "Pride and Prejudice"       #<<
-  ) %>%
-  sample_n(10) %>%
+  filter(probability < .3, title == "Pride and Prejudice" ) %>%      #<<
+  sample_n(5) %>%
   inner_join(books %>%
                select(document, text)) %>%
   select(probability, text)
