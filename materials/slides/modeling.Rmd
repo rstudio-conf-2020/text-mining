@@ -354,14 +354,22 @@ topic_model <- stm(words_sparse, K = 4,
                    verbose = FALSE, 
                    init.type = "Spectral")
 
+```
+---
+
+## **Train a topic model**
+
+Use a sparse matrix or a `quanteda::dfm` object as input
+
+```{r}
 summary(topic_model)
 ```
+
 
 ---
 
 ## **Exploring the output of topic modeling**
 
-.large[Time for tidying!]
 
 ```{r}
 chapter_topics <- tidy(topic_model, matrix = "beta")
@@ -402,7 +410,13 @@ top_terms <- chapter_topics %>%
   top_n(10, beta) %>%
   ungroup() %>%
   arrange(topic, -beta)
+```
 
+---
+
+## **Exploring the output of topic modeling**
+
+```{r}
 top_terms
 ```
 
@@ -420,7 +434,7 @@ top_terms %>%
 
 ---
 
-```{r, echo=FALSE, fig.height=4}
+```{r, echo=FALSE, fig.height=3.9}
 top_terms %>%
   ggplot(aes(reorder_within(term, beta, topic), beta, fill = factor(topic))) +
   geom_col(show.legend = FALSE) +
@@ -467,7 +481,7 @@ chapters_parsed <- chapters_gamma %>%
   separate(document, c("title", "chapter"), 
            sep = "_", convert = TRUE)
 
-chapters_parsed
+glimpse(chapters_parsed)
 ```
 
 ---
@@ -506,7 +520,7 @@ chapters_parsed %>%
 
 ---
 
-```{r, echo=FALSE, fig.height=4}
+```{r, echo=FALSE, fig.height=3.9}
 chapters_parsed %>%
   mutate(title = fct_reorder(title, gamma * topic)) %>%
   ggplot(aes(factor(topic), gamma, color = factor(topic))) +
@@ -639,7 +653,7 @@ tidy_books <- books %>%
   filter(n() > 10) %>%
   ungroup
 
-tidy_books
+glimpse(tidy_books)
 ```
 
 ---
@@ -700,7 +714,7 @@ books_joined <- tibble(document = word_rownames) %>%
   left_join(books %>%
               select(document, title))
 
-books_joined
+glimpse(books_joined)
 ```
 
 
@@ -777,7 +791,7 @@ classifications <- tidy_books %>%
   summarize(score = sum(estimate)) %>%
   mutate(probability = plogis(Intercept + score))
 
-classifications
+glimpse(classifications)
 ```
 
 ---
@@ -829,7 +843,7 @@ coefs %>%
 
 ---
 
-```{r, echo = FALSE, fig.height=4}
+```{r, echo = FALSE, fig.height=3.9}
 coefs %>%
   group_by(estimate > 0) %>%
   top_n(10, abs(estimate)) %>%
@@ -869,7 +883,7 @@ comment_classes <- classifications %>%
               select(title, document), by = "document") %>%
   mutate(title = as.factor(title))
 
-comment_classes
+glimpse(comment_classes)
 ```
 
 ---
@@ -892,7 +906,7 @@ comment_classes %>%
 
 ---
 
-```{r, echo = FALSE, fig.height=4}
+```{r, echo = FALSE, fig.height=3.9}
 library(yardstick)
 
 comment_classes %>%
@@ -956,11 +970,8 @@ Let's talk about misclassifications. Which documents here were incorrectly predi
 
 ```{r}
 comment_classes %>%
-  filter(
-    probability > .8,                       #<<
-    title == "The War of the Worlds"        #<<
-  ) %>%
-  sample_n(10) %>%
+  filter(probability > .8, title == "The War of the Worlds") %>%       #<<
+  sample_n(5) %>%
   inner_join(books %>%
                select(document, text)) %>%
   select(probability, text)
@@ -974,11 +985,8 @@ Let's talk about misclassifications. Which documents here were incorrectly predi
 
 ```{r}
 comment_classes %>%
-  filter(
-    probability < .3,                    #<<
-    title == "Pride and Prejudice"       #<<
-  ) %>%
-  sample_n(10) %>%
+  filter(probability < .3, title == "Pride and Prejudice" ) %>%      #<<
+  sample_n(5) %>%
   inner_join(books %>%
                select(document, text)) %>%
   select(probability, text)

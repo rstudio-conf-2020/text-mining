@@ -218,7 +218,7 @@ class: center, middle, inverse
 background-image: url(figs/p_and_p_cover.png)
 background-size: cover
 
-# GREAT LIBRARY HEIST 🕵️‍♂️
+# GREAT LIBRARY HEIST 🕵
 
 ---
 
@@ -372,7 +372,15 @@ library(stm)
 topic_model &lt;- stm(words_sparse, K = 4, 
                    verbose = FALSE, 
                    init.type = "Spectral")
+```
+---
 
+## **Train a topic model**
+
+Use a sparse matrix or a `quanteda::dfm` object as input
+
+
+```r
 summary(topic_model)
 ```
 
@@ -403,11 +411,11 @@ summary(topic_model)
 ##  	 Score: martians, martian, woking, cylinder, curate, ulla, pine
 ```
 
+
 ---
 
 ## **Exploring the output of topic modeling**
 
-.large[Time for tidying!]
 
 
 ```r
@@ -467,7 +475,14 @@ top_terms &lt;- chapter_topics %&gt;%
   top_n(10, beta) %&gt;%
   ungroup() %&gt;%
   arrange(topic, -beta)
+```
 
+---
+
+## **Exploring the output of topic modeling**
+
+
+```r
 top_terms
 ```
 
@@ -503,7 +518,7 @@ top_terms %&gt;%
 
 ---
 
-![](modeling_files/figure-html/unnamed-chunk-11-1.png)&lt;!-- --&gt;
+![](modeling_files/figure-html/unnamed-chunk-13-1.png)&lt;!-- --&gt;
 
 ---
 
@@ -561,24 +576,16 @@ chapters_parsed &lt;- chapters_gamma %&gt;%
   separate(document, c("title", "chapter"), 
            sep = "_", convert = TRUE)
 
-chapters_parsed
+glimpse(chapters_parsed)
 ```
 
 ```
-## # A tibble: 772 x 4
-##    title               chapter topic    gamma
-##    &lt;chr&gt;                 &lt;int&gt; &lt;int&gt;    &lt;dbl&gt;
-##  1 Great Expectations       57     1 0.000792
-##  2 Great Expectations        7     1 0.00340 
-##  3 Pride and Prejudice      18     1 1.00    
-##  4 Great Expectations       17     1 0.0480  
-##  5 Great Expectations       27     1 0.000367
-##  6 Great Expectations       38     1 0.00110 
-##  7 Great Expectations        2     1 0.000531
-##  8 Great Expectations       23     1 0.432   
-##  9 Great Expectations       15     1 0.000565
-## 10 Great Expectations       18     1 0.000277
-## # … with 762 more rows
+## Observations: 772
+## Variables: 4
+## $ title   &lt;chr&gt; "Great Expectations", "Great Expectations", "Pride and Prejud…
+## $ chapter &lt;int&gt; 57, 7, 18, 17, 27, 38, 2, 23, 15, 18, 16, 16, 51, 9, 19, 20, …
+## $ topic   &lt;int&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1…
+## $ gamma   &lt;dbl&gt; 0.0007923046, 0.0033956490, 0.9996679398, 0.0479669209, 0.000…
 ```
 
 ---
@@ -618,7 +625,7 @@ chapters_parsed %&gt;%
 
 ---
 
-![](modeling_files/figure-html/unnamed-chunk-16-1.png)&lt;!-- --&gt;
+![](modeling_files/figure-html/unnamed-chunk-18-1.png)&lt;!-- --&gt;
 
 ---
 
@@ -756,24 +763,16 @@ tidy_books &lt;- books %&gt;%
   filter(n() &gt; 10) %&gt;%
   ungroup
 
-tidy_books
+glimpse(tidy_books)
 ```
 
 ```
-## # A tibble: 159,707 x 4
-##    gutenberg_id title                 document word 
-##           &lt;int&gt; &lt;chr&gt;                    &lt;int&gt; &lt;chr&gt;
-##  1           36 The War of the Worlds        1 the  
-##  2           36 The War of the Worlds        1 war  
-##  3           36 The War of the Worlds        1 of   
-##  4           36 The War of the Worlds        1 the  
-##  5           36 The War of the Worlds        3 by   
-##  6           36 The War of the Worlds        6 but  
-##  7           36 The War of the Worlds        6 who  
-##  8           36 The War of the Worlds        6 shall
-##  9           36 The War of the Worlds        6 in   
-## 10           36 The War of the Worlds        6 these
-## # … with 159,697 more rows
+## Observations: 159,707
+## Variables: 4
+## $ gutenberg_id &lt;int&gt; 36, 36, 36, 36, 36, 36, 36, 36, 36, 36, 36, 36, 36, 36, …
+## $ title        &lt;chr&gt; "The War of the Worlds", "The War of the Worlds", "The W…
+## $ document     &lt;int&gt; 1, 1, 1, 1, 3, 6, 6, 6, 6, 6, 6, 6, 6, 7, 7, 7, 7, 7, 7,…
+## $ word         &lt;chr&gt; "the", "war", "of", "the", "by", "but", "who", "shall", …
 ```
 
 ---
@@ -820,7 +819,7 @@ dim(sparse_words)
 ```
 
 ```
-## [1] 15928  1652
+## [1] 15919  1652
 ```
 
 ---
@@ -831,7 +830,7 @@ dim(sparse_words)
 
 .large[Which `dim` of the sparse matrix is the number of features?]
 
-- .large[15928]
+- .large[15919]
 - .large[1652]
 
 .large[Feature = term = word]
@@ -849,24 +848,14 @@ books_joined &lt;- tibble(document = word_rownames) %&gt;%
   left_join(books %&gt;%
               select(document, title))
 
-books_joined
+glimpse(books_joined)
 ```
 
 ```
-## # A tibble: 15,928 x 2
-##    document title                
-##       &lt;int&gt; &lt;chr&gt;                
-##  1     4532 The War of the Worlds
-##  2     6450 The War of the Worlds
-##  3    14686 Pride and Prejudice  
-##  4    15669 Pride and Prejudice  
-##  5      308 The War of the Worlds
-##  6     1264 The War of the Worlds
-##  7     1287 The War of the Worlds
-##  8     1487 The War of the Worlds
-##  9     1639 The War of the Worlds
-## 10     1698 The War of the Worlds
-## # … with 15,918 more rows
+## Observations: 15,919
+## Variables: 2
+## $ document &lt;int&gt; 4532, 6450, 14686, 15669, 308, 1264, 1287, 1487, 1639, 1698,…
+## $ title    &lt;chr&gt; "The War of the Worlds", "The War of the Worlds", "Pride and…
 ```
 
 
@@ -945,24 +934,15 @@ classifications &lt;- tidy_books %&gt;%
   summarize(score = sum(estimate)) %&gt;%
   mutate(probability = plogis(Intercept + score))
 
-classifications
+glimpse(classifications)
 ```
 
 ```
-## # A tibble: 14,483 x 3
-##    document  score probability
-##       &lt;int&gt;  &lt;dbl&gt;       &lt;dbl&gt;
-##  1        1 -4.56      0.0121 
-##  2        6  1.87      0.884  
-##  3        7 -0.953     0.311  
-##  4        8 -2.31      0.104  
-##  5        9 -0.492     0.416  
-##  6       13 -0.223     0.483  
-##  7       15 -5.42      0.00512
-##  8       21 -4.56      0.0121 
-##  9       24 -0.639     0.381  
-## 10       25 -4.39      0.0142 
-## # … with 14,473 more rows
+## Observations: 14,458
+## Variables: 3
+## $ document    &lt;int&gt; 1, 3, 6, 8, 13, 19, 21, 24, 25, 26, 28, 29, 30, 31, 32, 3…
+## $ score       &lt;dbl&gt; -2.2945339, 0.2238888, 1.9097117, -2.3839670, -0.3833827,…
+## $ probability &lt;dbl&gt; 1.083658e-01, 6.012987e-01, 8.905822e-01, 1.000223e-01, 4…
 ```
 
 ---
@@ -1015,7 +995,7 @@ coefs %&gt;%
 
 ---
 
-![](modeling_files/figure-html/unnamed-chunk-27-1.png)&lt;!-- --&gt;
+![](modeling_files/figure-html/unnamed-chunk-29-1.png)&lt;!-- --&gt;
 
 ---
 
@@ -1046,24 +1026,16 @@ comment_classes &lt;- classifications %&gt;%
               select(title, document), by = "document") %&gt;%
   mutate(title = as.factor(title))
 
-comment_classes
+glimpse(comment_classes)
 ```
 
 ```
-## # A tibble: 14,483 x 4
-##    document  score probability title                
-##       &lt;int&gt;  &lt;dbl&gt;       &lt;dbl&gt; &lt;fct&gt;                
-##  1        1 -4.56      0.0121  The War of the Worlds
-##  2        6  1.87      0.884   The War of the Worlds
-##  3        7 -0.953     0.311   The War of the Worlds
-##  4        8 -2.31      0.104   The War of the Worlds
-##  5        9 -0.492     0.416   The War of the Worlds
-##  6       13 -0.223     0.483   The War of the Worlds
-##  7       15 -5.42      0.00512 The War of the Worlds
-##  8       21 -4.56      0.0121  The War of the Worlds
-##  9       24 -0.639     0.381   The War of the Worlds
-## 10       25 -4.39      0.0142  The War of the Worlds
-## # … with 14,473 more rows
+## Observations: 14,458
+## Variables: 4
+## $ document    &lt;int&gt; 1, 3, 6, 8, 13, 19, 21, 24, 25, 26, 28, 29, 30, 31, 32, 3…
+## $ score       &lt;dbl&gt; -2.2945339, 0.2238888, 1.9097117, -2.3839670, -0.3833827,…
+## $ probability &lt;dbl&gt; 1.083658e-01, 6.012987e-01, 8.905822e-01, 1.000223e-01, 4…
+## $ title       &lt;fct&gt; The War of the Worlds, The War of the Worlds, The War of …
 ```
 
 ---
@@ -1087,7 +1059,7 @@ comment_classes %&gt;%
 
 ---
 
-![](modeling_files/figure-html/unnamed-chunk-31-1.png)&lt;!-- --&gt;
+![](modeling_files/figure-html/unnamed-chunk-33-1.png)&lt;!-- --&gt;
 
 ---
 
@@ -1137,8 +1109,8 @@ comment_classes %&gt;%
 ```
 ##                        Truth
 ## Prediction              Pride and Prejudice The War of the Worlds
-##   Pride and Prejudice                  9430                   335
-##   The War of the Worlds                 249                  4469
+##   Pride and Prejudice                  9417                   342
+##   The War of the Worlds                 255                  4444
 ```
 
 ---
@@ -1150,30 +1122,22 @@ Let's talk about misclassifications. Which documents here were incorrectly predi
 
 ```r
 comment_classes %&gt;%
-  filter(
-*   probability &gt; .8,
-*   title == "The War of the Worlds"
-  ) %&gt;%
-  sample_n(10) %&gt;%
+* filter(probability &gt; .8, title == "The War of the Worlds") %&gt;%
+  sample_n(5) %&gt;%
   inner_join(books %&gt;%
                select(document, text)) %&gt;%
   select(probability, text)
 ```
 
 ```
-## # A tibble: 10 x 2
-##    probability text                                                             
-##          &lt;dbl&gt; &lt;chr&gt;                                                            
-##  1       0.815 "He relapsed into silence, with his chin now sunken almost to hi…
-##  2       1.00  "settlement.  Be that as it may, for many years yet there will"  
-##  3       0.991 "been out of England before, she would rather die than trust her…
-##  4       0.984 "Perhaps I am a man of exceptional moods.  I do not know how far…
-##  5       0.991 "\"Take this!\" said the slender lady, and she gave my brother h…
-##  6       0.909 "entire battalion of the Cardigan Regiment.  No details are know…
-##  7       0.902 "so; there won't be any Royal Academy of Arts, and no nice littl…
-##  8       0.879 "they were destroying Berlin or Paris, or it might be they had g…
-##  9       0.849 "horizon--\"they're starving in heaps, bolting, treading on each…
-## 10       1.00  "\"Be a man!\" said I.  \"You are scared out of your wits!  What…
+## # A tibble: 5 x 2
+##   probability text                                                              
+##         &lt;dbl&gt; &lt;chr&gt;                                                             
+## 1       0.998 "\"Be a man!\" said I.  \"You are scared out of your wits!  What …
+## 2       0.857 "knew was brave enough for any emergency, but he was not the sort…
+## 3       0.997 "Grotesque gleam of a time no history will ever fully describe!"  
+## 4       0.938 "regard as inferior animals.  To carry warfare sunward is, indeed…
+## 5       0.966 "entire battalion of the Cardigan Regiment.  No details are known…
 ```
 
 ---
@@ -1185,30 +1149,22 @@ Let's talk about misclassifications. Which documents here were incorrectly predi
 
 ```r
 comment_classes %&gt;%
-  filter(
-*   probability &lt; .3,
-*   title == "Pride and Prejudice"
-  ) %&gt;%
-  sample_n(10) %&gt;%
+* filter(probability &lt; .3, title == "Pride and Prejudice" ) %&gt;%
+  sample_n(5) %&gt;%
   inner_join(books %&gt;%
                select(document, text)) %&gt;%
   select(probability, text)
 ```
 
 ```
-## # A tibble: 10 x 2
-##    probability text                                                             
-##          &lt;dbl&gt; &lt;chr&gt;                                                            
-##  1    0.0140   "foxhounds, and drink a bottle of wine a day.\""                 
-##  2    0.0652   "As we went along, Kitty and I drew up the blinds, and pretended…
-##  3    0.00281  "blush. He absolutely started, and for a moment seemed immovable…
-##  4    0.0313   "wrong; he had liberality, and he had the means of exercising it…
-##  5    0.000432 "me, I did not once put my foot out of doors, though I was there…
-##  6    0.0380   "I was never more annoyed! The insipidity, and yet the noise--th…
-##  7    0.224    "suddenly came forward from the road, which led behind it to the…
-##  8    0.0196   "\"Oh, lord! I don't know. Not these two or three years, perhaps…
-##  9    0.110    "the improvements it was receiving, he was happily employed unti…
-## 10    0.171    "of fancy, the streets of that gay bathing-place covered with of…
+## # A tibble: 5 x 2
+##   probability text                                                              
+##         &lt;dbl&gt; &lt;chr&gt;                                                             
+## 1     0.00916 "half-a-mile, and then found themselves at the top of a considera…
+## 2     0.278   "wanting on my part that can alleviate so severe a misfortune--or…
+## 3     0.0902  "mistaken. On applying to see the place, they were admitted into …
+## 4     0.248   "with another officer on the other side of the way. The officer w…
+## 5     0.299   "upon yourself alone.\""
 ```
 
 ---
