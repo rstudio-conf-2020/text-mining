@@ -19,7 +19,6 @@ params:
   wifi_password: "TBD"
   site_link: "bit.ly/silge-rstudioconf-1"
   cloud_link: "rstd.io/class"
-  github_link: "TBD"      
 ---
 
 ```{r setup, include=FALSE}
@@ -88,13 +87,33 @@ Wifi password
 
 ---
 
-## Let's install some packages
+<img src="figs/blue_jane.png" style="position:absolute;top:30px;right:30px;" width="100px"/>
 
-```{r, eval=FALSE}
-install.packages(c("tidyverse", 
-                   "tidytext", 
-                   "gutenbergr"))
-```
+## **Workshop policies**
+
+--
+
+- .large[Identify the exits closest to you in case of emergency] 
+
+--
+
+- .large[Please review the rstudio::conf code of conduct that applies to all workshops]
+
+--
+
+- .large[CoC issues can be addressed three ways:]
+
+  - In person: contact any rstudio::conf staff member or the conference registration desk
+  - By email: send a message to `conf@rstudio.com`
+  - By phone: call 844-448-1212
+
+--
+
+- .large[Please do not photograph people wearing red lanyards]
+
+--
+
+- .large[A chill-out room is available for neurologically diverse attendees on the 4th floor of tower 1]
 
 ---
 
@@ -111,6 +130,21 @@ class: right, middle
 <a href="mailto:julia.silge@gmail.com"><i class="fa fa-paper-plane fa-fw"></i>&nbsp; julia.silge@gmail.com</a>
 
 ---
+
+class: left, middle
+
+<img src="figs/blue_jane.png" width="150px"/>
+
+# Meet your TAs
+
+.large[`r emo::ji("dizzy")` Emil Hvitfelt (coordinator)]
+
+.large[`r emo::ji("boom")` Jeroen Claes]
+
+.large[`r emo::ji("sparkles")` Kasia Kulma]
+
+---
+
 
 class: inverse
 
@@ -159,6 +193,16 @@ background-position: 50% 50%
 
 ---
 
+class: middle, center
+
+# <i class="fa fa-github"></i>
+
+# GitHub repo for workshop:
+
+.large[[rstd.io/conf20-tidytext](https://rstd.io/conf20-tidytext)]
+
+---
+
 class: inverse
 
 ## Plan for this workshop
@@ -187,6 +231,16 @@ class: middle, center
 # Go here and log in (free):
 
 .large[[`r params$cloud_link`](`r params$cloud_link`)]
+
+---
+
+## Let's install some packages
+
+```{r, eval=FALSE}
+install.packages(c("tidyverse", 
+                   "tidytext", 
+                   "gutenbergr"))
+```
 
 ---
 

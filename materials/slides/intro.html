@@ -71,14 +71,33 @@ Wifi password
 
 ---
 
-## Let's install some packages
+&lt;img src="figs/blue_jane.png" style="position:absolute;top:30px;right:30px;" width="100px"/&gt;
 
+## **Workshop policies**
 
-```r
-install.packages(c("tidyverse", 
-                   "tidytext", 
-                   "gutenbergr"))
-```
+--
+
+- .large[Identify the exits closest to you in case of emergency] 
+
+--
+
+- .large[Please review the rstudio::conf code of conduct that applies to all workshops]
+
+--
+
+- .large[CoC issues can be addressed three ways:]
+
+  - In person: contact any rstudio::conf staff member or the conference registration desk
+  - By email: send a message to `conf@rstudio.com`
+  - By phone: call 844-448-1212
+
+--
+
+- .large[Please do not photograph people wearing red lanyards]
+
+--
+
+- .large[A chill-out room is available for neurologically diverse attendees on the 4th floor of tower 1]
 
 ---
 
@@ -95,6 +114,21 @@ class: right, middle
 &lt;a href="mailto:julia.silge@gmail.com"&gt;&lt;i class="fa fa-paper-plane fa-fw"&gt;&lt;/i&gt;&amp;nbsp; julia.silge@gmail.com&lt;/a&gt;
 
 ---
+
+class: left, middle
+
+&lt;img src="figs/blue_jane.png" width="150px"/&gt;
+
+# Meet your TAs
+
+.large[💫 Emil Hvitfelt (coordinator)]
+
+.large[💥 Jeroen Claes]
+
+.large[✨ Kasia Kulma]
+
+---
+
 
 class: inverse
 
@@ -143,6 +177,16 @@ background-position: 50% 50%
 
 ---
 
+class: middle, center
+
+# &lt;i class="fa fa-github"&gt;&lt;/i&gt;
+
+# GitHub repo for workshop:
+
+.large[[rstd.io/conf20-tidytext](https://rstd.io/conf20-tidytext)]
+
+---
+
 class: inverse
 
 ## Plan for this workshop
@@ -171,6 +215,17 @@ class: middle, center
 # Go here and log in (free):
 
 .large[[rstd.io/class](rstd.io/class)]
+
+---
+
+## Let's install some packages
+
+
+```r
+install.packages(c("tidyverse", 
+                   "tidytext", 
+                   "gutenbergr"))
+```
 
 ---
 
@@ -291,7 +346,7 @@ library(gutenbergr)
 full_text &lt;- gutenberg_download(1342)
 ```
 
-.large[What book do *you* want to analyze today? 📖 👯‍♂️ 📖]
+.large[What book do *you* want to analyze today? 📖 👯 📖]
 
 ---
 
@@ -1014,7 +1069,7 @@ tidy_ngram %&gt;%
 .large[Can we use an `anti_join()` right away to remove stop words?]
 
 - .large[Yes! ✅]
-- .large[No 🙍]
+- .large[No 😿]
 
 ---
 
@@ -1127,9 +1182,9 @@ bigram_graph
 ```
 
 ```
-## IGRAPH 63e9370 DN-- 48 45 -- 
+## IGRAPH 6f97f74 DN-- 48 45 -- 
 ## + attr: name (v/c), n (e/n)
-## + edges from 63e9370 (vertex names):
+## + edges from 6f97f74 (vertex names):
 ##  [1] lady       -&gt;catherine   miss       -&gt;bingley     miss       -&gt;bennet     
 ##  [4] sir        -&gt;william     de         -&gt;bourgh      miss       -&gt;darcy      
 ##  [7] colonel    -&gt;forster     colonel    -&gt;fitzwilliam cried      -&gt;elizabeth  

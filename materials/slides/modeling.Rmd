@@ -955,3 +955,14 @@ class: left, middle
 <a href="mailto:julia.silge@gmail.com"><i class="fa fa-paper-plane fa-fw"></i>&nbsp; julia.silge@gmail.com</a>
 
 Slides created with [**remark.js**](http://remarkjs.com/) and the R package [**xaringan**](https://github.com/yihui/xaringan)
+
+---
+
+class: middle, center
+
+# <i class="fa fa-check-circle"></i>
+
+# Submit feedback before you leave
+
+.large[[rstd.io/ws-survey](https://rstd.io/ws-survey)]
+
