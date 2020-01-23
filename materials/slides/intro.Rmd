@@ -131,17 +131,37 @@ class: right, middle
 
 ---
 
-class: left, middle
+class: left, top
 
 <img src="figs/blue_jane.png" width="150px"/>
 
 # Meet your TAs
 
-.large[`r emo::ji("dizzy")` Emil Hvitfelt (coordinator)]
+## `r emo::ji("dizzy")` Emil Hvitfelt (coordinator)
 
-.large[`r emo::ji("boom")` Jeroen Claes]
+## `r emo::ji("boom")` Jeroen Claes
 
-.large[`r emo::ji("sparkles")` Kasia Kulma]
+## `r emo::ji("sparkles")` Kasia Kulma
+
+---
+
+class: left, top
+
+<img src="figs/blue_jane.png" width="150px"/>
+
+# Asking for help
+
+--
+
+## `r emo::ji("sos")`  "I'm stuck"
+
+--
+
+## `r emo::ji("warning")`  "I'm not stuck, but I need help on my computer"
+
+--
+
+## `r emo::ji("raising_hand_woman")`  "I need help understanding something"
 
 ---
 
