@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<html lang="" xml:lang="">
   <head>
     <title>Text Modeling</title>
     <meta charset="utf-8" />
@@ -825,7 +825,7 @@ dim(sparse_words)
 ```
 
 ```
-## [1] 15932  1652
+## [1] 15928  1652
 ```
 
 ---
@@ -836,7 +836,7 @@ dim(sparse_words)
 
 .large[Which `dim` of the sparse matrix is the number of features?]
 
-- .large[15932]
+- .large[15928]
 - .large[1652]
 
 .large[Feature = term = word]
@@ -858,7 +858,7 @@ glimpse(books_joined)
 ```
 
 ```
-## Observations: 15,932
+## Observations: 15,928
 ## Variables: 2
 ## $ document &lt;int&gt; 4532, 6450, 14686, 15669, 308, 1264, 1287, 1487, 1639, 1698,…
 ## $ title    &lt;chr&gt; "The War of the Worlds", "The War of the Worlds", "Pride and…
@@ -944,11 +944,11 @@ glimpse(classifications)
 ```
 
 ```
-## Observations: 14,519
+## Observations: 14,492
 ## Variables: 3
-## $ document    &lt;int&gt; 6, 7, 8, 9, 13, 21, 24, 25, 26, 27, 29, 30, 31, 32, 33, 3…
-## $ score       &lt;dbl&gt; 5.4675611, -4.0424021, -3.7425006, -1.0411039, -0.2370373…
-## $ probability &lt;dbl&gt; 9.966905e-01, 2.183161e-02, 2.924341e-02, 3.098064e-01, 5…
+## $ document    &lt;int&gt; 1, 3, 6, 7, 8, 9, 13, 15, 19, 21, 24, 25, 26, 27, 29, 30,…
+## $ score       &lt;dbl&gt; -2.3752082, 0.2302254, 1.9123747, -1.0097196, -2.5019451,…
+## $ probability &lt;dbl&gt; 9.984041e-02, 6.002326e-01, 8.897886e-01, 3.029033e-01, 8…
 ```
 
 ---
@@ -1036,11 +1036,11 @@ glimpse(comment_classes)
 ```
 
 ```
-## Observations: 14,519
+## Observations: 14,492
 ## Variables: 4
-## $ document    &lt;int&gt; 6, 7, 8, 9, 13, 21, 24, 25, 26, 27, 29, 30, 31, 32, 33, 3…
-## $ score       &lt;dbl&gt; 5.4675611, -4.0424021, -3.7425006, -1.0411039, -0.2370373…
-## $ probability &lt;dbl&gt; 9.966905e-01, 2.183161e-02, 2.924341e-02, 3.098064e-01, 5…
+## $ document    &lt;int&gt; 1, 3, 6, 7, 8, 9, 13, 15, 19, 21, 24, 25, 26, 27, 29, 30,…
+## $ score       &lt;dbl&gt; -2.3752082, 0.2302254, 1.9123747, -1.0097196, -2.5019451,…
+## $ probability &lt;dbl&gt; 9.984041e-02, 6.002326e-01, 8.897886e-01, 3.029033e-01, 8…
 ## $ title       &lt;fct&gt; The War of the Worlds, The War of the Worlds, The War of …
 ```
 
@@ -1115,8 +1115,8 @@ comment_classes %&gt;%
 ```
 ##                        Truth
 ## Prediction              Pride and Prejudice The War of the Worlds
-##   Pride and Prejudice                  9455                   348
-##   The War of the Worlds                 245                  4471
+##   Pride and Prejudice                  9435                   325
+##   The War of the Worlds                 240                  4492
 ```
 
 ---
@@ -1139,11 +1139,11 @@ comment_classes %&gt;%
 ## # A tibble: 5 x 2
 ##   probability text                                                              
 ##         &lt;dbl&gt; &lt;chr&gt;                                                             
-## 1       0.957 "getting ready.  Mind you, it isn't all of us that are made for w…
-## 2       0.836 "is religion if it collapses under calamity?  Think of what earth…
-## 3       0.967 "for the present, and had gone away to breakfast at Henderson's h…
-## 4       0.856 "horizon--\"they're starving in heaps, bolting, treading on each …
-## 5       0.982 "would be the same.  His own body would be a cope of lead to him.…
+## 1       0.830 "it was to attempt this crossing.  He turned to Miss Elphinstone,"
+## 2       0.918 "\"No doubt lots who had money have gone away to France,\" he sai…
+## 3       0.936 "that covered every scrap of unoccupied ground gently swaying.  A…
+## 4       0.988 "She was steaming at such a pace that in a minute she seemed half…
+## 5       0.977 "the wives they married, not because they wanted them, but becaus…
 ```
 
 ---
@@ -1166,11 +1166,11 @@ comment_classes %&gt;%
 ## # A tibble: 5 x 2
 ##   probability text                                                              
 ##         &lt;dbl&gt; &lt;chr&gt;                                                             
-## 1     0.190   seek to clear the one without involving the other.                
-## 2     0.00896 to talk again of either. But there was still something lurking be…
-## 3     0.183   my part, except the shops and public places. The country is a vas…
-## 4     0.182   than a reader, was extremely pleased to close his large book, and…
-## 5     0.252   and Wickham, and Pratt, and two or three more of the men came in,…
+## 1     0.189   "are able and willing to assist him in the army. He has the promi…
+## 2     0.0891  "newly-born notions were passing in their heads, the perturbation…
+## 3     0.275   "am the happiest creature in the world. Perhaps other people have…
+## 4     0.0847  "at a man without now and then stumbling on something witty.\""   
+## 5     0.00295 "approved all the alterations he had been making, and had even vo…
 ```
 
 ---
