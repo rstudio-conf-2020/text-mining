@@ -130,31 +130,37 @@ class: right, middle
 
 ---
 
-class: left, middle
+class: left, top
 
 <img src="figs/blue_jane.png" width="150px"/>
 
 # Meet your TAs
 
-.large[`r emo::ji("dizzy")` Emil Hvitfelt (coordinator)]
+## `r emo::ji("dizzy")` Emil Hvitfelt (coordinator)
 
-.large[`r emo::ji("boom")` Jeroen Claes]
+## `r emo::ji("boom")` Jeroen Claes
 
-.large[`r emo::ji("sparkles")` Kasia Kulma]
+## `r emo::ji("sparkles")` Kasia Kulma
 
 ---
 
-class: right, middle
+class: left, top
 
 <img src="figs/blue_jane.png" width="150px"/>
 
-# Find me at...
+# Asking for help
 
-<a href="http://twitter.com/juliasilge"><i class="fa fa-twitter fa-fw"></i>&nbsp; @juliasilge</a><br>
-<a href="http://github.com/juliasilge"><i class="fa fa-github fa-fw"></i>&nbsp; @juliasilge</a><br>
-<a href="https://juliasilge.com"><i class="fa fa-link fa-fw"></i>&nbsp; juliasilge.com</a><br>
-<a href="https://tidytextmining.com"><i class="fa fa-book fa-fw"></i>&nbsp; tidytextmining.com</a><br>
-<a href="mailto:julia.silge@gmail.com"><i class="fa fa-paper-plane fa-fw"></i>&nbsp; julia.silge@gmail.com</a>
+--
+
+## `r emo::ji("sos")`  "I'm stuck"
+
+--
+
+## `r emo::ji("warning")`  "I'm not stuck, but I need help on my computer"
+
+--
+
+## `r emo::ji("raising_hand_woman")`  "I need help understanding something"
 
 ---
 
@@ -183,11 +189,11 @@ background-size: cover
 
 --
 
-- .large[Topic modeling]
+### `r emo::ji("bulb")` Topic modeling
 
 --
 
-- .large[Text classification]
+### `r emo::ji("bulb")` Text classification
 
 ---
 
@@ -212,11 +218,11 @@ background-size: cover
 
 # Topic modeling
 
-- .large[Each DOCUMENT = mixture of topics]
+### `r emo::ji("open_book")` Each DOCUMENT = mixture of topics
 
 --
 
-- .large[Each TOPIC = mixture of tokens]
+### `r emo::ji("bookmark_tabs")` Each TOPIC = mixture of tokens
 
 ---
 
