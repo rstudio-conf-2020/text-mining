@@ -67,7 +67,7 @@ class: middle, center
 
 Wifi network name  
 
-.large[TBD]
+.large[rstudio20]
 
 ]
 
@@ -76,7 +76,7 @@ Wifi network name
 
 Wifi password
 
-.large[TBD]
+.large[tidyverse20]
 
 ]
 
