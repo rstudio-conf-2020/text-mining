@@ -14,11 +14,6 @@ output:
     seal: false  
     includes:
       in_header: header.html
-params:
-  wifi_network: "TBD"
-  wifi_password: "TBD"
-  site_link: "bit.ly/silge-rstudioconf-1"
-  cloud_link: "rstd.io/class"
 ---
 
 ```{r setup, include=FALSE}
@@ -72,7 +67,7 @@ class: middle, center
 
 Wifi network name  
 
-.large[`r params$wifi_network`]
+.large[rstudio20]
 
 ]
 
@@ -81,7 +76,7 @@ Wifi network name
 
 Wifi password
 
-.large[`r params$wifi_password`]
+.large[tidyverse20]
 
 ]
 
@@ -250,7 +245,7 @@ class: middle, center
 
 # Go here and log in (free):
 
-.large[[`r params$cloud_link`](`r params$cloud_link`)]
+.large[[bit.ly/rstudio-text-course](http://bit.ly/rstudio-text-course)]
 
 ---
 

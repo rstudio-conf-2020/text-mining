@@ -14,10 +14,6 @@ output:
     seal: false  
     includes:
       in_header: header.html
-params:
-  wifi_network: "TBD"
-  wifi_password: "TBD"
-  site_link: "bit.ly/silge-rstudioconf-2"
 ---
 
 ```{r setup, include=FALSE}
@@ -71,7 +67,7 @@ class: middle, center
 
 Wifi network name  
 
-.large[`r params$wifi_network`]
+.large[rstudio20]
 
 ]
 
@@ -80,7 +76,7 @@ Wifi network name
 
 Wifi password
 
-.large[`r params$wifi_password`]
+.large[tidyverse20]
 
 ]
 
