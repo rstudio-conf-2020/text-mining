@@ -164,6 +164,61 @@ mutate(title = fct_reorder(title, gamma * topic)) %>%
 geom_boxplot() +
 ```
 
+Train many topic models to find the "right" value for K.
+
+```{r}
+many_models <- tibble(___) %>%
+  mutate(topic_model = map(___, 
+                                  ~stm(words_sparse, K = .,
+                                       verbose = FALSE)))
+many_models
+```
+
+Evaluate metrics for these topic models. Lots to work through!
+
+```{r}
+heldout <- make.heldout(words_sparse)
+
+k_result <- many_models %>%
+  mutate(exclusivity        = map(topic_model, ___),
+         semantic_coherence = map(topic_model, ___, words_sparse),
+         eval_heldout       = map(topic_model, eval.heldout, heldout$missing),
+         residual           = map(topic_model, ___, words_sparse),
+         bound              = map_dbl(topic_model, function(x) max(x$convergence$bound)),
+         lfact              = map_dbl(topic_model, function(x) lfactorial(x$settings$dim$K)),
+         lbound             = bound + lfact,
+         iterations         = map_dbl(topic_model, ___)
+         
+k_result         
+```
+
+How do model metrics change with K?
+
+```{r}
+k_result %>%
+  transmute(K,
+            `Lower bound`         = lbound,
+            Residuals             = map_dbl(___),
+            `Semantic coherence`  = map_dbl(___),
+            `Held-out likelihood` = map_dbl(___)) %>%
+  gather(Metric, Value, -K) %>%
+  ggplot(aes(K, Value, color = Metric)) +
+  geom_line() +
+  facet_wrap(~Metric, scales = "free_y")
+```
+
+What is the relationship between semantic coherence and exclusivity?
+
+```{r}
+k_result %>%
+  select(___) %>%
+  filter(K %in% c(___)) %>%
+  unnest(cols = c(exclusivity, semantic_coherence)) %>%
+  ggplot(aes(semantic_coherence, exclusivity, 
+             color = factor(K))) +
+  geom_point()
+```
+
 
 ## Text classification
 
