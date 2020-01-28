@@ -244,13 +244,11 @@ background-size: cover
 library(tidyverse)
 library(gutenbergr)
 
-titles <- c("Twenty Thousand Leagues under the Sea", 
-            "The War of the Worlds",
-            "Pride and Prejudice", 
-            "Great Expectations")
+books <- gutenberg_download(c(164, 36, 1342, 1400),
+                            meta_fields = "title")
 
-books <- gutenberg_works(title %in% titles) %>%
-  gutenberg_download(meta_fields = "title")
+books %>%
+  count(title)
 ```
 
 ---
@@ -300,7 +298,7 @@ library(tidytext)
 
 word_counts <- by_chapter %>%
   unnest_tokens(word, text) %>%               #<<
-  anti_join(get_stopwords(source = "smart")) %>%
+  anti_join(get_stopwords()) %>%
   count(document, word, sort = TRUE)
 
 glimpse(word_counts)
@@ -598,6 +596,128 @@ class: right, middle
 <h2> Despite their frequent use in topic modeling, we find that stemmers produce no meaningful improvement in likelihood and coherence and in fact can degrade topic stability. </h2>
 
 <h1 class="fa fa-quote-right fa-fw"></h1>
+---
+
+## **Train many topic models**
+
+```{r}
+library(furrr)
+plan(multicore)
+
+many_models <- tibble(K = c(3, 4, 6, 8, 10)) %>%        #<<
+  mutate(topic_model = future_map(K, 
+                                  ~stm(words_sparse, K = .,
+                                       verbose = FALSE)))
+
+many_models
+```
+
+---
+
+## **Train many topic models**
+
+```{r}
+heldout <- make.heldout(words_sparse)
+
+k_result <- many_models %>%
+  mutate(exclusivity        = map(topic_model, exclusivity),
+         semantic_coherence = map(topic_model, semanticCoherence, words_sparse),
+         eval_heldout       = map(topic_model, eval.heldout, heldout$missing),
+         residual           = map(topic_model, checkResiduals, words_sparse),
+         bound              = map_dbl(topic_model, function(x) max(x$convergence$bound)),
+         lfact              = map_dbl(topic_model, function(x) lfactorial(x$settings$dim$K)),
+         lbound             = bound + lfact,
+         iterations         = map_dbl(topic_model, function(x) length(x$convergence$bound)))
+```
+
+---
+
+## **Train many topic models**
+
+```{r}
+k_result
+```
+
+---
+
+## **Train many topic models**
+
+```{r, eval=FALSE}
+k_result %>%
+  transmute(K,
+            `Lower bound`         = lbound,
+            Residuals             = map_dbl(residual, "dispersion"),       #<<
+            `Semantic coherence`  = map_dbl(semantic_coherence, mean),       #<<
+            `Held-out likelihood` = map_dbl(eval_heldout, "expected.heldout")) %>%       #<<
+  gather(Metric, Value, -K) %>%
+  ggplot(aes(K, Value, color = Metric)) +
+  geom_line() +
+  facet_wrap(~Metric, scales = "free_y")
+```
+
+---
+
+```{r, echo=FALSE, fig.height=3.9}
+k_result %>%
+  transmute(K,
+            `Lower bound`         = lbound,
+            Residuals             = map_dbl(residual, "dispersion"),
+            `Semantic coherence`  = map_dbl(semantic_coherence, mean),
+            `Held-out likelihood` = map_dbl(eval_heldout, "expected.heldout")) %>%
+  gather(Metric, Value, -K) %>%
+  ggplot(aes(K, Value, color = Metric)) +
+  geom_line(size = 1.5, alpha = 0.7, show.legend = FALSE) +
+  facet_wrap(~Metric, scales = "free_y") +
+  labs(x = "K (number of topics)",
+       y = NULL)
+```
+
+---
+
+## **What is semantic coherence?**
+
+- .large[Semantic coherence is maximized when the most probable words in a given topic frequently co-occur together]
+
+--
+
+- .large[Correlates well with human judgment of topic quality `r emo::ji("happy")`]
+
+--
+
+- .large[Having high semantic coherence is relatively easy, though, if you only have a few topics dominated by very common words `r emo::ji("sad")`]
+
+--
+
+- .large[Measure semantic coherenence **and** exclusivity]
+
+---
+
+## **Train many topic models**
+
+```{r, eval=FALSE}
+k_result %>%
+  select(K, exclusivity, semantic_coherence) %>%
+  filter(K %in% c(3, 6, 10)) %>%
+  unnest(cols = c(exclusivity, semantic_coherence)) %>%
+  ggplot(aes(semantic_coherence, exclusivity, 
+             color = factor(K))) +
+  geom_point()
+```
+
+---
+
+```{r, echo=FALSE, fig.height=3.9}
+k_result %>%
+  select(K, exclusivity, semantic_coherence) %>%
+  filter(K %in% c(3, 6, 10)) %>%
+  unnest(cols = c(exclusivity, semantic_coherence)) %>%
+  mutate(K = as.factor(K)) %>%
+  ggplot(aes(semantic_coherence, exclusivity, 
+             color = K)) +
+  geom_point(size = 2, alpha = 0.7) +
+  labs(x = "Semantic coherence",
+       y = "Exclusivity")
+```
 
 ---
 
@@ -706,6 +826,17 @@ dim(sparse_words)
 
 ---
 
+<img src="figs/blue_jane.png" width="150px"/>
+
+## Jane wants to know...
+
+.large[If you want to use tf-idf instead of counts, should you calculate tf-idf before or after splitting train and test?]
+
+- .large[Before]
+- .large[After]
+
+---
+
 ## **Build a dataframe with the response variable**
 
 
@@ -737,6 +868,11 @@ model <- cv.glmnet(sparse_words, is_jane,
                    keep = TRUE)
 
 ```
+
+- .large[Regularization constrains magnitude of coefficients]
+
+- .large[LASSO performs feature selection]
+
 
 ---
 
@@ -822,8 +958,8 @@ top_n(10, abs(estimate)) %>%
 ```
 ```
 ggplot(aes(fct_reorder(term, estimate), 
-           estimate, 
-           fill = estimate > 0)) +
+estimate, 
+fill = estimate > 0)) +
 ```
 
 ---
