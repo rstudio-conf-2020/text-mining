@@ -224,7 +224,7 @@ class: center, middle, inverse
 background-image: url(figs/p_and_p_cover.png)
 background-size: cover
 
-# GREAT LIBRARY HEIST 🕵️‍♀️
+# GREAT LIBRARY HEIST 🕵
 
 ---
 
@@ -807,11 +807,11 @@ k_result %&gt;%
 
 --
 
-- .large[Correlates well with human judgment of topic quality 😄]
+- .large[Correlates well with human judgment of topic quality 😆]
 
 --
 
-- .large[Having high semantic coherence is relatively easy, though, if you only have a few topics dominated by very common words 😿]
+- .large[Having high semantic coherence is relatively easy, though, if you only have a few topics dominated by very common words 😢]
 
 --
 
@@ -959,7 +959,7 @@ dim(sparse_words)
 ```
 
 ```
-## [1] 15922  1652
+## [1] 15911  1652
 ```
 
 ---
@@ -970,7 +970,7 @@ dim(sparse_words)
 
 .large[Which `dim` of the sparse matrix is the number of features?]
 
-- .large[]
+- .large[15911]
 - .large[1652]
 
 .large[Feature = term = word]
@@ -1003,7 +1003,7 @@ glimpse(books_joined)
 ```
 
 ```
-## Observations: 15,922
+## Observations: 15,911
 ## Variables: 2
 ## $ document &lt;int&gt; 4532, 6450, 14686, 15669, 308, 1264, 1287, 1487, 1639, 1698,…
 ## $ title    &lt;chr&gt; "The War of the Worlds", "The War of the Worlds", "Pride and…
@@ -1094,11 +1094,11 @@ glimpse(classifications)
 ```
 
 ```
-## Observations: 14,428
+## Observations: 14,450
 ## Variables: 3
-## $ document    &lt;int&gt; 6, 7, 8, 15, 19, 21, 24, 25, 26, 28, 30, 31, 32, 33, 34, …
-## $ score       &lt;dbl&gt; 7.6311181, -3.0679343, -3.8387431, -11.2913489, 0.8897134…
-## $ probability &lt;dbl&gt; 9.996044e-01, 5.394289e-02, 2.570106e-02, 1.529772e-05, 7…
+## $ document    &lt;int&gt; 1, 3, 7, 8, 13, 15, 24, 25, 26, 27, 28, 30, 31, 32, 33, 3…
+## $ score       &lt;dbl&gt; -6.9574480, 0.2116710, -1.9600373, -1.1694809, -0.2357058…
+## $ probability &lt;dbl&gt; 1.175164e-03, 6.044275e-01, 1.483299e-01, 2.774383e-01, 4…
 ```
 
 ---
@@ -1186,11 +1186,11 @@ glimpse(comment_classes)
 ```
 
 ```
-## Observations: 14,428
+## Observations: 14,450
 ## Variables: 4
-## $ document    &lt;int&gt; 6, 7, 8, 15, 19, 21, 24, 25, 26, 28, 30, 31, 32, 33, 34, …
-## $ score       &lt;dbl&gt; 7.6311181, -3.0679343, -3.8387431, -11.2913489, 0.8897134…
-## $ probability &lt;dbl&gt; 9.996044e-01, 5.394289e-02, 2.570106e-02, 1.529772e-05, 7…
+## $ document    &lt;int&gt; 1, 3, 7, 8, 13, 15, 24, 25, 26, 27, 28, 30, 31, 32, 33, 3…
+## $ score       &lt;dbl&gt; -6.9574480, 0.2116710, -1.9600373, -1.1694809, -0.2357058…
+## $ probability &lt;dbl&gt; 1.175164e-03, 6.044275e-01, 1.483299e-01, 2.774383e-01, 4…
 ## $ title       &lt;fct&gt; The War of the Worlds, The War of the Worlds, The War of …
 ```
 
@@ -1265,8 +1265,8 @@ comment_classes %&gt;%
 ```
 ##                        Truth
 ## Prediction              Pride and Prejudice The War of the Worlds
-##   Pride and Prejudice                  9423                   333
-##   The War of the Worlds                 224                  4448
+##   Pride and Prejudice                  9407                   358
+##   The War of the Worlds                 238                  4447
 ```
 
 ---
@@ -1289,11 +1289,11 @@ comment_classes %&gt;%
 ## # A tibble: 5 x 2
 ##   probability text                                                              
 ##         &lt;dbl&gt; &lt;chr&gt;                                                             
-## 1       0.838 She was steaming at such a pace that in a minute she seemed halfw…
-## 2       0.825 what folly!--when I should have stood up, though I died for it, a…
-## 3       0.986 attention is being given to this aspect of the matter.  At presen…
-## 4       0.986 meteorites are rounded more or less completely.  It was, however, 
-## 5       0.954 There were times when I beat and kicked him madly, times when I
+## 1       0.806 confidence in the future which is the most fruitful source of     
+## 2       0.996 upstairs myself for the box she was clamouring for.               
+## 3       0.870 regard as inferior animals.  To carry warfare sunward is, indeed, 
+## 4       0.998 am convinced--as firmly as I am convinced of anything--that the   
+## 5       0.901 his gardening was as generous as it was enthusiastic.  At the same
 ```
 
 ---
@@ -1316,11 +1316,11 @@ comment_classes %&gt;%
 ## # A tibble: 5 x 2
 ##   probability text                                                              
 ##         &lt;dbl&gt; &lt;chr&gt;                                                             
-## 1     0.0966  was a liberal man, and did much good among the poor.              
-## 2     0.112   the happiest of men.                                              
-## 3     0.00314 occasional appearance of some trout in the water, and talking to …
-## 4     0.166   natural consequence of the prejudices I had been encouraging. The…
-## 5     0.0387  them at all the turnpikes, and at the inns in Barnet and Hatfield…
+## 1      0.119  "to find out the stand and number of the coach. I do not know of …
+## 2      0.0646 "laid the foundation. It is too long ago. I was in the middle bef…
+## 3      0.0492 "An express came at twelve last night, just as we were all gone t…
+## 4      0.0138 "of men, and that he hates me.\""                                 
+## 5      0.269  "clergyman, and his right as a rector, made him altogether a mixt…
 ```
 
 ---
