@@ -224,7 +224,7 @@ class: center, middle, inverse
 background-image: url(figs/p_and_p_cover.png)
 background-size: cover
 
-# GREAT LIBRARY HEIST 🕵
+# GREAT LIBRARY HEIST 🕵️‍♀️
 
 ---
 
@@ -235,13 +235,21 @@ background-size: cover
 library(tidyverse)
 library(gutenbergr)
 
-titles &lt;- c("Twenty Thousand Leagues under the Sea", 
-            "The War of the Worlds",
-            "Pride and Prejudice", 
-            "Great Expectations")
+books &lt;- gutenberg_download(c(164, 36, 1342, 1400),
+                            meta_fields = "title")
 
-books &lt;- gutenberg_works(title %in% titles) %&gt;%
-  gutenberg_download(meta_fields = "title")
+books %&gt;%
+  count(title)
+```
+
+```
+## # A tibble: 4 x 2
+##   title                                     n
+##   &lt;chr&gt;                                 &lt;int&gt;
+## 1 Great Expectations                    20024
+## 2 Pride and Prejudice                   13030
+## 3 The War of the Worlds                  6474
+## 4 Twenty Thousand Leagues under the Sea 12135
 ```
 
 ---
@@ -302,18 +310,18 @@ library(tidytext)
 
 word_counts &lt;- by_chapter %&gt;%
 * unnest_tokens(word, text) %&gt;%
-  anti_join(get_stopwords(source = "smart")) %&gt;%
+  anti_join(get_stopwords()) %&gt;%
   count(document, word, sort = TRUE)
 
 glimpse(word_counts)
 ```
 
 ```
-## Observations: 111,650
+## Observations: 131,104
 ## Variables: 3
 ## $ document &lt;chr&gt; "Great Expectations_57", "Great Expectations_7", "Pride and …
-## $ word     &lt;chr&gt; "joe", "joe", "mr", "biddy", "joe", "estella", "joe", "pocke…
-## $ n        &lt;int&gt; 88, 70, 66, 63, 58, 58, 56, 53, 50, 50, 50, 47, 46, 44, 44, …
+## $ word     &lt;chr&gt; "joe", "joe", "mr", "biddy", "joe", "estella", "joe", "said"…
+## $ n        &lt;int&gt; 88, 70, 66, 63, 58, 58, 56, 53, 53, 50, 50, 50, 50, 47, 46, …
 ```
 
 ---
@@ -351,7 +359,7 @@ dim(words_sparse)
 ```
 
 ```
-## [1]   193 18360
+## [1]   193 18703
 ```
 
 ---
@@ -391,30 +399,30 @@ summary(topic_model)
 ```
 
 ```
-## A topic model with 4 topics, 193 documents and a 18360 word dictionary.
+## A topic model with 4 topics, 193 documents and a 18703 word dictionary.
 ```
 
 ```
 ## Topic 1 Top Words:
-##  	 Highest Prob: mr, elizabeth, mrs, darcy, bennet, miss, jane 
-##  	 FREX: elizabeth, darcy, bennet, bingley, wickham, collins, lydia 
-##  	 Lift: wickham, nephew, phillips, brighton, meryton, bourgh, mend 
-##  	 Score: elizabeth, darcy, bennet, bingley, wickham, jane, lydia 
+##  	 Highest Prob: captain, nautilus, sea, one, nemo, said, ned 
+##  	 FREX: nautilus, nemo, ned, conseil, canadian, ocean, submarine 
+##  	 Lift: deg, nautilus, ned, whale, vanikoro, savages, canadian 
+##  	 Score: nautilus, nemo, ned, conseil, canadian, ocean, deg 
 ## Topic 2 Top Words:
-##  	 Highest Prob: captain, nautilus, sea, nemo, ned, conseil, land 
-##  	 FREX: nautilus, nemo, ned, conseil, canadian, ocean, seas 
-##  	 Lift: vanikoro, indian, d'urville, reefs, scotia, shark's, solidification 
-##  	 Score: nautilus, nemo, ned, conseil, canadian, ocean, captain 
+##  	 Highest Prob: mr, elizabeth, said, mrs, darcy, much, must 
+##  	 FREX: elizabeth, darcy, bennet, jane, bingley, wickham, collins 
+##  	 Lift: lucas, jane, bennet, wickham, gardiner, lizzy, collins 
+##  	 Score: elizabeth, darcy, bennet, bingley, jane, wickham, mr 
 ## Topic 3 Top Words:
-##  	 Highest Prob: mr, joe, miss, time, pip, looked, herbert 
-##  	 FREX: joe, pip, herbert, wemmick, havisham, estella, biddy 
-##  	 Lift: towel, giv, whimple, meantersay, jew, rot, barnard's 
-##  	 Score: joe, wemmick, pip, jaggers, havisham, estella, herbert 
-## Topic 4 Top Words:
-##  	 Highest Prob: people, martians, man, time, black, men, night 
+##  	 Highest Prob: one, upon, said, people, martians, came, saw 
 ##  	 FREX: martians, martian, woking, mars, curate, pine, ulla 
-##  	 Lift: martians, mars, curate, shepperton, henderson, hood, ripley 
-##  	 Score: martians, martian, woking, cylinder, curate, ulla, pine
+##  	 Lift: seaward, ogilvy, revolver, whip, _thunder, child_, ironclads 
+##  	 Score: martians, martian, woking, cylinder, mars, curate, ulla 
+## Topic 4 Top Words:
+##  	 Highest Prob: said, joe, mr, one, now, come, know 
+##  	 FREX: joe, pip, herbert, wemmick, havisham, estella, biddy 
+##  	 Lift: provis, jaggers's, clara, clem, magwitch, jolly, hulks 
+##  	 Score: joe, pip, havisham, herbert, estella, biddy, wemmick
 ```
 
 
@@ -431,20 +439,20 @@ chapter_topics
 ```
 
 ```
-## # A tibble: 73,440 x 3
+## # A tibble: 74,812 x 3
 ##    topic term       beta
 ##    &lt;int&gt; &lt;chr&gt;     &lt;dbl&gt;
-##  1     1 joe   8.69e-104
-##  2     2 joe   3.03e-139
-##  3     3 joe   1.21e-  2
-##  4     4 joe   3.28e- 19
-##  5     1 mr    1.90e-  2
-##  6     2 mr    1.91e-  4
-##  7     3 mr    1.22e-  2
-##  8     4 mr    1.15e- 45
-##  9     1 biddy 3.21e- 80
-## 10     2 biddy 3.84e-149
-## # … with 73,430 more rows
+##  1     1 joe   2.62e-215
+##  2     2 joe   5.09e- 58
+##  3     3 joe   3.55e-110
+##  4     4 joe   8.91e-  3
+##  5     1 mr    1.50e-  4
+##  6     2 mr    1.44e-  2
+##  7     3 mr    3.41e-108
+##  8     4 mr    8.30e-  3
+##  9     1 biddy 4.63e-227
+## 10     2 biddy 3.71e- 52
+## # … with 74,802 more rows
 ```
 
 ---
@@ -494,18 +502,18 @@ top_terms
 
 ```
 ## # A tibble: 40 x 3
-##    topic term         beta
-##    &lt;int&gt; &lt;chr&gt;       &lt;dbl&gt;
-##  1     1 mr        0.0190 
-##  2     1 elizabeth 0.0141 
-##  3     1 mrs       0.00886
-##  4     1 darcy     0.00881
-##  5     1 bennet    0.00694
-##  6     1 miss      0.00674
-##  7     1 jane      0.00652
-##  8     1 bingley   0.00607
-##  9     1 time      0.00493
-## 10     1 good      0.00480
+##    topic term        beta
+##    &lt;int&gt; &lt;chr&gt;      &lt;dbl&gt;
+##  1     1 captain  0.0120 
+##  2     1 nautilus 0.0101 
+##  3     1 sea      0.00688
+##  4     1 one      0.00684
+##  5     1 nemo     0.00674
+##  6     1 said     0.00631
+##  7     1 ned      0.00622
+##  8     1 us       0.00585
+##  9     1 conseil  0.00526
+## 10     1 land     0.00472
 ## # … with 30 more rows
 ```
 
@@ -540,18 +548,18 @@ chapters_gamma
 
 ```
 ## # A tibble: 772 x 3
-##    document               topic    gamma
-##    &lt;chr&gt;                  &lt;int&gt;    &lt;dbl&gt;
-##  1 Great Expectations_57      1 0.000792
-##  2 Great Expectations_7       1 0.00340 
-##  3 Pride and Prejudice_18     1 1.00    
-##  4 Great Expectations_17      1 0.0480  
-##  5 Great Expectations_27      1 0.000367
-##  6 Great Expectations_38      1 0.00110 
-##  7 Great Expectations_2       1 0.000531
-##  8 Great Expectations_23      1 0.432   
-##  9 Great Expectations_15      1 0.000565
-## 10 Great Expectations_18      1 0.000277
+##    document               topic     gamma
+##    &lt;chr&gt;                  &lt;int&gt;     &lt;dbl&gt;
+##  1 Great Expectations_57      1 0.000180 
+##  2 Great Expectations_7       1 0.000185 
+##  3 Pride and Prejudice_18     1 0.0000707
+##  4 Great Expectations_17      1 0.000239 
+##  5 Great Expectations_27      1 0.000223 
+##  6 Great Expectations_38      1 0.000255 
+##  7 Great Expectations_2       1 0.000160 
+##  8 Great Expectations_19      1 0.000139 
+##  9 Great Expectations_23      1 0.000312 
+## 10 Great Expectations_11      1 0.000136 
 ## # … with 762 more rows
 ```
 
@@ -589,9 +597,9 @@ glimpse(chapters_parsed)
 ## Observations: 772
 ## Variables: 4
 ## $ title   &lt;chr&gt; "Great Expectations", "Great Expectations", "Pride and Prejud…
-## $ chapter &lt;int&gt; 57, 7, 18, 17, 27, 38, 2, 23, 15, 18, 16, 16, 51, 9, 19, 20, …
+## $ chapter &lt;int&gt; 57, 7, 18, 17, 27, 38, 2, 19, 23, 11, 15, 18, 16, 16, 22, 51,…
 ## $ topic   &lt;int&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1…
-## $ gamma   &lt;dbl&gt; 0.0007923046, 0.0033956490, 0.9996679398, 0.0479669209, 0.000…
+## $ gamma   &lt;dbl&gt; 1.795307e-04, 1.850419e-04, 7.074997e-05, 2.393136e-04, 2.232…
 ```
 
 ---
@@ -701,6 +709,132 @@ class: right, middle
 &lt;h2&gt; Despite their frequent use in topic modeling, we find that stemmers produce no meaningful improvement in likelihood and coherence and in fact can degrade topic stability. &lt;/h2&gt;
 
 &lt;h1 class="fa fa-quote-right fa-fw"&gt;&lt;/h1&gt;
+---
+
+## **Train many topic models**
+
+
+```r
+library(furrr)
+plan(multicore)
+
+*many_models &lt;- tibble(K = c(3, 4, 6, 8, 10)) %&gt;%
+  mutate(topic_model = future_map(K, 
+                                  ~stm(words_sparse, K = .,
+                                       verbose = FALSE)))
+
+many_models
+```
+
+```
+## # A tibble: 5 x 2
+##       K topic_model
+##   &lt;dbl&gt; &lt;list&gt;     
+## 1     3 &lt;STM&gt;      
+## 2     4 &lt;STM&gt;      
+## 3     6 &lt;STM&gt;      
+## 4     8 &lt;STM&gt;      
+## 5    10 &lt;STM&gt;
+```
+
+---
+
+## **Train many topic models**
+
+
+```r
+heldout &lt;- make.heldout(words_sparse)
+
+k_result &lt;- many_models %&gt;%
+  mutate(exclusivity        = map(topic_model, exclusivity),
+         semantic_coherence = map(topic_model, semanticCoherence, words_sparse),
+         eval_heldout       = map(topic_model, eval.heldout, heldout$missing),
+         residual           = map(topic_model, checkResiduals, words_sparse),
+         bound              = map_dbl(topic_model, function(x) max(x$convergence$bound)),
+         lfact              = map_dbl(topic_model, function(x) lfactorial(x$settings$dim$K)),
+         lbound             = bound + lfact,
+         iterations         = map_dbl(topic_model, function(x) length(x$convergence$bound)))
+```
+
+---
+
+## **Train many topic models**
+
+
+```r
+k_result
+```
+
+```
+## # A tibble: 5 x 10
+##       K topic_model exclusivity semantic_cohere… eval_heldout residual   bound
+##   &lt;dbl&gt; &lt;list&gt;      &lt;list&gt;      &lt;list&gt;           &lt;list&gt;       &lt;list&gt;     &lt;dbl&gt;
+## 1     3 &lt;STM&gt;       &lt;dbl [3]&gt;   &lt;dbl [3]&gt;        &lt;named list… &lt;named … -1.73e6
+## 2     4 &lt;STM&gt;       &lt;dbl [4]&gt;   &lt;dbl [4]&gt;        &lt;named list… &lt;named … -1.70e6
+## 3     6 &lt;STM&gt;       &lt;dbl [6]&gt;   &lt;dbl [6]&gt;        &lt;named list… &lt;named … -1.69e6
+## 4     8 &lt;STM&gt;       &lt;dbl [8]&gt;   &lt;dbl [8]&gt;        &lt;named list… &lt;named … -1.67e6
+## 5    10 &lt;STM&gt;       &lt;dbl [10]&gt;  &lt;dbl [10]&gt;       &lt;named list… &lt;named … -1.66e6
+## # … with 3 more variables: lfact &lt;dbl&gt;, lbound &lt;dbl&gt;, iterations &lt;dbl&gt;
+```
+
+---
+
+## **Train many topic models**
+
+
+```r
+k_result %&gt;%
+  transmute(K,
+            `Lower bound`         = lbound,
+*           Residuals             = map_dbl(residual, "dispersion"),
+*           `Semantic coherence`  = map_dbl(semantic_coherence, mean),
+*           `Held-out likelihood` = map_dbl(eval_heldout, "expected.heldout")) %&gt;%
+  gather(Metric, Value, -K) %&gt;%
+  ggplot(aes(K, Value, color = Metric)) +
+  geom_line() +
+  facet_wrap(~Metric, scales = "free_y")
+```
+
+---
+
+![](modeling_files/figure-html/unnamed-chunk-24-1.png)&lt;!-- --&gt;
+
+---
+
+## **What is semantic coherence?**
+
+- .large[Semantic coherence is maximized when the most probable words in a given topic frequently co-occur together]
+
+--
+
+- .large[Correlates well with human judgment of topic quality 😄]
+
+--
+
+- .large[Having high semantic coherence is relatively easy, though, if you only have a few topics dominated by very common words 😿]
+
+--
+
+- .large[Measure semantic coherenence **and** exclusivity]
+
+---
+
+## **Train many topic models**
+
+
+```r
+k_result %&gt;%
+  select(K, exclusivity, semantic_coherence) %&gt;%
+  filter(K %in% c(3, 6, 10)) %&gt;%
+  unnest(cols = c(exclusivity, semantic_coherence)) %&gt;%
+  ggplot(aes(semantic_coherence, exclusivity, 
+             color = factor(K))) +
+  geom_point()
+```
+
+---
+
+![](modeling_files/figure-html/unnamed-chunk-26-1.png)&lt;!-- --&gt;
 
 ---
 
@@ -825,7 +959,7 @@ dim(sparse_words)
 ```
 
 ```
-## [1] 15928  1652
+## [1] 15922  1652
 ```
 
 ---
@@ -836,10 +970,21 @@ dim(sparse_words)
 
 .large[Which `dim` of the sparse matrix is the number of features?]
 
-- .large[]
+- .large[15922]
 - .large[1652]
 
 .large[Feature = term = word]
+
+---
+
+&lt;img src="figs/blue_jane.png" width="150px"/&gt;
+
+## Jane wants to know...
+
+.large[If you want to use tf-idf instead of counts, should you calculate tf-idf before or after splitting train and test?]
+
+- .large[Before]
+- .large[After]
 
 ---
 
@@ -858,7 +1003,7 @@ glimpse(books_joined)
 ```
 
 ```
-## Observations: 15,928
+## Observations: 15,922
 ## Variables: 2
 ## $ document &lt;int&gt; 4532, 6450, 14686, 15669, 308, 1264, 1287, 1487, 1639, 1698,…
 ## $ title    &lt;chr&gt; "The War of the Worlds", "The War of the Worlds", "Pride and…
@@ -882,6 +1027,11 @@ model &lt;- cv.glmnet(sparse_words, is_jane,
                    parallel = TRUE, 
                    keep = TRUE)
 ```
+
+- .large[Regularization constrains magnitude of coefficients]
+
+- .large[LASSO performs feature selection]
+
 
 ---
 
@@ -944,11 +1094,11 @@ glimpse(classifications)
 ```
 
 ```
-## Observations: 14,492
+## Observations: 14,428
 ## Variables: 3
-## $ document    &lt;int&gt; 1, 3, 6, 7, 8, 9, 13, 15, 19, 21, 24, 25, 26, 27, 29, 30,…
-## $ score       &lt;dbl&gt; -2.3752082, 0.2302254, 1.9123747, -1.0097196, -2.5019451,…
-## $ probability &lt;dbl&gt; 9.984041e-02, 6.002326e-01, 8.897886e-01, 3.029033e-01, 8…
+## $ document    &lt;int&gt; 6, 7, 8, 15, 19, 21, 24, 25, 26, 28, 30, 31, 32, 33, 34, …
+## $ score       &lt;dbl&gt; 7.6311181, -3.0679343, -3.8387431, -11.2913489, 0.8897134…
+## $ probability &lt;dbl&gt; 9.996044e-01, 5.394289e-02, 2.570106e-02, 1.529772e-05, 7…
 ```
 
 ---
@@ -977,8 +1127,8 @@ top_n(10, abs(estimate)) %&gt;%
 ```
 ```
 ggplot(aes(fct_reorder(term, estimate), 
-           estimate, 
-           fill = estimate &gt; 0)) +
+estimate, 
+fill = estimate &gt; 0)) +
 ```
 
 ---
@@ -1001,7 +1151,7 @@ coefs %&gt;%
 
 ---
 
-![](modeling_files/figure-html/unnamed-chunk-29-1.png)&lt;!-- --&gt;
+![](modeling_files/figure-html/unnamed-chunk-36-1.png)&lt;!-- --&gt;
 
 ---
 
@@ -1036,11 +1186,11 @@ glimpse(comment_classes)
 ```
 
 ```
-## Observations: 14,492
+## Observations: 14,428
 ## Variables: 4
-## $ document    &lt;int&gt; 1, 3, 6, 7, 8, 9, 13, 15, 19, 21, 24, 25, 26, 27, 29, 30,…
-## $ score       &lt;dbl&gt; -2.3752082, 0.2302254, 1.9123747, -1.0097196, -2.5019451,…
-## $ probability &lt;dbl&gt; 9.984041e-02, 6.002326e-01, 8.897886e-01, 3.029033e-01, 8…
+## $ document    &lt;int&gt; 6, 7, 8, 15, 19, 21, 24, 25, 26, 28, 30, 31, 32, 33, 34, …
+## $ score       &lt;dbl&gt; 7.6311181, -3.0679343, -3.8387431, -11.2913489, 0.8897134…
+## $ probability &lt;dbl&gt; 9.996044e-01, 5.394289e-02, 2.570106e-02, 1.529772e-05, 7…
 ## $ title       &lt;fct&gt; The War of the Worlds, The War of the Worlds, The War of …
 ```
 
@@ -1065,7 +1215,7 @@ comment_classes %&gt;%
 
 ---
 
-![](modeling_files/figure-html/unnamed-chunk-33-1.png)&lt;!-- --&gt;
+![](modeling_files/figure-html/unnamed-chunk-40-1.png)&lt;!-- --&gt;
 
 ---
 
@@ -1115,8 +1265,8 @@ comment_classes %&gt;%
 ```
 ##                        Truth
 ## Prediction              Pride and Prejudice The War of the Worlds
-##   Pride and Prejudice                  9435                   325
-##   The War of the Worlds                 240                  4492
+##   Pride and Prejudice                  9423                   333
+##   The War of the Worlds                 224                  4448
 ```
 
 ---
@@ -1139,11 +1289,11 @@ comment_classes %&gt;%
 ## # A tibble: 5 x 2
 ##   probability text                                                              
 ##         &lt;dbl&gt; &lt;chr&gt;                                                             
-## 1       0.830 "it was to attempt this crossing.  He turned to Miss Elphinstone,"
-## 2       0.918 "\"No doubt lots who had money have gone away to France,\" he sai…
-## 3       0.936 "that covered every scrap of unoccupied ground gently swaying.  A…
-## 4       0.988 "She was steaming at such a pace that in a minute she seemed half…
-## 5       0.977 "the wives they married, not because they wanted them, but becaus…
+## 1       0.838 She was steaming at such a pace that in a minute she seemed halfw…
+## 2       0.825 what folly!--when I should have stood up, though I died for it, a…
+## 3       0.986 attention is being given to this aspect of the matter.  At presen…
+## 4       0.986 meteorites are rounded more or less completely.  It was, however, 
+## 5       0.954 There were times when I beat and kicked him madly, times when I
 ```
 
 ---
@@ -1166,11 +1316,11 @@ comment_classes %&gt;%
 ## # A tibble: 5 x 2
 ##   probability text                                                              
 ##         &lt;dbl&gt; &lt;chr&gt;                                                             
-## 1     0.189   "are able and willing to assist him in the army. He has the promi…
-## 2     0.0891  "newly-born notions were passing in their heads, the perturbation…
-## 3     0.275   "am the happiest creature in the world. Perhaps other people have…
-## 4     0.0847  "at a man without now and then stumbling on something witty.\""   
-## 5     0.00295 "approved all the alterations he had been making, and had even vo…
+## 1     0.0966  was a liberal man, and did much good among the poor.              
+## 2     0.112   the happiest of men.                                              
+## 3     0.00314 occasional appearance of some trout in the water, and talking to …
+## 4     0.166   natural consequence of the prejudices I had been encouraging. The…
+## 5     0.0387  them at all the turnpikes, and at the inns in Barnet and Hatfield…
 ```
 
 ---
