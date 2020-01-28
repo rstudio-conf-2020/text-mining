@@ -688,7 +688,7 @@ k_result %>%
 
 --
 
-- .large[Measure semantic coherenence **and** exclusivity]
+- .large[Measure semantic coherence **and** exclusivity]
 
 ---
 
