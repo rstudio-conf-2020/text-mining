@@ -259,7 +259,7 @@ What do you predict will happen if we run the following code?
 library(rsample)
 
 books_split <- tidy_books %>%
-  select(document) %>%
+  distinct(document) %>%
   ___
 
 train_data <- training(books_split)
